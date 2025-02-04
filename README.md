@@ -20,7 +20,8 @@ A modern, dark-themed portfolio website showcasing my creative web development p
 - Font Awesome Icons
 - Google Fonts (Poppins)
 
-## Projects Showcased  [FULL VERSION](https://fibergoddev.github.io/Sagar-Projects/website.html)
+## Projects Showcased  
+*[FULL VERSION](https://fibergoddev.github.io/Sagar-Projects/website.html)*
 
 1. **Animated Login Form**
    - Modern UI design
