@@ -1,6 +1,6 @@
 # My Projects Portfolio
 
-![Project Showcase](screenshot.png)
+![Project Showcase](screenshot.jpg)
 
 A modern, dark-themed portfolio website showcasing my creative web development projects with stunning visual effects.
 
