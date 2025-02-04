@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Projects Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(45deg, #0011ff, #00f7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: headerGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes headerGlow {
+            from {
+                text-shadow: 0 0 10px #00f7ff33;
+            }
+            to {
+                text-shadow: 0 0 20px #00f7ff, 0 0 30px #00f7ff;
+            }
+        }
+
+        .projects-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .project-box {
+            background: #0f0f0f;
+            width: 600px;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #00f7ff33;
+            transition: transform 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .project-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px #00f7ff33;
+        }
+
+        .project-content {
+            width: 80%;
+        }
+
+        .project-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00f7ff, #0011ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .project-description {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        .project-icon {
+            font-size: 3rem;
+            color: #00f7ff;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #000000;
+            margin-top: auto;
+            border-top: 1px solid #00f7ff33;
+        }
+
+        .glow {
+            position: absolute;
+            background: radial-gradient(circle, #00f7ff33 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .project-box {
+                width: 90%;
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .project-icon {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="header">My Projects Portfolio</h1>
+    </header>
+
+    <main>
+        <div class="projects-container">
+            <!-- Project 1 -->
+            <div class="project-box">
+                <div class="project-content">
+                    <h2 class="project-title">Animated Login Form</h2>
+                    <p class="project-description">
+                        A modern and sleek login interface with smooth animations and interactive elements. 
+                        Features floating labels, gradient effects, and hover animations for enhanced user experience.
+                    </p>
+                </div>
+                <i class="fas fa-user-circle project-icon"></i>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-box">
+                <div class="project-content">
+                    <h2 class="project-title">Glowing Digital Flower</h2>
+                    <p class="project-description">
+                        An artistic CSS creation featuring a glowing, animated flower with interactive petals. 
+                        Uses advanced CSS animations and gradient effects to create a mesmerizing visual experience.
+                    </p>
+                </div>
+                <i class="fas fa-seedling project-icon"></i>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Projects Portfolio. All rights reserved.</p>
+    </footer>
+</body>
+</html>
