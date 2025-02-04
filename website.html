@@ -6,6 +6,13 @@
     <title>My Projects Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #00f7ff;
+            --secondary-color: #0011ff;
+            --bg-color: #0a0a0a;
+            --text-color: #ffffff;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,36 +21,58 @@
         }
 
         body {
-            background-color: #0a0a0a;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 0.5s ease;
         }
 
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .theme-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .theme-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Header */
         .header {
             text-align: center;
-            padding: 2rem;
-            background: linear-gradient(45deg, #0011ff, #00f7ff);
+            padding: 3rem 2rem 2rem;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: headerGlow 2s ease-in-out infinite alternate;
         }
 
         @keyframes headerGlow {
-            from {
-                text-shadow: 0 0 10px #00f7ff33;
-            }
-            to {
-                text-shadow: 0 0 20px #00f7ff, 0 0 30px #00f7ff;
-            }
+            from { text-shadow: 0 0 10px #00f7ff33; }
+            to { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color); }
         }
 
+        /* Projects Container */
         .projects-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 2rem;
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         .project-box {
@@ -51,61 +80,96 @@
             width: 600px;
             padding: 2rem;
             border-radius: 15px;
-            border: 2px solid #00f7ff33;
+            border: 2px solid var(--primary-color);
             transition: transform 0.3s ease;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .project-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, var(--primary-color), transparent);
+            transform: rotate(45deg);
+            transition: 0.5s;
         }
 
         .project-box:hover {
             transform: translateY(-5px);
-            box-shadow: 0 0 20px #00f7ff33;
+            box-shadow: 0 0 20px var(--primary-color);
+        }
+
+        .project-box:hover::before {
+            animation: borderFlow 3s linear infinite;
+        }
+
+        @keyframes borderFlow {
+            0% { transform: rotate(45deg) translateX(-50%); }
+            100% { transform: rotate(45deg) translateX(50%); }
         }
 
         .project-content {
             width: 80%;
+            z-index: 1;
         }
 
         .project-title {
             font-size: 2rem;
             margin-bottom: 1rem;
-            background: linear-gradient(45deg, #00f7ff, #0011ff);
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .project-description {
-            color: #cccccc;
-            line-height: 1.6;
-        }
-
         .project-icon {
             font-size: 3rem;
-            color: #00f7ff;
+            color: var(--primary-color);
             animation: iconFloat 3s ease-in-out infinite;
+            z-index: 1;
         }
 
-        @keyframes iconFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            background: #000000;
-            margin-top: auto;
-            border-top: 1px solid #00f7ff33;
-        }
-
-        .glow {
+        /* Background Droplets */
+        .droplet {
             position: absolute;
-            background: radial-gradient(circle, #00f7ff33 0%, transparent 70%);
+            width: 2px;
+            height: 10px;
+            background: var(--primary-color);
+            animation: fall linear infinite;
+            opacity: 0.3;
             pointer-events: none;
         }
 
+        @keyframes fall {
+            from { transform: translateY(-100vh); }
+            to { transform: translateY(100vh); }
+        }
+
+        /* Click Wave Effect */
+        .click-wave {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, var(--primary-color) 20%, transparent 100%);
+            border-radius: 50%;
+            animation: wave 0.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes wave {
+            0% { transform: scale(0); opacity: 0.5; }
+            100% { transform: scale(20); opacity: 0; }
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .project-box {
                 width: 90%;
@@ -116,10 +180,26 @@
             .project-icon {
                 margin-top: 1rem;
             }
+            
+            .header {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Light Theme */
+        body.light-theme {
+            --bg-color: #f0f8ff;
+            --text-color: #0a0a0a;
+            --primary-color: #0011ff;
+            --secondary-color: #00f7ff;
         }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon theme-icon"></i>
+    </button>
+
     <header>
         <h1 class="header">My Projects Portfolio</h1>
     </header>
@@ -127,33 +207,76 @@
     <main>
         <div class="projects-container">
             <!-- Project 1 -->
-            <div class="project-box">
+            <a href="LINK_TO_LOGIN_FORM" target="_blank" class="project-box">
                 <div class="project-content">
                     <h2 class="project-title">Animated Login Form</h2>
                     <p class="project-description">
                         A modern and sleek login interface with smooth animations and interactive elements. 
-                        Features floating labels, gradient effects, and hover animations for enhanced user experience.
+                        Features floating labels, gradient effects, and hover animations.
                     </p>
                 </div>
                 <i class="fas fa-user-circle project-icon"></i>
-            </div>
+            </a>
 
             <!-- Project 2 -->
-            <div class="project-box">
+            <a href="LINK_TO_FLOWER_PROJECT" target="_blank" class="project-box">
                 <div class="project-content">
                     <h2 class="project-title">Glowing Digital Flower</h2>
                     <p class="project-description">
                         An artistic CSS creation featuring a glowing, animated flower with interactive petals. 
-                        Uses advanced CSS animations and gradient effects to create a mesmerizing visual experience.
+                        Uses advanced CSS animations and gradient effects.
                     </p>
                 </div>
                 <i class="fas fa-seedling project-icon"></i>
-            </div>
+            </a>
         </div>
     </main>
 
     <footer>
         <p>&copy; 2024 My Projects Portfolio. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const icon = document.querySelector('.theme-icon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+
+        // Background Droplets
+        function createDroplet() {
+            const droplet = document.createElement('div');
+            droplet.classList.add('droplet');
+            droplet.style.left = Math.random() * 100 + 'vw';
+            droplet.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(droplet);
+            
+            setTimeout(() => droplet.remove(), 5000);
+        }
+
+        setInterval(createDroplet, 300);
+
+        // Click Wave Effect
+        document.addEventListener('click', (e) => {
+            const wave = document.createElement('div');
+            wave.classList.add('click-wave');
+            wave.style.left = e.clientX - 5 + 'px';
+            wave.style.top = e.clientY - 5 + 'px';
+            document.body.appendChild(wave);
+            
+            setTimeout(() => wave.remove(), 500);
+        });
+
+        // Project Box Link Handling
+        document.querySelectorAll('.project-box').forEach(box => {
+            box.addEventListener('click', (e) => {
+                if (!e.target.closest('a')) {
+                    box.closest('a').click();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
