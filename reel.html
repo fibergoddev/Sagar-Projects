@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The AI Virality Code: Lucknow Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- 
+    Infographic Narrative Plan:
+    1. Hero Section: Hook with a powerful title and a key stat.
+    2. Section 1 (Decoding the Algorithm): Visualize engagement hierarchy and "Golden Hour".
+    3. Section 2 (AI Content Arsenal): Showcase content archetypes.
+    4. Section 3 (AI Co-Pilot): Provide interactive Gemini API tools for idea generation, hashtag strategy, and trend analysis.
+    5. Section 4 (The Lucknow Advantage): Illustrate hashtag strategy and posting times.
+    6. Section 5 (Growth Roadmap): Present the 90-day plan.
+    
+    Color Palette Selection: "Energetic & Playful".
+    
+    Visualization Choices & Justification (NO SVG, NO MERMAID JS):
+    - Engagement Hierarchy: Bar Chart (Chart.js/Canvas).
+    - Golden Hour Protocol: Styled HTML/CSS Diagram (Tailwind).
+    - AI Archetypes: HTML Cards.
+    - Hashtag Matrix: Doughnut Chart (Chart.js/Canvas).
+    - Optimal Posting Times: Radar Chart (Chart.js/Canvas).
+    - 90-Day Roadmap: Styled HTML/CSS Diagram (Tailwind).
+    
+    Confirmation: No Mermaid JS was used. No SVG graphics were used. All visuals are pure HTML/CSS/Tailwind or rendered on HTML Canvas via Chart.js.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #F94144, #F3722C, #F9C74F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #F3722C;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center my-12">
+            <h1 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tight">The <span class="gradient-text">AI Virality</span> Code</h1>
+            <p class="text-xl md:text-2xl text-gray-600 mt-2">Your Strategic Guide to Dominating Instagram in Lucknow</p>
+        </header>
+
+        <section class="my-16">
+            <div class="text-center bg-white rounded-lg shadow-xl p-8 max-w-3xl mx-auto">
+                <p class="text-2xl font-bold text-gray-700">A strong visual hook in the first <span class="text-blue-500">3 seconds</span> can improve video retention by over</p>
+                <p class="text-8xl md:text-9xl font-black gradient-text my-4">40%</p>
+                <p class="text-lg text-gray-500">This is the most critical element for stopping the scroll and signaling value to the algorithm.</p>
+            </div>
+        </section>
+
+        <section id="algorithm" class="my-16">
+            <h2 class="text-3xl font-bold text-center mb-2">Section 1: Decoding the Algorithm</h2>
+            <p class="text-lg text-center text-gray-600 mb-12 max-w-3xl mx-auto">To win, you must understand the rules. Virality isn't luck; it's about optimizing for the right signals. The algorithm's priorities have shifted dramatically from passive likes to active engagement.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold text-center mb-4">The New Hierarchy of Engagement</h3>
+                    <p class="text-center text-gray-600 mb-6">Not all interactions are equal. Focus your efforts on what truly matters to the algorithm for reaching non-followers. "Sends" are the new super-likes.</p>
+                    <div class="chart-container">
+                        <canvas id="engagementHierarchyChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold text-center mb-4">The "Golden Hour" Launch Protocol</h3>
+                    <p class="text-center text-gray-600 mb-6">The first 60 minutes after posting determine your Reel's fate. Follow this active engagement sprint to give your content its best chance to fly.</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-orange-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">1</div>
+                            <div class="ml-4"><h4 class="font-bold">Post & Share to Story</h4><p class="text-gray-600 text-sm">Immediately share to your story with an interactive sticker (poll/quiz).</p></div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-orange-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">2</div>
+                            <div class="ml-4"><h4 class="font-bold">Reply to All Comments</h4><p class="text-gray-600 text-sm">Instantly reply to every comment to spark conversations.</p></div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-orange-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">3</div>
+                            <div class="ml-4"><h4 class="font-bold">Engage with Niche Accounts</h4><p class="text-gray-600 text-sm">Leave genuine comments on other Lucknow creators' posts.</p></div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-orange-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">4</div>
+                            <div class="ml-4"><h4 class="font-bold">Acknowledge Shares</h4><p class="text-gray-600 text-sm">Reshare user stories that feature your Reel to reward your audience.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="content" class="my-16">
+            <h2 class="text-3xl font-bold text-center mb-2">Section 2: Your AI Content Arsenal</h2>
+            <p class="text-lg text-center text-gray-600 mb-12 max-w-3xl mx-auto">With AI, the quality of your idea is the new production value. These three hyper-local content archetypes are engineered for virality in Lucknow.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg shadow-md p-6 text-center"><div class="text-4xl mb-4">🎙️</div><h3 class="text-xl font-bold mb-2">"Talking Animal" Podcast</h3><p class="text-gray-600">Juxtapose mundane animal footage with witty, Lakhnawi-dialect commentary on local topics (e.g., two goats debating kebabs at Tunday Kababi).</p></div>
+                <div class="bg-white rounded-lg shadow-md p-6 text-center"><div class="text-4xl mb-4">🔥</div><h3 class="text-xl font-bold mb-2">Hyper-Local AI Roast</h3><p class="text-gray-600">Use AI to generate satirical parodies of local archetypes (e.g., the "Ganjing" ritual in Hazratganj). This creates powerful "in-group" humor.</p></div>
+                <div class="bg-white rounded-lg shadow-md p-6 text-center"><div class="text-4xl mb-4">💡</div><h3 class="text-xl font-bold mb-2">Myth vs. Reality</h3><p class="text-gray-600">Deliver educational value by debunking local myths with AI animations (e.g., the secrets of the Bara Imambara's labyrinth).</p></div>
+            </div>
+        </section>
+
+        <section id="ai-copilot" class="my-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">AI Content Co-Pilot ✨</h2>
+                <p class="text-lg text-gray-600 mt-2">Generate viral ideas and strategies instantly with Gemini.</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-8">
+                <h3 class="text-2xl font-bold text-center mb-6">AI Idea Generator</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div><button id="generate-podcast" class="w-full bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors">✨ Generate Podcast Idea</button><div id="podcast-result" class="mt-4 p-4 bg-gray-50 rounded-lg min-h-[100px] text-gray-700 text-sm">Click the button to get an idea...</div></div>
+                    <div><button id="generate-roast" class="w-full bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition-colors">✨ Generate Roast Idea</button><div id="roast-result" class="mt-4 p-4 bg-gray-50 rounded-lg min-h-[100px] text-gray-700 text-sm">Click the button to get an idea...</div></div>
+                    <div><button id="generate-myth" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">✨ Generate Myth Idea</button><div id="myth-result" class="mt-4 p-4 bg-gray-50 rounded-lg min-h-[100px] text-gray-700 text-sm">Click the button to get an idea...</div></div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-8">
+                <h3 class="text-2xl font-bold text-center mb-2">✨ AI Hashtag Strategist</h3>
+                <p class="text-center text-gray-600 mb-6">Enter your video topic to get a perfectly balanced set of hashtags.</p>
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <input type="text" id="hashtag-topic" placeholder="e.g., 'Trying chaat at Royal Cafe'" class="flex-grow w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    <button id="generate-hashtags" class="w-full md:w-auto bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition-colors">Generate Hashtags</button>
+                </div>
+                <div id="hashtag-result-container" class="mt-6 text-center"></div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h3 class="text-2xl font-bold text-center mb-2">✨ AI Trend Forecaster</h3>
+                <p class="text-center text-gray-600 mb-6">Analyze your video idea's viral potential before you shoot.</p>
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <input type="text" id="trend-topic" placeholder="e.g., 'A 1-day guide to old Lucknow'" class="flex-grow w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button id="analyze-trend" class="w-full md:w-auto bg-purple-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-600 transition-colors">Analyze Trend Potential</button>
+                </div>
+                <div id="trend-result-container" class="mt-6 text-left"></div>
+            </div>
+        </section>
+
+        <section id="lucknow" class="my-16">
+            <h2 class="text-3xl font-bold text-center mb-2">Section 4: The Lucknow Advantage</h2>
+            <p class="text-lg text-center text-gray-600 mb-12 max-w-3xl mx-auto">Generic trends are saturated. Your competitive edge is authenticity. Weave the city's unique culture—its *tehzeeb*—into your content to create an unassailable niche.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold text-center mb-4">The Lucknow Hashtag Matrix</h3>
+                    <p class="text-center text-gray-600 mb-6">Use a balanced mix of 15-20 hashtags to maximize discoverability. This strategy targets broad trends, specific niches, and the crucial local audience simultaneously.</p>
+                    <div class="chart-container"><canvas id="hashtagChart"></canvas></div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold text-center mb-4">Optimal Posting Times (IST)</h3>
+                    <p class="text-center text-gray-600 mb-6">Post when your Lucknow audience is most active to maximize "Golden Hour" engagement. Weekday evenings and weekend afternoons are prime time.</p>
+                    <div class="chart-container"><canvas id="postingTimesChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="my-16">
+            <h2 class="text-3xl font-bold text-center mb-2">Section 5: Your 90-Day Growth Roadmap</h2>
+            <p class="text-lg text-center text-gray-600 mb-12 max-w-3xl mx-auto">Going viral once is an event. Becoming a content authority is a process. Follow this structured plan to turn a single hit into sustained growth and a loyal community.</p>
+            <div class="relative max-w-4xl mx-auto">
+                <div class="border-l-4 border-teal-500 absolute h-full top-0 left-4"></div>
+                <div class="mb-8 pl-12 relative">
+                    <div class="absolute w-6 h-6 bg-teal-500 rounded-full -left-3 top-1 border-4 border-white"></div>
+                    <p class="text-sm font-bold text-teal-600">DAYS 1-30</p><h3 class="text-xl font-bold">Phase 1: Experimentation</h3><p class="text-gray-600">Post 3-4 Reels/week. Test all three AI archetypes. Analyze KPIs (Watch Time, Shares) to identify the single most resonant format for the Lucknow audience.</p>
+                </div>
+                <div class="mb-8 pl-12 relative">
+                    <div class="absolute w-6 h-6 bg-teal-500 rounded-full -left-3 top-1 border-4 border-white"></div>
+                    <p class="text-sm font-bold text-teal-600">DAYS 31-60</p><h3 class="text-xl font-bold">Phase 2: Double Down</h3><p class="text-gray-600">Post 5-7 Reels/week. Develop your winning format into a recurring series with familiar characters or themes. Build audience anticipation.</p>
+                </div>
+                <div class="pl-12 relative">
+                    <div class="absolute w-6 h-6 bg-teal-500 rounded-full -left-3 top-1 border-4 border-white"></div>
+                    <p class="text-sm font-bold text-teal-600">DAYS 61-90</p><h3 class="text-xl font-bold">Phase 3: Community & Collaboration</h3><p class="text-gray-600">Solidify your base. Launch a Broadcast Channel for superfans. Collaborate with another Lucknow creator to cross-promote and expand your reach.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-24 mb-8"><p class="text-gray-500">Infographic generated from "The AI Virality Code" strategic report.</p></footer>
+
+    </div>
+
+    <script>
+        const chartTooltipCallback = { plugins: { tooltip: { callbacks: { title: function(tooltipItems) { const item = tooltipItems[0]; let label = item.chart.data.labels[item.dataIndex]; if (Array.isArray(label)) { return label.join(' '); } return label; } } }, legend: { labels: { font: { family: 'Inter' } } } }, maintainAspectRatio: false, responsive: true, };
+        const palette = { red: '#F94144', orange: '#F3722C', yellow: '#F9C74F', green: '#90BE6D', blue: '#43AA8B', darkBlue: '#577590' };
+        new Chart(document.getElementById('engagementHierarchyChart').getContext('2d'), { type: 'bar', data: { labels: ['Sends / Shares', 'Watch Time', 'Saves', 'Comments', 'Likes'], datasets: [{ label: 'Relative Importance for Virality', data: [100, 95, 70, 60, 30], backgroundColor: [palette.red, palette.orange, palette.yellow, palette.green, palette.blue], borderWidth: 2 }] }, options: { ...chartTooltipCallback, indexAxis: 'y', plugins: { ...chartTooltipCallback.plugins, legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { font: { family: 'Inter' } } }, y: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 14 } } } } } });
+        new Chart(document.getElementById('hashtagChart').getContext('2d'), { type: 'doughnut', data: { labels: ['Niche-Specific (7)', 'Geo-Specific (5)', 'Broad/Trending (3)'], datasets: [{ label: 'Hashtag Count', data: [7, 5, 3], backgroundColor: [palette.orange, palette.green, palette.darkBlue], hoverOffset: 4 }] }, options: chartTooltipCallback });
+        new Chart(document.getElementById('postingTimesChart').getContext('2d'), { type: 'radar', data: { labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], datasets: [{ label: 'Prime Time Engagement (Evening)', data: [8, 9, 9, 9.5, 9, 8.5, 8], fill: true, backgroundColor: 'rgba(243, 114, 44, 0.2)', borderColor: palette.orange, pointBackgroundColor: palette.orange, pointBorderColor: '#fff' }, { label: 'Secondary Slot Engagement (Midday)', data: [4, 6, 5, 6, 7, 7, 6.5], fill: true, backgroundColor: 'rgba(87, 117, 144, 0.2)', borderColor: palette.darkBlue, pointBackgroundColor: palette.darkBlue, pointBorderColor: '#fff' }] }, options: { ...chartTooltipCallback, scales: { r: { angleLines: { color: 'rgba(0, 0, 0, 0.1)' }, grid: { color: 'rgba(0, 0, 0, 0.1)' }, pointLabels: { font: { family: 'Inter', size: 12 } }, ticks: { backdropColor: 'rgba(255, 255, 255, 0.75)', color: '#666' } } } } });
+        
+        const API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+        const API_KEY = "";
+
+        async function callGemini(prompt, isJson = false) {
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                safetySettings: [
+                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+                ]
+            };
+
+            if (isJson) {
+                payload.generationConfig = {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            niche_hashtags: { type: "ARRAY", items: { type: "STRING" } },
+                            geo_hashtags: { type: "ARRAY", items: { type: "STRING" } },
+                            broad_hashtags: { type: "ARRAY", items: { type: "STRING" } }
+                        },
+                        required: ["niche_hashtags", "geo_hashtags", "broad_hashtags"]
+                    }
+                };
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}?key=${API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) {
+                    let errorMsg = `API Error: ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        errorMsg = errorData.error?.message || JSON.stringify(errorData);
+                    } catch (e) {
+                       // The response was not JSON, which can happen.
+                       // The default error message is fine.
+                    }
+                    throw new Error(errorMsg);
+                }
+                const result = await response.json();
+                if (result.candidates?.[0]?.content?.parts?.[0]) {
+                    return result.candidates[0].content.parts[0].text;
+                }
+                console.error("Unexpected API response structure:", result);
+                return "Sorry, I couldn't generate a response. Please check the console for details.";
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                return `Sorry, an error occurred: ${error.message}. Please try again later.`;
+            }
+        }
+
+        function setElementContent(elementId, content) {
+            const element = document.getElementById(elementId);
+            if (element) { element.innerHTML = content; }
+        }
+
+        document.getElementById('generate-podcast').addEventListener('click', async () => {
+            setElementContent('podcast-result', '<div class="loader"></div>');
+            const prompt = "Generate a funny, short Instagram Reel script idea (under 60 words) for a 'Talking Animal Podcast' in Lucknow. Feature two animals discussing a hyper-local Lucknow topic with Lakhnawi humor. Format as: **Title:** [Title]\n**Scene:** [Scene]\n**Dialogue:** [Dialogue]";
+            const response = await callGemini(prompt);
+            setElementContent('podcast-result', response.replace(/\n/g, '<br>'));
+        });
+
+        document.getElementById('generate-roast').addEventListener('click', async () => {
+            setElementContent('roast-result', '<div class="loader"></div>');
+            const prompt = "Generate a short, satirical roast (under 60 words) about a common archetype in Hazratganj, Lucknow. The tone should be lighthearted and relatable for locals. Format as: **Target:** [Who/What you are roasting]\n**Roast:** [The roast]";
+            const response = await callGemini(prompt);
+            setElementContent('roast-result', response.replace(/\n/g, '<br>'));
+        });
+
+        document.getElementById('generate-myth').addEventListener('click', async () => {
+            setElementContent('myth-result', '<div class="loader"></div>');
+            const prompt = "Generate a short script (under 60 words) for an Instagram Reel debunking a common myth about the Bara Imambara in Lucknow. Make it engaging and educational. Format as: **Myth:** [The myth]\n**Reality:** [The reality]";
+            const response = await callGemini(prompt);
+            setElementContent('myth-result', response.replace(/\n/g, '<br>'));
+        });
+
+        document.getElementById('generate-hashtags').addEventListener('click', async () => {
+            const topic = document.getElementById('hashtag-topic').value;
+            if (!topic) { alert('Please enter a video topic first.'); return; }
+            const container = document.getElementById('hashtag-result-container');
+            container.innerHTML = '<div class="loader"></div>';
+            const prompt = `Based on the video topic "${topic}", generate a balanced set of 15 Instagram hashtags for a Lucknow audience. Provide 7 niche-specific hashtags, 5 geo-specific hashtags for Lucknow, and 3 broad, trending hashtags.`;
+            const jsonResponse = await callGemini(prompt, true);
+            try {
+                const data = JSON.parse(jsonResponse);
+                const allHashtags = [...data.niche_hashtags, ...data.geo_hashtags, ...data.broad_hashtags];
+                const hashtagString = allHashtags.map(h => `#${h.replace(/ /g, '')}`).join(' ');
+                const html = `<div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left"><div><h4 class="font-bold text-lg text-orange-600">Niche</h4><p class="text-sm text-gray-600">${data.niche_hashtags.map(h => `#${h}`).join(' ')}</p></div><div><h4 class="font-bold text-lg text-green-600">Geo-Specific</h4><p class="text-sm text-gray-600">${data.geo_hashtags.map(h => `#${h}`).join(' ')}</p></div><div><h4 class="font-bold text-lg text-blue-600">Broad</h4><p class="text-sm text-gray-600">${data.broad_hashtags.map(h => `#${h}`).join(' ')}</p></div></div><div class="mt-6"><textarea id="hashtag-clipboard" class="absolute -left-full">${hashtagString}</textarea><button id="copy-hashtags-btn" class="bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-900 transition-colors">Copy All Hashtags</button><p id="copy-feedback" class="text-sm text-green-600 mt-2 h-4"></p></div>`;
+                container.innerHTML = html;
+                document.getElementById('copy-hashtags-btn').addEventListener('click', () => {
+                    document.getElementById('hashtag-clipboard').select();
+                    document.execCommand('copy');
+                    const feedback = document.getElementById('copy-feedback');
+                    feedback.textContent = 'Copied to clipboard!';
+                    setTimeout(() => { feedback.textContent = ''; }, 2000);
+                });
+            } catch(e) {
+                 container.innerHTML = `<p class="text-red-500">Sorry, there was an issue processing the hashtag data. Please try again.</p><p class="text-xs text-gray-400 mt-2">Raw response: ${jsonResponse}</p>`;
+                 console.error("Failed to parse hashtag JSON", e);
+            }
+        });
+
+        document.getElementById('analyze-trend').addEventListener('click', async () => {
+            const topic = document.getElementById('trend-topic').value;
+            if (!topic) { alert('Please enter a video topic first.'); return; }
+            const container = document.getElementById('trend-result-container');
+            container.innerHTML = '<div class="loader mx-auto"></div>';
+            const prompt = `Act as a social media trend analyst for Lucknow, India. Analyze the following Instagram Reel topic: "${topic}".
+            Provide a detailed analysis in the following format, using markdown for bolding:
+            **Virality Potential:** [Give a score from 1-10]
+            **Analysis:** [Briefly explain why you gave that score, considering the local Lucknowi audience.]
+            **Viral Hooks (First 3 Seconds):**
+            1. [A punchy, engaging hook]
+            2. [A second, different hook]
+            3. [A third, visual or question-based hook]
+            **Audio Recommendations:**
+            * [Suggest a type of trending audio, e.g., 'Upbeat regional pop song']
+            * [Suggest another type, e.g., 'A funny, relatable dialogue audio']`;
+            const response = await callGemini(prompt);
+            const formattedResponse = response
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900">$1</strong>')
+                .replace(/\n/g, '<br>');
+            setElementContent('trend-result-container', `<div class="p-4 bg-gray-50 rounded-lg text-gray-700 text-sm">${formattedResponse}</div>`);
+        });
+
+    </script>
+</body>
+</html>
