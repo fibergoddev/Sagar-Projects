@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Launcher | Developed by Sagar Raj</title>
+    <style>
+        /* * Designed & Developed by Sagar Raj
+         * This CSS is crafted to be modern, animated, and professional.
+         */
+
+        /* Using a modern font from Google Fonts for a clean look */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #cccccc;
+            --background-start: #121212;
+            --background-end: #2c3e50;
+            --accent-color-start: #8e44ad;
+            --accent-color-end: #3498db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* Prevents scrollbars from appearing */
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-start);
+        }
+
+        /* The main container for the splash screen */
+        #splash-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: linear-gradient(-45deg, var(--background-end), var(--background-start), #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: 100;
+            transition: opacity 1s ease-out;
+            opacity: 1;
+        }
+
+        /* Keyframe animation for the background gradient */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .content-wrapper {
+            text-align: center;
+            color: var(--primary-color);
+            transform: translateY(-20px); /* Initial state for animation */
+            opacity: 0; /* Initial state for animation */
+            animation: fadeInContent 1.5s ease-out 0.5s forwards;
+        }
+        
+        @keyframes fadeInContent {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: var(--secondary-color);
+            margin-top: 10px;
+            margin-bottom: 40px;
+        }
+
+        /* The main call-to-action button */
+        .launch-button {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end));
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .launch-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .launch-button:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* A subtle shine effect on button hover */
+        .launch-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .launch-button:hover::before {
+            left: 100%;
+        }
+
+        .footer-note {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            opacity: 0.7;
+        }
+        
+        .footer-note a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Class to fade out the splash screen */
+        .hidden {
+            opacity: 0;
+            pointer-events: none; /* Disables interaction during fade-out */
+        }
+
+        /* The iframe that will hold the target website */
+        #website-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 50;
+            opacity: 0; /* Hidden initially */
+            transition: opacity 1s ease-in 0.5s; /* Fade in after splash fades out */
+        }
+        
+        /* Media query for smaller screens */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Splash Screen Section -->
+    <div id="splash-screen">
+        <div class="content-wrapper">
+            <h1 class="title">Welcome</h1>
+            <p class="subtitle">More features are coming soon. Click below to proceed.</p>
+            <button id="launch-button" class="launch-button">Enter Site</button>
+        </div>
+        <div class="footer-note">
+            <p>Developed with ❤️ by <a href="#" target="_blank">Sagar Raj</a></p>
+        </div>
+    </div>
+
+    <!-- Iframe for the Website -->
+    <!-- IMPORTANT: Change the src attribute below to the website you want to load -->
+    <iframe id="website-frame" src="https://www.google.com/webhp?igu=1" title="Embedded Website"></iframe>
+
+    <script>
+        // This JavaScript handles the transition from the splash screen to the website.
+
+        // Get references to the HTML elements
+        const splashScreen = document.getElementById('splash-screen');
+        const launchButton = document.getElementById('launch-button');
+        const websiteFrame = document.getElementById('website-frame');
+
+        // Add a click event listener to the button
+        launchButton.addEventListener('click', () => {
+            // 1. Add the 'hidden' class to start the fade-out animation on the splash screen
+            splashScreen.classList.add('hidden');
+
+            // 2. Make the iframe visible by setting its opacity to 1.
+            // The CSS transition will handle the fade-in effect.
+            websiteFrame.style.opacity = '1';
+
+            // 3. (Optional) To completely remove the splash screen from the DOM after the animation,
+            // you can use a setTimeout that matches the animation duration.
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+            }, 1000); // 1000ms = 1s, matching the CSS transition duration
+        });
+    </script>
+
+</body>
+</html>
