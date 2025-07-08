@@ -19,6 +19,7 @@
             --background-end: #2c3e50;
             --accent-color-start: #8e44ad;
             --accent-color-end: #3498db;
+            --ad-banner-height: 50px; /* Height of the ad banner */
         }
 
         * {
@@ -30,7 +31,7 @@
         html, body {
             height: 100%;
             width: 100%;
-            overflow: hidden; /* Prevents scrollbars from appearing */
+            overflow: hidden; /* Prevents scrollbars */
             font-family: 'Poppins', sans-serif;
             background-color: var(--background-start);
         }
@@ -63,8 +64,8 @@
         .content-wrapper {
             text-align: center;
             color: var(--primary-color);
-            transform: translateY(-20px); /* Initial state for animation */
-            opacity: 0; /* Initial state for animation */
+            transform: translateY(-20px);
+            opacity: 0;
             animation: fadeInContent 1.5s ease-out 0.5s forwards;
         }
         
@@ -114,8 +115,7 @@
         .launch-button:active {
             transform: translateY(-2px) scale(1.02);
         }
-
-        /* A subtle shine effect on button hover */
+        
         .launch-button::before {
             content: '';
             position: absolute;
@@ -159,13 +159,29 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            /* Adjust height to leave space for the ad banner */
+            height: calc(100% - var(--ad-banner-height)); 
             border: none;
             z-index: 50;
             opacity: 0; /* Hidden initially */
             transition: opacity 1s ease-in 0.5s; /* Fade in after splash fades out */
         }
         
+        /* Ad Banner Styling */
+        #ad-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--ad-banner-height);
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 60; /* Above the iframe but below the splash */
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+        }
+
         /* Media query for smaller screens */
         @media (max-width: 768px) {
             .title {
@@ -182,9 +198,10 @@
     <!-- Splash Screen Section -->
     <div id="splash-screen">
         <div class="content-wrapper">
-            <h1 class="title">Welcome</h1>
-            <p class="subtitle">More features are coming soon. Click below to proceed.</p>
-            <button id="launch-button" class="launch-button">Enter Site</button>
+            <h1 class="title">Welcome Back</h1>
+            <p class="subtitle" id="action-subtitle">Checking your status...</p>
+            <!-- Button will be dynamically inserted here by JavaScript -->
+            <div id="button-container"></div>
         </div>
         <div class="footer-note">
             <p>Developed with ❤️ by <a href="#" target="_blank">Sagar Raj</a></p>
@@ -192,32 +209,99 @@
     </div>
 
     <!-- Iframe for the Website -->
-    <!-- IMPORTANT: Change the src attribute below to the website you want to load -->
-    <iframe id="website-frame" src="https://rolexcoderz.live/36xsuccess/" title="Embedded Website"></iframe>
+    <iframe id="website-frame" src="" title="Embedded Website"></iframe>
+
+    <!-- Ad Banner at the bottom -->
+    <div id="ad-banner">
+        <!-- Exact ad script as provided by the user -->
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '7f09cc75a479e1c1557ae48261980b12',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"></script>
+    </div>
 
     <script>
-        // This JavaScript handles the transition from the splash screen to the website.
+        // Advanced JavaScript for login logic and UI control
 
-        // Get references to the HTML elements
+        // URLs for the websites
+        const loginUrl = 'https://rolexcoderz.live/36xsuccess/';
+        const studyUrl = 'https://rolexcoderz.live/';
+
+        // DOM element references
         const splashScreen = document.getElementById('splash-screen');
-        const launchButton = document.getElementById('launch-button');
         const websiteFrame = document.getElementById('website-frame');
+        const buttonContainer = document.getElementById('button-container');
+        const actionSubtitle = document.getElementById('action-subtitle');
+        
+        // Key for storing login timestamp in localStorage
+        const loginTimestampKey = 'sagarRajLoginTimestamp';
 
-        // Add a click event listener to the button
-        launchButton.addEventListener('click', () => {
-            // 1. Add the 'hidden' class to start the fade-out animation on the splash screen
+        // Function to check if the user has a valid login within the last 24 hours
+        const checkLoginStatus = () => {
+            const lastLogin = localStorage.getItem(loginTimestampKey);
+            if (!lastLogin) {
+                return false; // Not logged in
+            }
+            const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+            const timeSinceLogin = Date.now() - parseInt(lastLogin, 10);
+            
+            return timeSinceLogin < twentyFourHours;
+        };
+
+        // Function to create and append the correct button
+        const setupButton = (isLoggedIn) => {
+            const button = document.createElement('button');
+            button.classList.add('launch-button');
+
+            if (isLoggedIn) {
+                button.id = 'continue-button';
+                button.textContent = 'Continue Study';
+                actionSubtitle.textContent = 'You are already logged in. Continue where you left off.';
+                button.addEventListener('click', () => launchSite(studyUrl, false));
+            } else {
+                button.id = 'login-button';
+                button.textContent = 'Login for 24 Hours';
+                actionSubtitle.textContent = 'Login to access the platform.';
+                button.addEventListener('click', () => launchSite(loginUrl, true));
+            }
+            
+            buttonContainer.appendChild(button);
+        };
+
+        // Function to launch the site
+        const launchSite = (url, setLoginTimestamp) => {
+            if (setLoginTimestamp) {
+                // Set the current time as the login timestamp in localStorage
+                localStorage.setItem(loginTimestampKey, Date.now().toString());
+            }
+
+            // Set the iframe source
+            websiteFrame.src = url;
+
+            // Fade out splash screen and fade in the website
             splashScreen.classList.add('hidden');
-
-            // 2. Make the iframe visible by setting its opacity to 1.
-            // The CSS transition will handle the fade-in effect.
             websiteFrame.style.opacity = '1';
 
-            // 3. (Optional) To completely remove the splash screen from the DOM after the animation,
-            // you can use a setTimeout that matches the animation duration.
             setTimeout(() => {
                 splashScreen.style.display = 'none';
-            }, 1000); // 1000ms = 1s, matching the CSS transition duration
-        });
+            }, 1000); // Match CSS transition
+        };
+
+        // Main function to run on page load
+        const initialize = () => {
+            const isLoggedIn = checkLoginStatus();
+            setupButton(isLoggedIn);
+        };
+
+        // Run the initialization logic when the window has loaded
+        window.onload = initialize;
+
     </script>
 
 </body>
