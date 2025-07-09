@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Definitive Intelligent Launcher | Developed by Sagar Raj</title>
+    <title>Multi-View Interactive Launcher | Developed by Sagar Raj</title>
     <style>
         /* * Designed & Developed by Sagar Raj
-         * Version 12: Definitive Edition with Restored Login Logic & UI Perfection
+         * Version 13: Multi-View Architecture with Profile Page & Camera
          */
 
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -90,7 +90,6 @@
         .support-button { background: transparent; border: 2px solid var(--primary-color); }
         .footer-note { position: absolute; bottom: 20px; width: 100%; text-align: center; font-size: 0.9rem; color: var(--secondary-color); opacity: 0.7; }
         
-        /* --- Support Page --- */
         #support-page .content-wrapper { opacity: 1; }
         #ad-grid { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 25px; padding: 20px; max-width: 1000px; margin: 20px 0; }
         .ad-slot { background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
@@ -98,50 +97,37 @@
         .ad-slot-300x250 { width: 300px; height: 250px; }
         .ad-slot-container-div { width: auto; height: auto; }
 
-        /* --- Main App Structure --- */
         #iframe-container { position: fixed; top: 0; left: 0; width: 100%; height: calc(100% - var(--ad-banner-height)); z-index: 50; touch-action: pan-y; }
         #website-frame { width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 1s ease-in 0.5s; }
         #ad-banner { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--ad-banner-height); background-color: #1a1a1a; display: flex; justify-content: center; align-items: center; z-index: 60; box-shadow: 0 -2px 10px rgba(0,0,0,0.5); }
 
-        /* --- Floating Action Buttons --- */
         #fab-container { position: fixed; bottom: calc(var(--ad-banner-height) + 20px); right: 20px; z-index: 150; display: flex; flex-direction: column; gap: 15px; transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
         .fab { width: 60px; height: 60px; background: linear-gradient(45deg, var(--accent-color-start), var(--accent-color-end)); border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; color: white; font-size: 22px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: scale(0); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease; }
         .fab:hover { filter: brightness(1.2); transform: scale(1.1) !important; }
         #fab-container.inactive { opacity: 0; transform: translateX(50px); pointer-events: none; }
 
-        /* --- Interstitial Ad Modal --- */
-        #interstitial-ad-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 400; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
-        #interstitial-ad-modal.visible { opacity: 1; pointer-events: all; }
-        .ad-modal-content { background: var(--background-start); padding: 20px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(255,255,255,0.1); }
-        #interstitial-ad-modal.visible .ad-modal-content { transform: scale(1); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 400; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+        .modal-overlay.visible { opacity: 1; pointer-events: all; }
+        .modal-content { background: var(--background-start); padding: 30px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(255,255,255,0.1); }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
         #interstitial-ad-container { width: 300px; height: 250px; margin: 0 auto 20px auto; background: #000; border-radius: 8px; overflow: hidden; }
         #interstitial-ad-container iframe { width: 100%; height: 100%; border: 0; }
         #skip-ad-button { padding: 10px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
         #skip-ad-button:disabled { background-color: #555; color: #999; cursor: not-allowed; opacity: 0.7; }
         #skip-ad-button:enabled { background: var(--success-color); color: white; }
 
-        /* --- Top Right Menu --- */
+        #user-info-modal .modal-content { width: 90%; max-width: 400px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #555; background: #333; color: white; font-size: 1rem; }
+        
         #top-menu-button { position: fixed; top: 20px; right: 20px; z-index: 160; width: 40px; height: 40px; background: var(--glass-bg); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; color: white; font-size: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
         #top-menu-dropdown { position: fixed; top: 70px; right: 20px; z-index: 159; background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 10px; overflow: hidden; transform: scaleY(0); transform-origin: top; transition: transform 0.3s ease; }
         #top-menu-dropdown.visible { transform: scaleY(1); }
-        .menu-item { padding: 15px 25px; color: white; cursor: pointer; transition: background 0.2s; }
+        .menu-item { padding: 15px 25px; color: white; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 10px; }
         .menu-item:hover { background: rgba(255,255,255,0.1); }
 
-        /* --- Floating Calculator --- */
-        #calculator {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            z-index: 170;
-            width: 280px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+        #calculator { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 170; width: 280px; background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
         #calculator.visible { transform: translate(-50%, -50%) scale(1); }
         #calc-header { padding: 10px; background: rgba(0,0,0,0.2); cursor: move; display: flex; justify-content: space-between; align-items: center; }
         #calc-close-btn { width: 20px; height: 20px; background: var(--danger-color); color: white; border: none; border-radius: 50%; cursor: pointer; }
@@ -204,12 +190,33 @@
         </div>
     </div>
 
-    <!-- Interstitial Ad Modal -->
-    <div id="interstitial-ad-modal">
-        <div class="ad-modal-content">
+    <!-- Modals -->
+    <div id="interstitial-ad-modal" class="modal-overlay">
+        <div class="modal-content">
             <p style="margin-bottom: 10px; font-size: 0.9rem; color: var(--secondary-color);">Please support us by watching this ad</p>
             <div id="interstitial-ad-container"></div>
             <button id="skip-ad-button" disabled>Skip Ad in <span id="ad-timer">4</span>s</button>
+        </div>
+    </div>
+    <div id="user-info-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="title" style="font-size: 2rem; margin-bottom: 20px;">Welcome!</h2>
+            <p class="subtitle" style="margin-top: 0;">Please tell us a bit about yourself.</p>
+            <form id="user-info-form">
+                <div class="form-group">
+                    <label for="user-name">Name</label>
+                    <input type="text" id="user-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-class">Class</label>
+                    <input type="text" id="user-class" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-age">Age</label>
+                    <input type="number" id="user-age" required>
+                </div>
+                <button type="submit" class="styled-button" style="width: 100%;">Save & Continue</button>
+            </form>
         </div>
     </div>
 
@@ -232,7 +239,8 @@
 
     <button id="top-menu-button"><i class="fas fa-ellipsis-v"></i></button>
     <div id="top-menu-dropdown">
-        <div class="menu-item" id="show-calculator-btn">Show Calculator</div>
+        <div class="menu-item" id="profile-menu-btn"><i class="fas fa-user-circle"></i> Profile</div>
+        <div class="menu-item" id="show-calculator-btn"><i class="fas fa-calculator"></i> Calculator</div>
     </div>
 
     <div id="calculator">
@@ -259,13 +267,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- CONFIGURATION ---
             const loginUrl = 'https://rolexcoderz.live/36xsuccess/';
             const studyUrl = 'https://www.rolexcoderz.xyz/Course';
             const mainProjectsUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/padhai.html';
             const loginTimestampKey = 'sagarRajLoginTimestamp';
+            const userInfoKey = 'sagarRajUserInfo';
 
-            // --- DOM REFERENCES ---
             const allDOMElements = {
                 splashScreen: document.getElementById('splash-screen'),
                 supportPage: document.getElementById('support-page'),
@@ -283,8 +290,11 @@
                 interstitialAdContainer: document.getElementById('interstitial-ad-container'),
                 skipAdButton: document.getElementById('skip-ad-button'),
                 adTimerSpan: document.getElementById('ad-timer'),
+                userInfoModal: document.getElementById('user-info-modal'),
+                userInfoForm: document.getElementById('user-info-form'),
                 topMenuButton: document.getElementById('top-menu-button'),
                 topMenuDropdown: document.getElementById('top-menu-dropdown'),
+                profileMenuBtn: document.getElementById('profile-menu-btn'),
                 showCalculatorBtn: document.getElementById('show-calculator-btn'),
                 calculator: document.getElementById('calculator'),
                 calcHeader: document.getElementById('calc-header'),
@@ -293,30 +303,31 @@
                 calcDisplay: document.getElementById('calc-display')
             };
             const { fabContainer, websiteFrame, splashScreen, supportPage, homeFab, scrollTopFab } = allDOMElements;
-
-            // --- STATE & TIMERS ---
             let fabHideTimeout;
 
-            // --- FUNCTIONS ---
             const checkLoginStatus = () => {
                 const lastLogin = localStorage.getItem(loginTimestampKey);
                 if (!lastLogin) return false;
                 const twentyFourHours = 24 * 60 * 60 * 1000;
                 return (Date.now() - parseInt(lastLogin, 10)) < twentyFourHours;
             };
-            
+
             const launchSite = (url, setLoginTimestamp) => {
-                if (setLoginTimestamp) {
-                    localStorage.setItem(loginTimestampKey, Date.now().toString());
-                }
+                if (setLoginTimestamp) localStorage.setItem(loginTimestampKey, Date.now().toString());
                 websiteFrame.src = url;
                 splashScreen.classList.add('hidden');
                 supportPage.classList.add('hidden');
                 websiteFrame.style.opacity = '1';
-
                 homeFab.style.display = 'flex';
+                // Only show scroll-to-top button on the study page
+                if (url === studyUrl) {
+                    scrollTopFab.style.display = 'flex';
+                } else {
+                    scrollTopFab.style.display = 'none';
+                }
                 setTimeout(() => {
                     homeFab.style.transform = 'scale(1)';
+                    if (url === studyUrl) scrollTopFab.style.transform = 'scale(1)';
                     resetFabVisibility();
                 }, 100);
             };
@@ -325,25 +336,20 @@
                 const { interstitialAdModal, interstitialAdContainer, skipAdButton, adTimerSpan } = allDOMElements;
                 interstitialAdModal.classList.add('visible');
                 interstitialAdContainer.innerHTML = '';
-                
                 const adIframe = document.createElement('iframe');
                 interstitialAdContainer.appendChild(adIframe);
-                
                 const adScriptContent = `
                     <script type="text/javascript">
                         atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
                     <\/script>
                     <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>
                 `;
-                
                 adIframe.contentWindow.document.open();
                 adIframe.contentWindow.document.write(adScriptContent);
                 adIframe.contentWindow.document.close();
-
                 let timeLeft = 4;
                 adTimerSpan.textContent = timeLeft;
                 skipAdButton.disabled = true;
-
                 const timerInterval = setInterval(() => {
                     timeLeft--;
                     adTimerSpan.textContent = timeLeft;
@@ -353,7 +359,6 @@
                         skipAdButton.textContent = 'Skip Ad';
                     }
                 }, 1000);
-
                 skipAdButton.onclick = () => {
                     if (skipAdButton.disabled) return;
                     interstitialAdModal.classList.remove('visible');
@@ -367,10 +372,9 @@
                 const { loginButtonContainer, actionSubtitle, loaderContainer, mainContent } = allDOMElements;
                 const button = document.createElement('button');
                 button.classList.add('styled-button');
-
                 if (isLoggedIn) {
                     button.textContent = 'Continue Study';
-                    actionSubtitle.textContent = 'You are logged in. Continue where you left off.';
+                    actionSubtitle.textContent = 'You are logged in. Welcome back!';
                     button.addEventListener('click', () => showInterstitialAd(studyUrl, false));
                 } else {
                     button.textContent = 'Login for 24 Hours';
@@ -394,8 +398,7 @@
             const makeDraggable = (elmnt) => {
                 let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
                 const header = allDOMElements.calcHeader;
-                header.onmousedown = dragMouseDown;
-
+                if(header) header.onmousedown = dragMouseDown;
                 function dragMouseDown(e) {
                     e = e || window.event;
                     e.preventDefault();
@@ -404,7 +407,6 @@
                     document.onmouseup = closeDragElement;
                     document.onmousemove = elementDrag;
                 }
-
                 function elementDrag(e) {
                     e = e || window.event;
                     e.preventDefault();
@@ -415,7 +417,6 @@
                     elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
                     elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
                 }
-
                 function closeDragElement() {
                     document.onmouseup = null;
                     document.onmousemove = null;
@@ -428,37 +429,153 @@
                     if (!e.target.matches('.calc-btn')) return;
                     const key = e.target.textContent;
                     const displayedNum = calcDisplay.value;
-
-                    if (key === 'C') {
-                        calcDisplay.value = '';
-                    } else if (key === 'DEL') {
-                        calcDisplay.value = displayedNum.slice(0, -1);
-                    } else if (key === '=') {
-                        try {
-                            calcDisplay.value = eval(displayedNum.replace(/[^-()\d/*+.]/g, ''));
-                        } catch {
-                            calcDisplay.value = 'Error';
-                        }
-                    } else {
-                        calcDisplay.value += key;
-                    }
+                    if (key === 'C') calcDisplay.value = '';
+                    else if (key === 'DEL') calcDisplay.value = displayedNum.slice(0, -1);
+                    else if (key === '=') {
+                        try { calcDisplay.value = eval(displayedNum.replace(/[^-()\d/*+.]/g, '')); } catch { calcDisplay.value = 'Error'; }
+                    } else calcDisplay.value += key;
                 });
             };
 
-            // --- EVENT LISTENERS ---
+            const checkForUserInfo = () => {
+                if (!localStorage.getItem(userInfoKey)) {
+                    allDOMElements.userInfoModal.classList.add('visible');
+                } else {
+                    setupUI(checkLoginStatus());
+                }
+            };
+
+            const navigateToProfile = () => {
+                const profilePageHTML = `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>User Profile | Developed by Sagar Raj</title>
+                        <style>
+                            /* Inlined CSS for Profile Page */
+                            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
+                            @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css');
+                            :root { --primary-color: #ffffff; --secondary-color: #cccccc; --background-start: #121212; --background-end: #2c3e50; --accent-color-start: #8e44ad; --accent-color-end: #3498db; --glass-bg: rgba(30, 30, 30, 0.6); }
+                            body { font-family: 'Poppins', sans-serif; background: linear-gradient(-45deg, var(--background-end), var(--background-start), #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--primary-color); margin: 0; padding: 20px; }
+                            @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+                            .profile-container { max-width: 1200px; margin: auto; }
+                            .profile-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; margin-bottom: 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+                            .glitch-text { font-family: 'Roboto Mono', monospace; font-size: 2.5rem; font-weight: 700; position: relative; color: var(--primary-color); }
+                            .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+                            .glitch-text::before { left: 2px; text-shadow: -1px 0 #ff00c1; animation: glitch-anim-1 2.5s infinite linear reverse; }
+                            .glitch-text::after { left: -2px; text-shadow: -1px 0 #00fff9, 1px 1px #e400ff; animation: glitch-anim-2 2.5s infinite linear reverse; }
+                            @keyframes glitch-anim-1 { 0% { clip-path: inset(10% 0 85% 0); } 20% { clip-path: inset(80% 0 5% 0); } 40% { clip-path: inset(5% 0 90% 0); } 60% { clip-path: inset(70% 0 15% 0); } 80% { clip-path: inset(40% 0 55% 0); } 100% { clip-path: inset(10% 0 85% 0); } }
+                            @keyframes glitch-anim-2 { 0% { clip-path: inset(80% 0 5% 0); } 20% { clip-path: inset(5% 0 90% 0); } 40% { clip-path: inset(70% 0 15% 0); } 60% { clip-path: inset(40% 0 55% 0); } 80% { clip-path: inset(10% 0 85% 0); } 100% { clip-path: inset(80% 0 5% 0); } }
+                            .back-button { color: var(--primary-color); text-decoration: none; background: var(--glass-bg); padding: 10px 20px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; backdrop-filter: blur(5px); }
+                            .back-button:hover { background: var(--primary-color); color: var(--background-start); box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
+                            .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+                            .profile-card { background: var(--glass-bg); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); overflow: hidden; }
+                            .card-header { display: flex; align-items: center; gap: 15px; padding: 20px; background: rgba(0, 0, 0, 0.2); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+                            .card-header i { font-size: 1.5rem; color: var(--accent-color-end); }
+                            .card-header h3 { margin: 0; font-size: 1.2rem; }
+                            .card-content { padding: 25px; font-size: 1rem; }
+                            .info-card p { margin-bottom: 15px; }
+                            .info-card strong { color: var(--secondary-color); margin-right: 10px; }
+                            #camera-container { width: 100%; aspect-ratio: 4 / 3; background: #000; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+                            #camera-feed { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: none; }
+                            #camera-placeholder { color: var(--secondary-color); padding: 20px; }
+                            .styled-button { width: 100%; padding: 15px; font-size: 1rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px; }
+                            .styled-button:hover { box-shadow: 0 0 20px var(--accent-color-end); }
+                            .styled-button:disabled { background: #555; cursor: not-allowed; box-shadow: none; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="profile-container">
+                            <div class="profile-header">
+                                <h1 class="glitch-text" data-text="User Profile">User Profile</h1>
+                                <a href="javascript:history.back()" class="back-button"><i class="fas fa-arrow-left"></i> Back to App</a>
+                            </div>
+                            <div class="profile-grid">
+                                <div class="profile-card info-card">
+                                    <div class="card-header"><i class="fas fa-user-tie"></i><h3>Your Info</h3></div>
+                                    <div class="card-content">
+                                        <p><strong>Name:</strong> <span id="info-name"></span></p>
+                                        <p><strong>Class:</strong> <span id="info-class"></span></p>
+                                        <p><strong>Age:</strong> <span id="info-age"></span></p>
+                                    </div>
+                                </div>
+                                <div class="profile-card camera-card">
+                                    <div class="card-header"><i class="fas fa-camera-retro"></i><h3>Style Cam</h3></div>
+                                    <div class="card-content">
+                                        <div id="camera-container">
+                                            <video id="camera-feed" autoplay playsinline></video>
+                                            <p id="camera-placeholder">Click below to activate your Style Cam!</p>
+                                        </div>
+                                        <button id="activate-camera-btn" class="styled-button"><i class="fas fa-power-off"></i> Activate Camera</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const userInfoKey = 'sagarRajUserInfo';
+                                const infoName = document.getElementById('info-name');
+                                const infoClass = document.getElementById('info-class');
+                                const infoAge = document.getElementById('info-age');
+                                const activateCameraBtn = document.getElementById('activate-camera-btn');
+                                const cameraFeed = document.getElementById('camera-feed');
+                                const cameraPlaceholder = document.getElementById('camera-placeholder');
+                                const storedInfo = localStorage.getItem(userInfoKey);
+                                if (storedInfo) {
+                                    const userInfo = JSON.parse(storedInfo);
+                                    infoName.textContent = userInfo.name || 'Not Set';
+                                    infoClass.textContent = userInfo.class || 'Not Set';
+                                    infoAge.textContent = userInfo.age || 'Not Set';
+                                }
+                                activateCameraBtn.addEventListener('click', async () => {
+                                    if (!('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices)) { alert('Camera API is not available in your browser.'); return; }
+                                    try {
+                                        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                                        cameraFeed.srcObject = stream;
+                                        cameraPlaceholder.style.display = 'none';
+                                        cameraFeed.style.display = 'block';
+                                        activateCameraBtn.textContent = 'Camera Active';
+                                        activateCameraBtn.disabled = true;
+                                    } catch (err) { cameraPlaceholder.textContent = \`Error: \${err.name}. Please grant camera permission.\`; }
+                                });
+                            });
+                        <\/script>
+                    </body>
+                    </html>
+                `;
+                window.location.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(profilePageHTML);
+            };
+
+            allDOMElements.userInfoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const userInfo = {
+                    name: document.getElementById('user-name').value,
+                    class: document.getElementById('user-class').value,
+                    age: document.getElementById('user-age').value,
+                };
+                localStorage.setItem(userInfoKey, JSON.stringify(userInfo));
+                allDOMElements.userInfoModal.classList.remove('visible');
+                setupUI(checkLoginStatus());
+            });
+
             allDOMElements.showSupportPageBtn.addEventListener('click', () => {
                 splashScreen.classList.add('hidden');
                 supportPage.classList.remove('hidden');
                 homeFab.style.display = 'none';
+                scrollTopFab.style.display = 'none';
                 fabContainer.classList.add('inactive');
                 clearTimeout(fabHideTimeout);
             });
             allDOMElements.backToSplashBtn.addEventListener('click', () => {
                 supportPage.classList.add('hidden');
                 splashScreen.classList.remove('hidden');
-                scrollTopFab.style.transform = 'scale(0)';
             });
             homeFab.addEventListener('click', () => websiteFrame.src = mainProjectsUrl);
+            scrollTopFab.addEventListener('click', () => {
+                websiteFrame.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
+            });
             
             window.addEventListener('mousemove', resetFabVisibility);
             window.addEventListener('touchstart', resetFabVisibility);
@@ -466,6 +583,7 @@
             allDOMElements.topMenuButton.addEventListener('click', () => {
                 allDOMElements.topMenuDropdown.classList.toggle('visible');
             });
+            allDOMElements.profileMenuBtn.addEventListener('click', navigateToProfile);
             allDOMElements.showCalculatorBtn.addEventListener('click', () => {
                 allDOMElements.calculator.classList.add('visible');
                 allDOMElements.topMenuDropdown.classList.remove('visible');
@@ -474,20 +592,7 @@
                 allDOMElements.calculator.classList.remove('visible');
             });
 
-            supportPage.addEventListener('scroll', () => {
-                if (supportPage.scrollTop > 200) {
-                    scrollTopFab.style.display = 'flex';
-                    setTimeout(() => scrollTopFab.style.transform = 'scale(1)', 10);
-                } else {
-                    scrollTopFab.style.transform = 'scale(0)';
-                }
-            });
-            scrollTopFab.addEventListener('click', () => {
-                supportPage.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-
-            // --- INITIALIZATION ---
-            setupUI(checkLoginStatus());
+            checkForUserInfo();
             makeDraggable(allDOMElements.calculator);
             handleCalculator();
             homeFab.style.display = 'none';
