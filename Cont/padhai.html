@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intelligent UI Launcher | Developed by Sagar Raj</title>
+    <title>Definitive Intelligent Launcher | Developed by Sagar Raj</title>
     <style>
         /* * Designed & Developed by Sagar Raj
-         * Version 11: Intelligent UI Edition with Auto-Hiding FABs & Scroll-to-Top
+         * Version 12: Definitive Edition with Restored Login Logic & UI Perfection
          */
 
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -298,20 +298,27 @@
             let fabHideTimeout;
 
             // --- FUNCTIONS ---
-            const checkLoginStatus = () => { /* ... (no change) ... */ return false; };
+            const checkLoginStatus = () => {
+                const lastLogin = localStorage.getItem(loginTimestampKey);
+                if (!lastLogin) return false;
+                const twentyFourHours = 24 * 60 * 60 * 1000;
+                return (Date.now() - parseInt(lastLogin, 10)) < twentyFourHours;
+            };
             
             const launchSite = (url, setLoginTimestamp) => {
-                if (setLoginTimestamp) localStorage.setItem(loginTimestampKey, Date.now().toString());
+                if (setLoginTimestamp) {
+                    localStorage.setItem(loginTimestampKey, Date.now().toString());
+                }
                 websiteFrame.src = url;
                 splashScreen.classList.add('hidden');
                 supportPage.classList.add('hidden');
                 websiteFrame.style.opacity = '1';
 
-                // FIX: Restore the staggered animation for the home button
                 homeFab.style.display = 'flex';
-                setTimeout(() => homeFab.style.transform = 'scale(1)', 100);
-                
-                resetFabVisibility();
+                setTimeout(() => {
+                    homeFab.style.transform = 'scale(1)';
+                    resetFabVisibility();
+                }, 100);
             };
 
             const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
@@ -360,6 +367,7 @@
                 const { loginButtonContainer, actionSubtitle, loaderContainer, mainContent } = allDOMElements;
                 const button = document.createElement('button');
                 button.classList.add('styled-button');
+
                 if (isLoggedIn) {
                     button.textContent = 'Continue Study';
                     actionSubtitle.textContent = 'You are logged in. Continue where you left off.';
@@ -441,14 +449,14 @@
             allDOMElements.showSupportPageBtn.addEventListener('click', () => {
                 splashScreen.classList.add('hidden');
                 supportPage.classList.remove('hidden');
-                homeFab.style.display = 'none'; // Hide home button on support page
-                fabContainer.classList.add('inactive'); // Ensure container is hidden
+                homeFab.style.display = 'none';
+                fabContainer.classList.add('inactive');
                 clearTimeout(fabHideTimeout);
             });
             allDOMElements.backToSplashBtn.addEventListener('click', () => {
                 supportPage.classList.add('hidden');
                 splashScreen.classList.remove('hidden');
-                scrollTopFab.style.display = 'none'; // Hide scroll button when going back
+                scrollTopFab.style.transform = 'scale(0)';
             });
             homeFab.addEventListener('click', () => websiteFrame.src = mainProjectsUrl);
             
@@ -466,7 +474,6 @@
                 allDOMElements.calculator.classList.remove('visible');
             });
 
-            // Scroll-to-top logic
             supportPage.addEventListener('scroll', () => {
                 if (supportPage.scrollTop > 200) {
                     scrollTopFab.style.display = 'flex';
@@ -483,7 +490,6 @@
             setupUI(checkLoginStatus());
             makeDraggable(allDOMElements.calculator);
             handleCalculator();
-            // Initially hide context-specific buttons
             homeFab.style.display = 'none';
             scrollTopFab.style.display = 'none';
         });
