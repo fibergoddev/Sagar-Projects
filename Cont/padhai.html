@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Launcher | Developed by Sagar Raj</title>
+    <title>Futuristic Launcher | Developed by Sagar Raj</title>
     <style>
         /* * Designed & Developed by Sagar Raj
-         * Version 3: Hyper-Advanced with Modals, FAB, and Enhanced Animations
+         * Version 4: Futuristic Edition with Glitch Loader, Support Page, and Advanced Controls
          */
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
-
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css');
 
         :root {
             --primary-color: #ffffff;
@@ -20,14 +19,12 @@
             --background-end: #2c3e50;
             --accent-color-start: #8e44ad;
             --accent-color-end: #3498db;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
             --ad-banner-height: 50px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
             height: 100%;
@@ -37,8 +34,8 @@
             background-color: var(--background-start);
         }
 
-        /* --- Splash Screen & Loader --- */
-        #splash-screen {
+        /* --- Page Containers --- */
+        .page {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -52,8 +49,14 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             z-index: 200;
-            transition: opacity 1s ease-out;
+            transition: opacity 1s ease-out, transform 1s ease-out;
             opacity: 1;
+        }
+        
+        .page.hidden {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
         }
 
         @keyframes gradientBG {
@@ -62,43 +65,85 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Unique Loading Orb */
-        #loader {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 0 60px rgba(255, 255, 255, 0.3);
-            animation: pulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
-            transition: opacity 0.5s, transform 0.5s;
+        /* --- Unique Glitch Loader --- */
+        #loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            transition: opacity 0.5s ease-out;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(0.8); opacity: 0.5; }
-            50% { transform: scale(1); opacity: 1; }
+        #glitch-loader {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            position: relative;
+            text-transform: uppercase;
         }
 
+        #glitch-loader::before, #glitch-loader::after {
+            content: 'Loading...';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            overflow: hidden;
+        }
+
+        #glitch-loader::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--danger-color);
+            animation: glitch-anim-1 2s infinite linear reverse;
+        }
+
+        #glitch-loader::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--success-color), 2px 2px var(--accent-color-end);
+            animation: glitch-anim-2 2s infinite linear reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0%, 100% { clip-path: inset(0 0 95% 0); } 25% { clip-path: inset(50% 0 20% 0); } 50% { clip-path: inset(20% 0 60% 0); } 75% { clip-path: inset(80% 0 5% 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0%, 100% { clip-path: inset(90% 0 5% 0); } 25% { clip-path: inset(30% 0 70% 0); } 50% { clip-path: inset(70% 0 10% 0); } 75% { clip-path: inset(10% 0 80% 0); }
+        }
+
+        #progress-bar {
+            width: 250px;
+            height: 4px;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        #progress-bar-inner {
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: fill-progress 2s ease-out forwards;
+        }
+        @keyframes fill-progress { to { transform: scaleX(1); } }
+
+
+        /* --- Main Content & Buttons --- */
         .content-wrapper {
             text-align: center;
             color: var(--primary-color);
             opacity: 0; /* Initially hidden */
-            transition: opacity 1s ease-in-out;
+            transition: opacity 1s ease-in-out 0.5s;
         }
+        
+        .title { font-size: 3rem; font-weight: 700; }
+        .subtitle { font-size: 1.2rem; font-weight: 300; color: var(--secondary-color); margin-top: 10px; margin-bottom: 40px; }
+        .button-group { display: flex; gap: 15px; justify-content: center; }
 
-        .title {
-            font-size: 3rem;
-            font-weight: 700;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            font-weight: 300;
-            color: var(--secondary-color);
-            margin-top: 10px;
-            margin-bottom: 40px;
-        }
-
-        .launch-button {
+        .styled-button {
             padding: 15px 35px;
             font-size: 1.1rem;
             font-weight: 600;
@@ -109,181 +154,83 @@
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
         }
-        
-        .launch-button:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        .styled-button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); }
+
+        .support-button {
+            background: transparent;
+            border: 2px solid var(--primary-color);
         }
 
-        .footer-note {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            font-size: 0.9rem;
-            color: var(--secondary-color);
-            opacity: 0.7;
-        }
+        .footer-note { position: absolute; bottom: 20px; width: 100%; text-align: center; font-size: 0.9rem; color: var(--secondary-color); opacity: 0.7; }
         
+        /* --- Support Page --- */
+        #support-page .content-wrapper { opacity: 1; }
+        #ad-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; padding: 20px; max-width: 1000px; margin: 20px 0; }
+        .ad-slot { width: 320px; height: 50px; background: rgba(0,0,0,0.2); border-radius: 8px; display: flex; justify-content: center; align-items: center; }
+
         /* --- Main App Structure --- */
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
+        #website-frame { position: fixed; top: 0; left: 0; width: 100%; height: calc(100% - var(--ad-banner-height)); border: none; z-index: 50; opacity: 0; transition: opacity 1s ease-in 0.5s; }
+        #ad-banner { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--ad-banner-height); background-color: #1a1a1a; display: flex; justify-content: center; align-items: center; z-index: 60; box-shadow: 0 -2px 10px rgba(0,0,0,0.5); }
 
-        #website-frame {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: calc(100% - var(--ad-banner-height)); 
-            border: none;
-            z-index: 50;
-            opacity: 0;
-            transition: opacity 1s ease-in 0.5s;
-        }
-        
-        #ad-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: var(--ad-banner-height);
-            background-color: #1a1a1a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 60;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
-        }
-
-        /* --- Floating Action Button (FAB) --- */
-        #home-fab {
-            position: fixed;
-            bottom: calc(var(--ad-banner-height) + 20px);
-            right: 20px;
-            width: 60px;
-            height: 60px;
+        /* --- Floating Action Buttons --- */
+        #fab-container { position: fixed; bottom: calc(var(--ad-banner-height) + 20px); right: 20px; z-index: 150; display: flex; flex-direction: column; gap: 15px; }
+        .fab {
+            width: 60px; height: 60px;
             background: linear-gradient(45deg, var(--accent-color-start), var(--accent-color-end));
-            border-radius: 50%;
-            border: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
+            border-radius: 50%; border: none;
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 22px; cursor: pointer;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 150;
-            transform: scale(0); /* Initially hidden */
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s;
-            animation: fab-pulse 2.5s infinite ease-in-out 1s;
+            transform: scale(0);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-
-        #home-fab:hover {
-            transform: scale(1.1) !important;
-            animation-play-state: paused;
-        }
-
-        @keyframes fab-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
+        .fab:hover { filter: brightness(1.2); transform: scale(1.1) !important; }
 
         /* --- Custom Exit Modal --- */
-        #exit-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            z-index: 300;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }
-        
-        #exit-modal-overlay.visible {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .exit-modal-content {
-            background: var(--background-start);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            color: white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transform: scale(0.9);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        #exit-modal-overlay.visible .exit-modal-content {
-            transform: scale(1);
-        }
-
-        .exit-modal-content h2 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-        }
-
-        .exit-modal-content p {
-            color: var(--secondary-color);
-            margin-bottom: 30px;
-        }
-
-        .modal-buttons button {
-            padding: 12px 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            margin: 0 10px;
-            transition: all 0.3s ease;
-        }
-
-        #modal-btn-yes {
-            background: #e74c3c;
-            color: white;
-        }
-        #modal-btn-yes:hover {
-            background: #c0392b;
-            transform: translateY(-3px);
-        }
-
-        #modal-btn-no {
-            background: #2ecc71;
-            color: white;
-        }
-        #modal-btn-no:hover {
-            background: #27ae60;
-            transform: translateY(-3px);
-        }
+        #exit-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 300; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        #exit-modal-overlay.visible { opacity: 1; pointer-events: all; }
+        .exit-modal-content { background: var(--background-start); padding: 40px; border-radius: 20px; text-align: center; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        #exit-modal-overlay.visible .exit-modal-content { transform: scale(1); }
+        .exit-modal-content h2 { font-size: 1.8rem; margin-bottom: 15px; }
+        .exit-modal-content p { color: var(--secondary-color); margin-bottom: 30px; }
+        .modal-buttons button { padding: 12px 30px; font-size: 1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; margin: 0 10px; transition: all 0.3s ease; }
+        #modal-btn-yes { background: var(--danger-color); color: white; }
+        #modal-btn-no { background: var(--success-color); color: white; }
     </style>
 </head>
 <body>
 
     <!-- Splash Screen Section -->
-    <div id="splash-screen">
-        <div id="loader"></div>
-        <!-- FIX: Added id="content-wrapper" to this div -->
-        <div id="content-wrapper" class="content-wrapper">
+    <div id="splash-screen" class="page">
+        <div id="loader-container">
+            <div id="glitch-loader">Loading...</div>
+            <div id="progress-bar"><div id="progress-bar-inner"></div></div>
+        </div>
+        <div id="main-content" class="content-wrapper">
             <h1 class="title">Welcome Back</h1>
             <p class="subtitle" id="action-subtitle"></p>
-            <div id="button-container"></div>
+            <div class="button-group">
+                <div id="login-button-container"></div>
+                <button id="show-support-page-btn" class="styled-button support-button">Support Us</button>
+            </div>
         </div>
         <div class="footer-note">
             <p>Developed with ❤️ by <a href="#" target="_blank">Sagar Raj</a></p>
+        </div>
+    </div>
+
+    <!-- Support Us Page -->
+    <div id="support-page" class="page hidden">
+        <div class="content-wrapper">
+            <h1 class="title">Thank You!</h1>
+            <p class="subtitle">Your support helps keep this project alive. Every ad view counts.</p>
+            <div id="ad-grid">
+                <div class="ad-slot" id="ad-slot-1"></div>
+                <div class="ad-slot" id="ad-slot-2"></div>
+                <div class="ad-slot" id="ad-slot-3"></div>
+            </div>
+            <button id="back-to-splash-btn" class="styled-button">Go Back</button>
         </div>
     </div>
 
@@ -296,10 +243,12 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"></script>
     </div>
 
-    <!-- Floating Action Button -->
-    <button id="home-fab" title="Go to Main Page">
-        <i class="fas fa-home"></i>
-    </button>
+    <!-- Floating Action Buttons -->
+    <div id="fab-container">
+        <button id="back-fab" class="fab" title="Go Back"><i class="fas fa-arrow-left"></i></button>
+        <button id="reload-fab" class="fab" title="Reload Page"><i class="fas fa-redo-alt"></i></button>
+        <button id="home-fab" class="fab" title="Go to Main Page"><i class="fas fa-home"></i></button>
+    </div>
 
     <!-- Custom Exit Confirmation Modal -->
     <div id="exit-modal-overlay">
@@ -313,32 +262,35 @@
         </div>
     </div>
 
-
     <script>
-        // Wait for the HTML document to be fully loaded and parsed before running scripts
         document.addEventListener('DOMContentLoaded', () => {
-            
             // --- CONFIGURATION ---
             const loginUrl = 'https://rolexcoderz.live/36xsuccess/';
             const studyUrl = 'https://www.rolexcoderz.xyz/Course';
             const mainProjectsUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/padhai.html';
             const loginTimestampKey = 'sagarRajLoginTimestamp';
 
-            // --- DOM ELEMENT REFERENCES ---
+            // --- DOM REFERENCES ---
             const splashScreen = document.getElementById('splash-screen');
-            const loader = document.getElementById('loader');
-            const contentWrapper = document.getElementById('content-wrapper');
+            const supportPage = document.getElementById('support-page');
+            const loaderContainer = document.getElementById('loader-container');
+            const mainContent = document.getElementById('main-content');
             const websiteFrame = document.getElementById('website-frame');
-            const buttonContainer = document.getElementById('button-container');
+            const loginButtonContainer = document.getElementById('login-button-container');
             const actionSubtitle = document.getElementById('action-subtitle');
+            const showSupportPageBtn = document.getElementById('show-support-page-btn');
+            const backToSplashBtn = document.getElementById('back-to-splash-btn');
+            const fabs = document.querySelectorAll('.fab');
             const homeFab = document.getElementById('home-fab');
+            const reloadFab = document.getElementById('reload-fab');
+            const backFab = document.getElementById('back-fab');
             const exitModalOverlay = document.getElementById('exit-modal-overlay');
             const modalBtnYes = document.getElementById('modal-btn-yes');
             const modalBtnNo = document.getElementById('modal-btn-no');
 
-            // --- LOGIC ---
             let canClose = false;
 
+            // --- FUNCTIONS ---
             const checkLoginStatus = () => {
                 const lastLogin = localStorage.getItem(loginTimestampKey);
                 if (!lastLogin) return false;
@@ -346,24 +298,9 @@
                 return (Date.now() - parseInt(lastLogin, 10)) < twentyFourHours;
             };
 
-            const launchSite = (url, setLoginTimestamp) => {
-                if (setLoginTimestamp) {
-                    localStorage.setItem(loginTimestampKey, Date.now().toString());
-                }
-
-                websiteFrame.src = url;
-                splashScreen.classList.add('hidden');
-                websiteFrame.style.opacity = '1';
-                homeFab.style.transform = 'scale(1)';
-
-                setTimeout(() => {
-                    splashScreen.style.display = 'none';
-                }, 1000);
-            };
-
             const setupUI = (isLoggedIn) => {
                 const button = document.createElement('button');
-                button.classList.add('launch-button');
+                button.classList.add('styled-button');
 
                 if (isLoggedIn) {
                     button.textContent = 'Continue Study';
@@ -374,68 +311,75 @@
                     actionSubtitle.textContent = 'Login to access the platform.';
                     button.addEventListener('click', () => launchSite(loginUrl, true));
                 }
-                buttonContainer.appendChild(button);
+                loginButtonContainer.appendChild(button);
 
-                // Animate in the content after a delay
+                // Animate in the content after loader finishes
                 setTimeout(() => {
-                    // Add checks to ensure elements exist before styling them
-                    if (loader) {
-                        loader.style.opacity = '0';
-                        loader.style.transform = 'scale(0)';
-                    }
-                    if (contentWrapper) {
-                        contentWrapper.style.opacity = '1';
-                    }
-                }, 1500); // Simulate loading time
+                    loaderContainer.style.opacity = '0';
+                    mainContent.style.opacity = '1';
+                }, 2200); // Match loader animation time
             };
 
-            const showExitModal = () => {
-                if (exitModalOverlay) {
-                    exitModalOverlay.classList.add('visible');
+            const launchSite = (url, setLoginTimestamp) => {
+                if (setLoginTimestamp) {
+                    localStorage.setItem(loginTimestampKey, Date.now().toString());
                 }
+                websiteFrame.src = url;
+                splashScreen.classList.add('hidden');
+                websiteFrame.style.opacity = '1';
+                fabs.forEach((fab, index) => {
+                    setTimeout(() => fab.style.transform = 'scale(1)', index * 100);
+                });
             };
-
-            const hideExitModal = () => {
-                if (exitModalOverlay) {
-                    exitModalOverlay.classList.remove('visible');
-                }
-            };
-
-            // --- INITIALIZATION & EVENT LISTENERS ---
             
-            // Verify all critical elements are found before proceeding
-            if (!splashScreen || !loader || !contentWrapper || !websiteFrame || !buttonContainer || !actionSubtitle || !homeFab || !exitModalOverlay || !modalBtnYes || !modalBtnNo) {
-                console.error("A critical UI element was not found in the DOM. Aborting script initialization.");
-                return; // Stop execution if an element is missing
-            }
+            const injectAds = () => {
+                const adSlots = document.querySelectorAll('.ad-slot');
+                adSlots.forEach(slot => {
+                    const adScriptContainer = document.createElement('div');
+                    adScriptContainer.innerHTML = `
+                        <script type="text/javascript">
+                            atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                        <\/script>
+                        <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script>
+                    `;
+                    slot.appendChild(adScriptContainer);
+                });
+            };
 
-            // Start the application logic
-            const isLoggedIn = checkLoginStatus();
-            setupUI(isLoggedIn);
-
-            // Attach all event listeners
-            homeFab.addEventListener('click', () => {
-                websiteFrame.src = mainProjectsUrl;
+            // --- EVENT LISTENERS ---
+            showSupportPageBtn.addEventListener('click', () => {
+                splashScreen.classList.add('hidden');
+                supportPage.classList.remove('hidden');
             });
+
+            backToSplashBtn.addEventListener('click', () => {
+                supportPage.classList.add('hidden');
+                splashScreen.classList.remove('hidden');
+            });
+
+            homeFab.addEventListener('click', () => websiteFrame.src = mainProjectsUrl);
+            reloadFab.addEventListener('click', () => websiteFrame.contentWindow.location.reload());
+            backFab.addEventListener('click', () => websiteFrame.contentWindow.history.back());
 
             window.addEventListener('beforeunload', (event) => {
                 if (!canClose) {
                     event.preventDefault();
-                    event.returnValue = ''; // Required for legacy browsers
-                    showExitModal();
+                    event.returnValue = '';
+                    exitModalOverlay.classList.add('visible');
                 }
             });
 
             modalBtnYes.addEventListener('click', () => {
                 canClose = true;
-                window.location.href = 'about:blank'; 
+                window.location.href = 'about:blank';
             });
 
-            modalBtnNo.addEventListener('click', () => {
-                hideExitModal();
-            });
+            modalBtnNo.addEventListener('click', () => exitModalOverlay.classList.remove('visible'));
+            
+            // --- INITIALIZATION ---
+            setupUI(checkLoginStatus());
+            injectAds();
         });
-
     </script>
 </body>
 </html>
