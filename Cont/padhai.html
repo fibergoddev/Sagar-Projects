@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Launcher | Developed by Sagar Raj</title>
+    <title>Intelligent Launcher | Developed by Sagar Raj</title>
     <style>
         /* * Designed & Developed by Sagar Raj
-         * Version 7: Ultimate Monetization Edition with Direct Ad Integration
+         * Version 8: Intelligent Fullscreen & Ad-Fix Edition
          */
 
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -51,7 +51,7 @@
             z-index: 200;
             transition: opacity 1s ease-out, transform 1s ease-out;
             opacity: 1;
-            overflow-y: auto; /* Allow scrolling on support page */
+            overflow-y: auto;
         }
         
         .page.hidden {
@@ -80,7 +80,7 @@
 
         /* --- Main Content & Buttons --- */
         .content-wrapper { text-align: center; color: var(--primary-color); opacity: 0; transition: opacity 1s ease-in-out 0.5s; padding: 20px; }
-        #splash-screen .content-wrapper { opacity: 0; } /* Keep splash content hidden until loader finishes */
+        #splash-screen .content-wrapper { opacity: 0; }
         .title { font-size: 3rem; font-weight: 700; }
         .subtitle { font-size: 1.2rem; font-weight: 300; color: var(--secondary-color); margin-top: 10px; margin-bottom: 40px; }
         .button-group { display: flex; gap: 15px; justify-content: center; }
@@ -102,9 +102,11 @@
         #ad-banner { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--ad-banner-height); background-color: #1a1a1a; display: flex; justify-content: center; align-items: center; z-index: 60; box-shadow: 0 -2px 10px rgba(0,0,0,0.5); }
 
         /* --- Floating Action Buttons --- */
-        #fab-container { position: fixed; bottom: calc(var(--ad-banner-height) + 20px); right: 20px; z-index: 150; display: flex; flex-direction: column; gap: 15px; }
+        #fab-container { position: fixed; bottom: calc(var(--ad-banner-height) + 20px); right: 20px; z-index: 150; display: flex; flex-direction: column; gap: 15px; transition: transform 0.4s ease-out; }
         .fab { width: 60px; height: 60px; background: linear-gradient(45deg, var(--accent-color-start), var(--accent-color-end)); border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; color: white; font-size: 22px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: scale(0); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .fab:hover { filter: brightness(1.2); transform: scale(1.1) !important; }
+        /* FIX: Class to hide FABs during fullscreen */
+        #fab-container.hidden { transform: translateX(150%); }
 
         /* --- Interstitial Ad Modal --- */
         #interstitial-ad-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 400; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
@@ -143,28 +145,23 @@
         <div class="content-wrapper">
             <h1 class="title">Thank You!</h1>
             <p class="subtitle">Your support helps keep this project alive. Every ad view counts.</p>
-            
-            <!-- FIX: Ads directly integrated into the HTML for reliability -->
             <div id="ad-grid">
                 <div class="ad-slot ad-slot-container-div">
                     <script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"></script>
                     <div id="container-5a3a56f258731c59b0ae000546a15e25"></div>
                 </div>
-
                 <div class="ad-slot ad-slot-320x50">
                     <script type="text/javascript">
                         atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
                     </script>
                     <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"></script>
                 </div>
-
                 <div class="ad-slot ad-slot-300x250">
                     <script type="text/javascript">
                         atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
                     </script>
                     <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"></script>
                 </div>
-                
                 <div class="ad-slot ad-slot-container-div">
                      <script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'></script>
                 </div>
@@ -183,7 +180,8 @@
     </div>
 
     <!-- Main App Content -->
-    <iframe id="website-frame" src="" title="Embedded Website"></iframe>
+    <!-- FIX: Added allowfullscreen attribute to the iframe -->
+    <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
     <div id="ad-banner">
         <script type="text/javascript">
             atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
@@ -214,7 +212,7 @@
             const actionSubtitle = document.getElementById('action-subtitle');
             const showSupportPageBtn = document.getElementById('show-support-page-btn');
             const backToSplashBtn = document.getElementById('back-to-splash-btn');
-            const fabs = document.querySelectorAll('.fab');
+            const fabContainer = document.getElementById('fab-container');
             const homeFab = document.getElementById('home-fab');
             const interstitialAdModal = document.getElementById('interstitial-ad-modal');
             const interstitialAdContainer = document.getElementById('interstitial-ad-container');
@@ -237,7 +235,8 @@
                 splashScreen.classList.add('hidden');
                 supportPage.classList.add('hidden');
                 websiteFrame.style.opacity = '1';
-                fabs.forEach((fab, index) => {
+                // Staggered animation for FABs
+                document.querySelectorAll('.fab').forEach((fab, index) => {
                     setTimeout(() => fab.style.transform = 'scale(1)', index * 100);
                 });
             };
@@ -245,13 +244,19 @@
             const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
                 interstitialAdModal.classList.add('visible');
                 interstitialAdContainer.innerHTML = ''; // Clear previous ad
-                const adScript = `
-                    <script type="text/javascript">
-                        atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-                    <\/script>
-                    <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>
+                
+                // FIX: More reliable script injection method
+                const adScriptElement = document.createElement('script');
+                adScriptElement.type = 'text/javascript';
+                adScriptElement.innerHTML = `
+                    atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
                 `;
-                interstitialAdContainer.innerHTML = adScript;
+                const adSrcElement = document.createElement('script');
+                adSrcElement.type = 'text/javascript';
+                adSrcElement.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
+
+                interstitialAdContainer.appendChild(adScriptElement);
+                interstitialAdContainer.appendChild(adSrcElement);
 
                 let timeLeft = 4;
                 adTimerSpan.textContent = timeLeft;
@@ -298,6 +303,15 @@
                 }, 2200);
             };
 
+            // FIX: Function to handle hiding/showing FABs on fullscreen change
+            const handleFullscreenChange = () => {
+                if (document.fullscreenElement) {
+                    fabContainer.classList.add('hidden');
+                } else {
+                    fabContainer.classList.remove('hidden');
+                }
+            };
+
             // --- EVENT LISTENERS ---
             showSupportPageBtn.addEventListener('click', () => {
                 splashScreen.classList.add('hidden');
@@ -311,6 +325,9 @@
 
             homeFab.addEventListener('click', () => websiteFrame.src = mainProjectsUrl);
             
+            // Listen for fullscreen changes on the document
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+
             // --- INITIALIZATION ---
             setupUI(checkLoginStatus());
         });
