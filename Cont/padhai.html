@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monetization-Enhanced Launcher | Developed by Sagar Raj</title>
+    <title>Definitive Launcher | Developed by Sagar Raj</title>
     <style>
         /* * Designed & Developed by Sagar Raj
-         * Version 5: Monetization-Enhanced Edition with Interstitial Ad Modal
+         * Version 6: Definitive Edition with Corrected Ad Ratios
          */
 
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -89,8 +89,11 @@
         
         /* --- Support Page --- */
         #support-page .content-wrapper { opacity: 1; }
-        #ad-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; padding: 20px; max-width: 1000px; margin: 20px 0; }
-        .ad-slot { width: 320px; height: 50px; background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; }
+        #ad-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); justify-items: center; gap: 20px; padding: 20px; max-width: 1000px; margin: 20px 0; }
+        .ad-slot { background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        /* FIX: Specific sizes for different ad slots */
+        #ad-slot-1, #ad-slot-3 { width: 320px; height: 50px; }
+        #ad-slot-2 { width: 300px; height: 250px; }
         .ad-slot iframe { width: 100%; height: 100%; border: 0; }
 
         /* --- Main App Structure --- */
@@ -107,7 +110,8 @@
         #interstitial-ad-modal.visible { opacity: 1; pointer-events: all; }
         .ad-modal-content { background: var(--background-start); padding: 20px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(255,255,255,0.1); }
         #interstitial-ad-modal.visible .ad-modal-content { transform: scale(1); }
-        #interstitial-ad-container { width: 320px; height: 50px; margin: 0 auto 20px auto; background: #000; border-radius: 8px; overflow: hidden; }
+        /* FIX: Updated ad container size for the 300x250 ad */
+        #interstitial-ad-container { width: 300px; height: 250px; margin: 0 auto 20px auto; background: #000; border-radius: 8px; overflow: hidden; }
         #skip-ad-button { padding: 10px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
         #skip-ad-button:disabled { background-color: #555; color: #999; cursor: not-allowed; opacity: 0.7; }
         #skip-ad-button:enabled { background: var(--success-color); color: white; }
@@ -168,7 +172,6 @@
 
     <!-- Floating Action Buttons -->
     <div id="fab-container">
-        <!-- FIX: Removed the Back and Reload buttons that were causing security errors -->
         <button id="home-fab" class="fab" title="Go to Main Page"><i class="fas fa-home"></i></button>
     </div>
 
@@ -211,7 +214,7 @@
                 }
                 websiteFrame.src = url;
                 splashScreen.classList.add('hidden');
-                supportPage.classList.add('hidden'); // Ensure support page is also hidden
+                supportPage.classList.add('hidden');
                 websiteFrame.style.opacity = '1';
                 fabs.forEach((fab, index) => {
                     setTimeout(() => fab.style.transform = 'scale(1)', index * 100);
@@ -219,20 +222,17 @@
             };
 
             const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
-                // 1. Show the modal
                 interstitialAdModal.classList.add('visible');
-
-                // 2. Inject the ad script
                 interstitialAdContainer.innerHTML = ''; // Clear previous ad
+                // FIX: Use the correct 300x250 ad script for the modal
                 const adScript = `
                     <script type="text/javascript">
-                        atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                        atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
                     <\/script>
-                    <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>
                 `;
                 interstitialAdContainer.innerHTML = adScript;
 
-                // 3. Start the timer
                 let timeLeft = 4;
                 adTimerSpan.textContent = timeLeft;
                 skipAdButton.disabled = true;
@@ -247,13 +247,12 @@
                     }
                 }, 1000);
 
-                // 4. Set up one-time listener for the skip button
                 skipAdButton.onclick = () => {
+                    if (skipAdButton.disabled) return;
                     interstitialAdModal.classList.remove('visible');
                     launchSite(targetUrl, setLoginTimestamp);
-                    // Reset button for next time
                     skipAdButton.textContent = `Skip Ad in ${adTimerSpan.textContent=4}s`;
-                    skipAdButton.onclick = null; // Remove listener to prevent multiple triggers
+                    skipAdButton.onclick = null;
                 };
             };
 
@@ -270,7 +269,7 @@
                     actionSubtitle.textContent = 'Login to access the platform.';
                     button.addEventListener('click', () => showInterstitialAd(loginUrl, true));
                 }
-                loginButtonContainer.innerHTML = ''; // Clear previous button
+                loginButtonContainer.innerHTML = '';
                 loginButtonContainer.appendChild(button);
 
                 setTimeout(() => {
@@ -279,20 +278,28 @@
                 }, 2200);
             };
             
+            // FIX: Correctly inject the two different ads into the support page slots
             const injectSupportPageAds = () => {
-                const adSlots = document.querySelectorAll('#support-page .ad-slot');
-                adSlots.forEach(slot => {
-                    const iframe = document.createElement('iframe');
-                    slot.innerHTML = ''; // Clear slot
-                    slot.appendChild(iframe);
-                    const adScript = `
-                        <script type="text/javascript">
-                            atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-                        <\/script>
-                        <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script>
-                    `;
-                    iframe.contentDocument.write(adScript);
-                });
+                const adSlot1 = document.getElementById('ad-slot-1');
+                const adSlot2 = document.getElementById('ad-slot-2');
+                const adSlot3 = document.getElementById('ad-slot-3');
+
+                const adScript320x50 = `
+                    <script type="text/javascript">
+                        atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                    <\/script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script>
+                `;
+                const adScript300x250 = `
+                    <script type="text/javascript">
+                        atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+                    <\/script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>
+                `;
+
+                if(adSlot1) adSlot1.innerHTML = adScript320x50;
+                if(adSlot2) adSlot2.innerHTML = adScript300x250;
+                if(adSlot3) adSlot3.innerHTML = adScript320x50; // Re-using the first ad for the third slot
             };
 
             // --- EVENT LISTENERS ---
