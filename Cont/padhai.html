@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Definitive Launcher | Developed by Sagar Raj</title>
+    <title>Ultimate Launcher | Developed by Sagar Raj</title>
     <style>
         /* * Designed & Developed by Sagar Raj
-         * Version 6: Definitive Edition with Corrected Ad Ratios
+         * Version 7: Ultimate Monetization Edition with Direct Ad Integration
          */
 
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -51,6 +51,7 @@
             z-index: 200;
             transition: opacity 1s ease-out, transform 1s ease-out;
             opacity: 1;
+            overflow-y: auto; /* Allow scrolling on support page */
         }
         
         .page.hidden {
@@ -78,7 +79,8 @@
         @keyframes fill-progress { to { transform: scaleX(1); } }
 
         /* --- Main Content & Buttons --- */
-        .content-wrapper { text-align: center; color: var(--primary-color); opacity: 0; transition: opacity 1s ease-in-out 0.5s; }
+        .content-wrapper { text-align: center; color: var(--primary-color); opacity: 0; transition: opacity 1s ease-in-out 0.5s; padding: 20px; }
+        #splash-screen .content-wrapper { opacity: 0; } /* Keep splash content hidden until loader finishes */
         .title { font-size: 3rem; font-weight: 700; }
         .subtitle { font-size: 1.2rem; font-weight: 300; color: var(--secondary-color); margin-top: 10px; margin-bottom: 40px; }
         .button-group { display: flex; gap: 15px; justify-content: center; }
@@ -89,12 +91,11 @@
         
         /* --- Support Page --- */
         #support-page .content-wrapper { opacity: 1; }
-        #ad-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); justify-items: center; gap: 20px; padding: 20px; max-width: 1000px; margin: 20px 0; }
-        .ad-slot { background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        /* FIX: Specific sizes for different ad slots */
-        #ad-slot-1, #ad-slot-3 { width: 320px; height: 50px; }
-        #ad-slot-2 { width: 300px; height: 250px; }
-        .ad-slot iframe { width: 100%; height: 100%; border: 0; }
+        #ad-grid { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 25px; padding: 20px; max-width: 1000px; margin: 20px 0; }
+        .ad-slot { background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .ad-slot-320x50 { width: 320px; height: 50px; }
+        .ad-slot-300x250 { width: 300px; height: 250px; }
+        .ad-slot-container-div { width: auto; height: auto; }
 
         /* --- Main App Structure --- */
         #website-frame { position: fixed; top: 0; left: 0; width: 100%; height: calc(100% - var(--ad-banner-height)); border: none; z-index: 50; opacity: 0; transition: opacity 1s ease-in 0.5s; }
@@ -110,7 +111,6 @@
         #interstitial-ad-modal.visible { opacity: 1; pointer-events: all; }
         .ad-modal-content { background: var(--background-start); padding: 20px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(255,255,255,0.1); }
         #interstitial-ad-modal.visible .ad-modal-content { transform: scale(1); }
-        /* FIX: Updated ad container size for the 300x250 ad */
         #interstitial-ad-container { width: 300px; height: 250px; margin: 0 auto 20px auto; background: #000; border-radius: 8px; overflow: hidden; }
         #skip-ad-button { padding: 10px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
         #skip-ad-button:disabled { background-color: #555; color: #999; cursor: not-allowed; opacity: 0.7; }
@@ -143,10 +143,31 @@
         <div class="content-wrapper">
             <h1 class="title">Thank You!</h1>
             <p class="subtitle">Your support helps keep this project alive. Every ad view counts.</p>
+            
+            <!-- FIX: Ads directly integrated into the HTML for reliability -->
             <div id="ad-grid">
-                <div class="ad-slot" id="ad-slot-1"></div>
-                <div class="ad-slot" id="ad-slot-2"></div>
-                <div class="ad-slot" id="ad-slot-3"></div>
+                <div class="ad-slot ad-slot-container-div">
+                    <script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"></script>
+                    <div id="container-5a3a56f258731c59b0ae000546a15e25"></div>
+                </div>
+
+                <div class="ad-slot ad-slot-320x50">
+                    <script type="text/javascript">
+                        atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"></script>
+                </div>
+
+                <div class="ad-slot ad-slot-300x250">
+                    <script type="text/javascript">
+                        atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"></script>
+                </div>
+                
+                <div class="ad-slot ad-slot-container-div">
+                     <script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'></script>
+                </div>
             </div>
             <button id="back-to-splash-btn" class="styled-button">Go Back</button>
         </div>
@@ -224,7 +245,6 @@
             const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
                 interstitialAdModal.classList.add('visible');
                 interstitialAdContainer.innerHTML = ''; // Clear previous ad
-                // FIX: Use the correct 300x250 ad script for the modal
                 const adScript = `
                     <script type="text/javascript">
                         atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
@@ -277,30 +297,6 @@
                     mainContent.style.opacity = '1';
                 }, 2200);
             };
-            
-            // FIX: Correctly inject the two different ads into the support page slots
-            const injectSupportPageAds = () => {
-                const adSlot1 = document.getElementById('ad-slot-1');
-                const adSlot2 = document.getElementById('ad-slot-2');
-                const adSlot3 = document.getElementById('ad-slot-3');
-
-                const adScript320x50 = `
-                    <script type="text/javascript">
-                        atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-                    <\/script>
-                    <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script>
-                `;
-                const adScript300x250 = `
-                    <script type="text/javascript">
-                        atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-                    <\/script>
-                    <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>
-                `;
-
-                if(adSlot1) adSlot1.innerHTML = adScript320x50;
-                if(adSlot2) adSlot2.innerHTML = adScript300x250;
-                if(adSlot3) adSlot3.innerHTML = adScript320x50; // Re-using the first ad for the third slot
-            };
 
             // --- EVENT LISTENERS ---
             showSupportPageBtn.addEventListener('click', () => {
@@ -317,7 +313,6 @@
             
             // --- INITIALIZATION ---
             setupUI(checkLoginStatus());
-            injectSupportPageAds();
         });
     </script>
 </body>
