@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Interactive Launcher | Developed by Sagar Raj</title>
+    <title>The Flawless Hub | Developed by Sagar Raj</title>
     <style>
         /* * Designed & Developed by Sagar Raj
-         * Version 9: Advanced Interactive Edition with Floating Calculator & UI Fixes
+         * Version 19: The Definitive Flawless Edition
+         * This is a complete, single-file application built to professional standards.
          */
 
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css');
 
         :root {
             --primary-color: #ffffff;
             --secondary-color: #cccccc;
-            --background-start: #121212;
-            --background-end: #2c3e50;
-            --accent-color-start: #8e44ad;
-            --accent-color-end: #3498db;
+            --background-start: #0a0a10;
+            --background-end: #1a1a2e;
+            --accent-color-start: #00f2fe;
+            --accent-color-end: #4facfe;
             --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --ad-banner-height: 50px;
-            --glass-bg: rgba(22, 22, 22, 0.5);
+            --danger-color: #f04747;
+            --glass-bg: rgba(30, 30, 46, 0.6);
+            --border-color: rgba(255, 255, 255, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.5);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,162 +35,131 @@
             overflow: hidden;
             font-family: 'Poppins', sans-serif;
             background-color: var(--background-start);
+            color: var(--primary-color);
         }
-
-        /* --- Page Containers --- */
-        .page {
+        
+        /* --- View Management --- */
+        .view {
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-            position: fixed;
+            height: 100%;
+            width: 100%;
+            position: absolute;
             top: 0;
             left: 0;
-            background: linear-gradient(-45deg, var(--background-end), var(--background-start), #23a6d5, #23d5ab);
+            background: linear-gradient(-45deg, var(--background-end), var(--background-start), #16222a, #3a6073);
             background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            z-index: 200;
-            transition: opacity 1s ease-out, transform 1s ease-out;
+            animation: gradientBG 20s ease infinite;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
             opacity: 1;
+            visibility: visible;
             overflow-y: auto;
+            scroll-behavior: smooth;
         }
-        
-        .page.hidden {
-            opacity: 0;
-            transform: scale(1.1);
-            pointer-events: none;
-        }
+        .view.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        /* --- Main Hub UI (Splash, Sections) --- */
+        .main-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; position: sticky; top: 0; z-index: 100; background: rgba(10, 10, 16, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); }
+        .logo { font-family: 'Roboto Mono', monospace; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 5px var(--accent-color-start); }
+        .header-nav button { background: none; border: none; color: var(--secondary-color); font-size: 1.2rem; margin-left: 20px; cursor: pointer; transition: all 0.3s ease; }
+        .header-nav button:hover { color: var(--primary-color); text-shadow: 0 0 8px var(--primary-color); }
+        .content-section { padding: 40px 30px; min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .section-title { font-size: 3rem; margin-bottom: 15px; font-weight: 700; }
+        .section-subtitle { font-size: 1.2rem; color: var(--secondary-color); max-width: 600px; margin-bottom: 40px; }
+        .styled-button { padding: 15px 40px; font-size: 1.2rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(0, 242, 254, 0.3); }
+        .styled-button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.5); }
+        #book-scanner { width: 300px; height: 250px; border: 2px solid var(--accent-color-start); border-radius: 10px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: 5rem; color: rgba(255,255,255,0.2); box-shadow: 0 0 20px var(--accent-color-start) inset; }
+        #scanner-line { width: 100%; height: 3px; background: var(--accent-color-end); box-shadow: 0 0 10px var(--accent-color-end); position: absolute; top: 0; animation: scan-book 3s linear infinite; }
+        @keyframes scan-book { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
 
-        /* --- Unique Glitch Loader --- */
-        #loader-container { display: flex; flex-direction: column; align-items: center; gap: 20px; transition: opacity 0.5s ease-out; }
-        #glitch-loader { font-family: 'Roboto Mono', monospace; font-size: 4rem; font-weight: 700; color: var(--primary-color); position: relative; text-transform: uppercase; }
-        #glitch-loader::before, #glitch-loader::after { content: 'Loading...'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: inherit; overflow: hidden; }
-        #glitch-loader::before { left: 2px; text-shadow: -2px 0 var(--danger-color); animation: glitch-anim-1 2s infinite linear reverse; }
-        #glitch-loader::after { left: -2px; text-shadow: -2px 0 var(--success-color), 2px 2px var(--accent-color-end); animation: glitch-anim-2 2s infinite linear reverse; }
-        @keyframes glitch-anim-1 { 0%, 100% { clip-path: inset(0 0 95% 0); } 25% { clip-path: inset(50% 0 20% 0); } 50% { clip-path: inset(20% 0 60% 0); } 75% { clip-path: inset(80% 0 5% 0); } }
-        @keyframes glitch-anim-2 { 0%, 100% { clip-path: inset(90% 0 5% 0); } 25% { clip-path: inset(30% 0 70% 0); } 50% { clip-path: inset(70% 0 10% 0); } 75% { clip-path: inset(10% 0 80% 0); } }
-        #progress-bar { width: 250px; height: 4px; background-color: rgba(255,255,255,0.3); border-radius: 4px; overflow: hidden; }
-        #progress-bar-inner { width: 100%; height: 100%; background-color: var(--primary-color); transform: scaleX(0); transform-origin: left; animation: fill-progress 2s ease-out forwards; }
-        @keyframes fill-progress { to { transform: scaleX(1); } }
+        /* --- App View (Iframe & Overlays) --- */
+        #app-view { z-index: 50; background: #000; }
+        #iframe-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        #website-frame { width: 100%; height: 100%; border: none; background: #000; }
+        #iframe-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--accent-color-start); font-size: 3rem; display: none; }
+        #iframe-loader.visible { display: block; }
+        #focus-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 140; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+        #focus-overlay.active { opacity: 1; }
 
-        /* --- Main Content & Buttons --- */
-        .content-wrapper { text-align: center; color: var(--primary-color); opacity: 0; transition: opacity 1s ease-in-out 0.5s; padding: 20px; }
-        #splash-screen .content-wrapper { opacity: 0; }
-        .title { font-size: 3rem; font-weight: 700; }
-        .subtitle { font-size: 1.2rem; font-weight: 300; color: var(--secondary-color); margin-top: 10px; margin-bottom: 40px; }
-        .button-group { display: flex; gap: 15px; justify-content: center; }
-        .styled-button { padding: 15px 35px; font-size: 1.1rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 50px; cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
-        .styled-button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); }
-        .support-button { background: transparent; border: 2px solid var(--primary-color); }
-        .footer-note { position: absolute; bottom: 20px; width: 100%; text-align: center; font-size: 0.9rem; color: var(--secondary-color); opacity: 0.7; }
-        
-        /* --- Support Page --- */
-        #support-page .content-wrapper { opacity: 1; }
-        #ad-grid { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 25px; padding: 20px; max-width: 1000px; margin: 20px 0; }
-        .ad-slot { background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .ad-slot-320x50 { width: 320px; height: 50px; }
-        .ad-slot-300x250 { width: 300px; height: 250px; }
-        .ad-slot-container-div { width: auto; height: auto; }
+        /* --- Command Center (Side Panel) --- */
+        #command-center-btn { position: fixed; top: 20px; left: 20px; z-index: 155; width: 50px; height: 50px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 50%; color: white; font-size: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; opacity: 0; pointer-events: none; }
+        #command-center-btn.visible { opacity: 1; pointer-events: all; }
+        #side-panel { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: rgba(10, 10, 16, 0.9); backdrop-filter: blur(15px); z-index: 150; transform: translateX(-100%); transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); padding: 20px; display: flex; flex-direction: column; }
+        #side-panel.visible { transform: translateX(0); }
+        #side-panel-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        .side-panel-title { font-size: 1.5rem; font-weight: 600; }
+        #close-side-panel-btn { background: none; border: none; color: var(--secondary-color); font-size: 1.5rem; cursor: pointer; }
+        #side-panel-nav { display: flex; flex-direction: column; gap: 10px; }
+        .side-panel-button { background: rgba(255,255,255,0.05); border: 1px solid transparent; color: var(--secondary-color); padding: 15px; border-radius: 10px; text-align: left; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 15px; }
+        .side-panel-button:hover { background: rgba(255,255,255,0.1); border-color: var(--border-color); color: var(--primary-color); }
+        .side-panel-button.hidden { display: none; }
 
-        /* --- Main App Structure --- */
-        #iframe-container { position: fixed; top: 0; left: 0; width: 100%; height: calc(100% - var(--ad-banner-height)); z-index: 50; touch-action: pan-y; /* FIX: Prevents pull-to-refresh */ }
-        #website-frame { width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 1s ease-in 0.5s; }
-        #ad-banner { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--ad-banner-height); background-color: #1a1a1a; display: flex; justify-content: center; align-items: center; z-index: 60; box-shadow: 0 -2px 10px rgba(0,0,0,0.5); }
-
-        /* --- Floating Action Buttons --- */
-        #fab-container { position: fixed; bottom: calc(var(--ad-banner-height) + 20px); right: 20px; z-index: 150; display: flex; flex-direction: column; gap: 15px; transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
-        .fab { width: 60px; height: 60px; background: linear-gradient(45deg, var(--accent-color-start), var(--accent-color-end)); border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; color: white; font-size: 22px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: scale(0); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .fab:hover { filter: brightness(1.2); transform: scale(1.1) !important; }
-        #fab-container.inactive { opacity: 0; transform: translateX(150%); pointer-events: none; }
-
-        /* --- Interstitial Ad Modal --- */
-        #interstitial-ad-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 400; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
-        #interstitial-ad-modal.visible { opacity: 1; pointer-events: all; }
-        .ad-modal-content { background: var(--background-start); padding: 20px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(255,255,255,0.1); }
-        #interstitial-ad-modal.visible .ad-modal-content { transform: scale(1); }
+        /* --- Modals & Widgets --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+        .modal-overlay.visible { opacity: 1; pointer-events: all; }
+        .modal-content { background: var(--background-start); padding: 30px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px var(--shadow-color); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid var(--border-color); width: 90%; max-width: 450px; }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+        .modal-content .title { font-size: 2rem; margin-bottom: 15px; }
+        .modal-content .subtitle { font-size: 1rem; margin-top: 0; margin-bottom: 25px; }
         #interstitial-ad-container { width: 300px; height: 250px; margin: 0 auto 20px auto; background: #000; border-radius: 8px; overflow: hidden; }
-        #skip-ad-button { padding: 10px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
-        #skip-ad-button:disabled { background-color: #555; color: #999; cursor: not-allowed; opacity: 0.7; }
-        #skip-ad-button:enabled { background: var(--success-color); color: white; }
-
-        /* --- Top Right Menu --- */
-        #top-menu-button { position: fixed; top: 20px; right: 20px; z-index: 160; width: 40px; height: 40px; background: var(--glass-bg); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; color: white; font-size: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
-        #top-menu-dropdown { position: fixed; top: 70px; right: 20px; z-index: 159; background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 10px; overflow: hidden; transform: scaleY(0); transform-origin: top; transition: transform 0.3s ease; }
-        #top-menu-dropdown.visible { transform: scaleY(1); }
-        .menu-item { padding: 15px 25px; color: white; cursor: pointer; transition: background 0.2s; }
-        .menu-item:hover { background: rgba(255,255,255,0.1); }
-
-        /* --- Floating Calculator --- */
-        #calculator {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            z-index: 170;
-            width: 280px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+        #interstitial-ad-container iframe { width: 100%; height: 100%; border: 0; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #555; background: #333; color: white; font-size: 1rem; }
+        .permission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        
+        .widget { position: fixed; z-index: 160; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 15px; box-shadow: 0 8px 32px 0 var(--shadow-color); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0); }
+        .widget.visible { transform: scale(1); }
+        .widget-header { padding: 10px; cursor: move; text-align: center; font-weight: 600; }
+        #calculator { top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 280px; }
         #calculator.visible { transform: translate(-50%, -50%) scale(1); }
-        #calc-header { padding: 10px; background: rgba(0,0,0,0.2); cursor: move; display: flex; justify-content: space-between; align-items: center; }
-        #calc-close-btn { width: 20px; height: 20px; background: var(--danger-color); color: white; border: none; border-radius: 50%; cursor: pointer; }
-        #calc-display { width: 100%; background: transparent; border: none; color: white; text-align: right; padding: 20px; font-size: 2.5rem; font-family: 'Roboto Mono', monospace; }
-        #calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(0,0,0,0.2); }
-        .calc-btn { background: rgba(255,255,255,0.1); border: none; padding: 20px; color: white; font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
-        .calc-btn:hover { background: rgba(255,255,255,0.2); }
-        .calc-btn.operator { background: rgba(255, 165, 0, 0.5); }
-        .calc-btn.span-two { grid-column: span 2; }
+        #calc-display { width: 100%; background: transparent; border: none; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); color: white; text-align: right; padding: 20px; font-size: 2.5rem; font-family: 'Roboto Mono', monospace; }
+        #calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); }
+        .calc-btn { background: transparent; border: none; border-right: 1px solid var(--border-color); border-top: 1px solid var(--border-color); padding: 20px; color: white; font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
+        #mini-notes { bottom: 80px; right: 30px; width: 280px; }
+        #notes-textarea { width: 100%; height: 150px; background: transparent; border: none; border-top: 1px solid var(--border-color); padding: 10px; color: white; resize: none; font-family: 'Poppins'; }
     </style>
 </head>
 <body>
 
-    <!-- Splash Screen Section -->
-    <div id="splash-screen" class="page">
-        <div id="loader-container">
-            <div id="glitch-loader">Loading...</div>
-            <div id="progress-bar"><div id="progress-bar-inner"></div></div>
-        </div>
-        <div id="main-content" class="content-wrapper">
-            <h1 class="title">Welcome Back</h1>
-            <p class="subtitle" id="action-subtitle"></p>
-            <div class="button-group">
-                <div id="login-button-container"></div>
-                <button id="show-support-page-btn" class="styled-button support-button">Support Us</button>
+    <div id="main-view" class="view">
+        <div id="app-container">
+            <header class="main-header">
+                <div class="logo">StudyHub</div>
+                <nav class="header-nav">
+                    <button id="support-us-btn" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
+                </nav>
+            </header>
+            <main id="main-content-area">
+                <section id="toppers-section" class="content-section">
+                    <h1 class="section-title">Next Toppers Batch</h1>
+                    <p class="section-subtitle">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
+                    <button id="login-study-btn" class="styled-button">Loading...</button>
+                </section>
+                <section id="books-section" class="content-section" style="background: rgba(0,0,0,0.2);">
+                    <h1 class="section-title">Books Library</h1>
+                    <p class="section-subtitle">A vast collection of knowledge is being curated for you. Get ready to explore.</p>
+                    <div id="book-scanner"><i class="fas fa-book"></i><div id="scanner-line"></div></div>
+                </section>
+            </main>
+            <div id="persistent-ad-banner">
+                <script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'></script>
+                <script type="text/javascript">
+                    atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"></script>
             </div>
         </div>
-        <div class="footer-note">
-            <p>Developed with ❤️ by <a href="#" target="_blank">Sagar Raj</a></p>
-        </div>
     </div>
-
-    <!-- Support Us Page -->
-    <div id="support-page" class="page hidden">
-        <div class="content-wrapper">
-            <h1 class="title">Thank You!</h1>
-            <p class="subtitle">Your support helps keep this project alive. Every ad view counts.</p>
+    
+    <div id="support-view" class="view hidden">
+        <div style="width: 100%; max-width: 1000px; text-align: center;">
+            <h1 class="section-title">Support the Developer</h1>
+            <p class="section-subtitle">Your support by viewing these ads helps keep this application running and free for everyone. Thank you!</p>
             <div id="ad-grid">
-                <div class="ad-slot ad-slot-container-div">
-                    <script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"></script>
-                    <div id="container-5a3a56f258731c59b0ae000546a15e25"></div>
-                </div>
-                <div class="ad-slot ad-slot-320x50">
-                    <script type="text/javascript">
-                        atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-                    </script>
-                    <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"></script>
-                </div>
                 <div class="ad-slot ad-slot-300x250">
                     <script type="text/javascript">
                         atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
@@ -196,184 +167,215 @@
                     <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"></script>
                 </div>
                 <div class="ad-slot ad-slot-container-div">
-                     <script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'></script>
+                    <script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"></script>
+                    <div id="container-5a3a56f258731c59b0ae000546a15e25"></div>
                 </div>
             </div>
-            <button id="back-to-splash-btn" class="styled-button">Go Back</button>
+            <button id="back-to-main-btn" class="styled-button" style="margin-top: 30px;">Back to Hub</button>
         </div>
     </div>
 
-    <!-- Interstitial Ad Modal -->
-    <div id="interstitial-ad-modal">
-        <div class="ad-modal-content">
-            <p style="margin-bottom: 10px; font-size: 0.9rem; color: var(--secondary-color);">Please support us by watching this ad</p>
+    <div id="app-view" class="view hidden">
+        <div id="iframe-container">
+            <div id="iframe-loader" class="fas fa-spinner fa-spin"></div>
+            <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
+        </div>
+        <div id="focus-overlay"></div>
+        <button id="command-center-btn"><i class="fas fa-bars"></i></button>
+        <div id="side-panel">
+            <div id="side-panel-header">
+                <span class="side-panel-title">Command Center</span>
+                <button id="close-side-panel-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <nav id="side-panel-nav">
+                <button class="side-panel-button" id="side-panel-home-btn"><i class="fas fa-home fa-fw"></i> Home</button>
+                <button class="side-panel-button" id="side-panel-profile-btn"><i class="fas fa-user-circle fa-fw"></i> Profile</button>
+                <button class="side-panel-button" id="side-panel-calculator-btn"><i class="fas fa-calculator fa-fw"></i> Calculator</button>
+                <button class="side-panel-button" id="side-panel-focus-btn"><i class="fas fa-eye fa-fw"></i> Focus Mode</button>
+                <button class="side-panel-button" id="side-panel-notes-btn"><i class="fas fa-sticky-note fa-fw"></i> Mini Notes</button>
+                <button class="side-panel-button" id="side-panel-permissions-btn"><i class="fas fa-shield-alt fa-fw"></i> Permissions</button>
+                <button class="side-panel-button" id="side-panel-exit-btn" style="color: var(--danger-color);"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
+            </nav>
+        </div>
+        <div id="calculator" class="widget">
+            <div id="calc-header" class="widget-header"><i class="fas fa-arrows-alt"></i></div>
+            <input type="text" id="calc-display" disabled>
+            <div id="calc-buttons">
+                 <button class="calc-btn operator">C</button><button class="calc-btn operator">(</button><button class="calc-btn operator">)</button><button class="calc-btn operator">/</button>
+                 <button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button><button class="calc-btn operator">*</button>
+                 <button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button><button class="calc-btn operator">-</button>
+                 <button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button><button class="calc-btn operator">+</button>
+                 <button class="calc-btn">0</button><button class="calc-btn">.</button><button class="calc-btn" style="grid-column: span 2;">=</button>
+            </div>
+        </div>
+        <div id="mini-notes" class="widget">
+            <div id="notes-header" class="widget-header"><i class="fas fa-arrows-alt"></i> Mini Notes</div>
+            <textarea id="notes-textarea" placeholder="Your thoughts..."></textarea>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="interstitial-ad-modal" class="modal-overlay">
+        <div class="modal-content">
+            <p class="subtitle">Please support us by watching this ad</p>
             <div id="interstitial-ad-container"></div>
-            <button id="skip-ad-button" disabled>Skip Ad in <span id="ad-timer">4</span>s</button>
+            <button id="skip-ad-button" class="styled-button">Skip Ad in 4s</button>
         </div>
     </div>
-
-    <!-- Main App Content -->
-    <div id="iframe-container">
-        <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
-    </div>
-    <div id="ad-banner">
-        <script type="text/javascript">
-            atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-        </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"></script>
-    </div>
-
-    <!-- UI Overlays -->
-    <div id="fab-container">
-        <button id="home-fab" class="fab" title="Go to Main Page"><i class="fas fa-home"></i></button>
-    </div>
-
-    <button id="top-menu-button"><i class="fas fa-ellipsis-v"></i></button>
-    <div id="top-menu-dropdown">
-        <div class="menu-item" id="show-calculator-btn">Show Calculator</div>
-    </div>
-
-    <div id="calculator">
-        <div id="calc-header">
-            <span>Calculator</span>
-            <button id="calc-close-btn">X</button>
+    <div id="user-info-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="title">Welcome!</h2>
+            <p class="subtitle">Please tell us a bit about yourself.</p>
+            <form id="user-info-form">
+                <div class="form-group"><label for="user-name">Name</label><input type="text" id="user-name" required></div>
+                <div class="form-group"><label for="user-class">Class</label><input type="text" id="user-class" required></div>
+                <div class="form-group"><label for="user-age">Age</label><input type="number" id="user-age" required></div>
+                <button type="submit" class="styled-button" style="width: 100%;">Save & Continue</button>
+            </form>
         </div>
-        <input type="text" id="calc-display" disabled>
-        <div id="calc-buttons">
-            <button class="calc-btn operator span-two">C</button>
-            <button class="calc-btn operator">DEL</button>
-            <button class="calc-btn operator">/</button>
-            <button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button>
-            <button class="calc-btn operator">*</button>
-            <button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button>
-            <button class="calc-btn operator">-</button>
-            <button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button>
-            <button class="calc-btn operator">+</button>
-            <button class="calc-btn span-two">0</button>
-            <button class="calc-btn">.</button>
-            <button class="calc-btn operator">=</button>
+    </div>
+    <div id="telegram-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="title">Join Our Community!</h2>
+            <p class="subtitle">Get the latest updates on Telegram.</p>
+            <a href="https://t.me/PadhaiLikhai_official" target="_blank" class="styled-button" style="width: 100%; text-decoration: none;">Join Telegram</a>
+            <button id="close-telegram-modal" class="styled-button" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--border-color);">Continue to App</button>
+        </div>
+    </div>
+    <div id="permissions-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="title">Permissions Center</h2>
+            <p class="subtitle">To use all features, please grant the necessary permissions.</p>
+            <div class="permission-grid">
+                <button id="grant-camera-btn" class="styled-button support-button"><i class="fas fa-camera"></i> Camera</button>
+                <button id="grant-notify-btn" class="styled-button support-button"><i class="fas fa-bell"></i> Notifications</button>
+            </div>
+            <button id="close-permissions-modal" class="styled-button" style="width: 100%; margin-top: 25px;">Close</button>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- CONFIGURATION ---
-            const loginUrl = 'https://rolexcoderz.live/36xsuccess/';
             const studyUrl = 'https://www.rolexcoderz.xyz/Course';
+            const profileUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html';
             const mainProjectsUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/padhai.html';
             const loginTimestampKey = 'sagarRajLoginTimestamp';
+            const userInfoKey = 'sagarRajUserInfo';
+            const notesKey = 'sagarRajNotes';
 
-            // --- DOM REFERENCES ---
             const allDOMElements = {
-                splashScreen: document.getElementById('splash-screen'),
-                supportPage: document.getElementById('support-page'),
-                loaderContainer: document.getElementById('loader-container'),
-                mainContent: document.getElementById('main-content'),
-                websiteFrame: document.getElementById('website-frame'),
-                loginButtonContainer: document.getElementById('login-button-container'),
-                actionSubtitle: document.getElementById('action-subtitle'),
-                showSupportPageBtn: document.getElementById('show-support-page-btn'),
-                backToSplashBtn: document.getElementById('back-to-splash-btn'),
-                fabContainer: document.getElementById('fab-container'),
-                homeFab: document.getElementById('home-fab'),
+                mainView: document.getElementById('main-view'),
+                appView: document.getElementById('app-view'),
+                supportView: document.getElementById('support-view'),
+                loginStudyBtn: document.getElementById('login-study-btn'),
                 interstitialAdModal: document.getElementById('interstitial-ad-modal'),
                 interstitialAdContainer: document.getElementById('interstitial-ad-container'),
                 skipAdButton: document.getElementById('skip-ad-button'),
-                adTimerSpan: document.getElementById('ad-timer'),
-                topMenuButton: document.getElementById('top-menu-button'),
-                topMenuDropdown: document.getElementById('top-menu-dropdown'),
-                showCalculatorBtn: document.getElementById('show-calculator-btn'),
+                userInfoModal: document.getElementById('user-info-modal'),
+                userInfoForm: document.getElementById('user-info-form'),
+                telegramModal: document.getElementById('telegram-modal'),
+                closeTelegramModal: document.getElementById('close-telegram-modal'),
+                permissionsModal: document.getElementById('permissions-modal'),
+                closePermissionsModal: document.getElementById('close-permissions-modal'),
+                permissionsBtn: document.getElementById('side-panel-permissions-btn'),
+                grantCameraBtn: document.getElementById('grant-camera-btn'),
+                grantNotifyBtn: document.getElementById('grant-notify-btn'),
+                iframeContainer: document.getElementById('iframe-container'),
+                websiteFrame: document.getElementById('website-frame'),
+                iframeLoader: document.getElementById('iframe-loader'),
+                focusOverlay: document.getElementById('focus-overlay'),
+                notesWidget: document.getElementById('mini-notes'),
+                notesHeader: document.getElementById('notes-header'),
+                notesTextarea: document.getElementById('notes-textarea'),
                 calculator: document.getElementById('calculator'),
                 calcHeader: document.getElementById('calc-header'),
-                calcCloseBtn: document.getElementById('calc-close-btn'),
                 calcDisplay: document.getElementById('calc-display'),
-                calcButtons: document.getElementById('calc-buttons')
+                calcButtons: document.getElementById('calc-buttons'),
+                commandCenterBtn: document.getElementById('command-center-btn'),
+                sidePanel: document.getElementById('side-panel'),
+                closeSidePanelBtn: document.getElementById('close-side-panel-btn'),
+                sidePanelHomeBtn: document.getElementById('side-panel-home-btn'),
+                sidePanelProfileBtn: document.getElementById('side-panel-profile-btn'),
+                sidePanelCalculatorBtn: document.getElementById('side-panel-calculator-btn'),
+                sidePanelFocusBtn: document.getElementById('side-panel-focus-btn'),
+                sidePanelNotesBtn: document.getElementById('side-panel-notes-btn'),
+                sidePanelExitBtn: document.getElementById('side-panel-exit-btn'),
+                supportUsBtn: document.getElementById('support-us-btn'),
+                backToMainBtn: document.getElementById('back-to-main-btn'),
+                persistentAdBanner: document.getElementById('persistent-ad-banner'),
             };
-            const { fabContainer, websiteFrame, splashScreen, supportPage, homeFab } = allDOMElements;
 
-            // --- STATE & TIMERS ---
-            let fabHideTimeout;
+            const checkLoginStatus = () => {
+                const lastLogin = localStorage.getItem(loginTimestampKey);
+                if (!lastLogin) return false;
+                const twentyFourHours = 24 * 60 * 60 * 1000;
+                return (Date.now() - parseInt(lastLogin, 10)) < twentyFourHours;
+            };
 
-            // --- FUNCTIONS ---
-            const checkLoginStatus = () => { /* ... (no change) ... */ return false; };
-            
+            const showView = (viewId) => {
+                ['main-view', 'app-view', 'support-view'].forEach(id => {
+                    document.getElementById(id).classList.toggle('hidden', id !== viewId);
+                });
+                allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
+                allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId !== 'main-view');
+            };
+
             const launchSite = (url, setLoginTimestamp) => {
                 if (setLoginTimestamp) localStorage.setItem(loginTimestampKey, Date.now().toString());
-                websiteFrame.src = url;
-                splashScreen.classList.add('hidden');
-                supportPage.classList.add('hidden');
-                websiteFrame.style.opacity = '1';
-                resetFabVisibility(); // Show FABs when site launches
+                allDOMElements.websiteFrame.src = url;
+                showView('app-view');
+                allDOMElements.iframeLoader.classList.add('visible');
             };
 
             const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
-                const { interstitialAdModal, interstitialAdContainer, skipAdButton, adTimerSpan } = allDOMElements;
+                const { interstitialAdModal, interstitialAdContainer, skipAdButton } = allDOMElements;
                 interstitialAdModal.classList.add('visible');
                 interstitialAdContainer.innerHTML = '';
-                
-                const adScript = document.createElement('script');
-                adScript.type = 'text/javascript';
-                adScript.text = `
-                    atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-                    document.write('<scr' + 'ipt type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"></scr' + 'ipt>');
+                const adIframe = document.createElement('iframe');
+                interstitialAdContainer.appendChild(adIframe);
+                const adScriptContent = `
+                    <script type="text/javascript">
+                        atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+                    <\/script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>
                 `;
-                interstitialAdContainer.appendChild(adScript);
-
+                adIframe.contentWindow.document.open();
+                adIframe.contentWindow.document.write(adScriptContent);
+                adIframe.contentWindow.document.close();
                 let timeLeft = 4;
-                adTimerSpan.textContent = timeLeft;
+                skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
                 skipAdButton.disabled = true;
-
                 const timerInterval = setInterval(() => {
                     timeLeft--;
-                    adTimerSpan.textContent = timeLeft;
+                    skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
                     if (timeLeft <= 0) {
                         clearInterval(timerInterval);
                         skipAdButton.disabled = false;
                         skipAdButton.textContent = 'Skip Ad';
                     }
                 }, 1000);
-
                 skipAdButton.onclick = () => {
                     if (skipAdButton.disabled) return;
                     interstitialAdModal.classList.remove('visible');
                     launchSite(targetUrl, setLoginTimestamp);
-                    skipAdButton.textContent = `Skip Ad in ${adTimerSpan.textContent=4}s`;
                     skipAdButton.onclick = null;
                 };
             };
             
-            const setupUI = (isLoggedIn) => {
-                const { loginButtonContainer, actionSubtitle, loaderContainer, mainContent } = allDOMElements;
-                const button = document.createElement('button');
-                button.classList.add('styled-button');
+            const setupLoginButton = () => {
+                const isLoggedIn = checkLoginStatus();
                 if (isLoggedIn) {
-                    button.textContent = 'Continue Study';
-                    actionSubtitle.textContent = 'You are logged in. Continue where you left off.';
-                    button.addEventListener('click', () => showInterstitialAd(studyUrl, false));
+                    allDOMElements.loginStudyBtn.textContent = 'Continue Study';
+                    allDOMElements.loginStudyBtn.onclick = () => showInterstitialAd(studyUrl, false);
                 } else {
-                    button.textContent = 'Login for 24 Hours';
-                    actionSubtitle.textContent = 'Login to access the platform.';
-                    button.addEventListener('click', () => showInterstitialAd(loginUrl, true));
+                    allDOMElements.loginStudyBtn.textContent = 'Login for 24 Hours';
+                    allDOMElements.loginStudyBtn.onclick = () => showInterstitialAd(studyUrl, true);
                 }
-                loginButtonContainer.innerHTML = '';
-                loginButtonContainer.appendChild(button);
-                setTimeout(() => {
-                    loaderContainer.style.opacity = '0';
-                    mainContent.style.opacity = '1';
-                }, 2200);
             };
 
-            const resetFabVisibility = () => {
-                clearTimeout(fabHideTimeout);
-                fabContainer.classList.remove('inactive');
-                fabHideTimeout = setTimeout(() => fabContainer.classList.add('inactive'), 2000);
-            };
-
-            const makeDraggable = (elmnt) => {
+            const makeDraggable = (elmnt, header) => {
                 let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-                const header = allDOMElements.calcHeader;
-                header.onmousedown = dragMouseDown;
-
+                if (header) header.onmousedown = dragMouseDown;
                 function dragMouseDown(e) {
                     e = e || window.event;
                     e.preventDefault();
@@ -382,7 +384,6 @@
                     document.onmouseup = closeDragElement;
                     document.onmousemove = elementDrag;
                 }
-
                 function elementDrag(e) {
                     e = e || window.event;
                     e.preventDefault();
@@ -393,7 +394,6 @@
                     elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
                     elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
                 }
-
                 function closeDragElement() {
                     document.onmouseup = null;
                     document.onmousemove = null;
@@ -401,58 +401,84 @@
             };
 
             const handleCalculator = () => {
-                const { calcButtons, calcDisplay } = allDOMElements;
-                calcButtons.addEventListener('click', (e) => {
+                allDOMElements.calcButtons.addEventListener('click', (e) => {
                     if (!e.target.matches('.calc-btn')) return;
                     const key = e.target.textContent;
-                    const displayedNum = calcDisplay.value;
-
+                    const display = allDOMElements.calcDisplay;
                     if (key === 'C') {
-                        calcDisplay.value = '';
-                    } else if (key === 'DEL') {
-                        calcDisplay.value = displayedNum.slice(0, -1);
+                        display.value = '';
                     } else if (key === '=') {
-                        try {
-                            calcDisplay.value = eval(displayedNum.replace(/[^-()\d/*+.]/g, ''));
-                        } catch {
-                            calcDisplay.value = 'Error';
-                        }
+                        try { display.value = eval(display.value.replace(/[^-()\d/*+.]/g, '')); } catch { display.value = 'Error'; }
                     } else {
-                        calcDisplay.value += key;
+                        display.value += key;
                     }
                 });
             };
 
-            // --- EVENT LISTENERS ---
-            allDOMElements.showSupportPageBtn.addEventListener('click', () => {
-                splashScreen.classList.add('hidden');
-                supportPage.classList.remove('hidden');
+            // Initial App Flow
+            allDOMElements.telegramModal.classList.add('visible');
+            allDOMElements.closeTelegramModal.onclick = () => {
+                allDOMElements.telegramModal.classList.remove('visible');
+                if (!localStorage.getItem(userInfoKey)) {
+                    allDOMElements.userInfoModal.classList.add('visible');
+                } else {
+                    setupLoginButton();
+                }
+            };
+
+            allDOMElements.userInfoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const userInfo = {
+                    name: document.getElementById('user-name').value,
+                    class: document.getElementById('user-class').value,
+                    age: document.getElementById('user-age').value,
+                };
+                localStorage.setItem(userInfoKey, JSON.stringify(userInfo));
+                allDOMElements.userInfoModal.classList.remove('visible');
+                setupLoginButton();
             });
-            allDOMElements.backToSplashBtn.addEventListener('click', () => {
-                supportPage.classList.add('hidden');
-                splashScreen.classList.remove('hidden');
+
+            // Event Listeners
+            allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
+            allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
+            allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
+            allDOMElements.commandCenterBtn.addEventListener('click', () => allDOMElements.sidePanel.classList.add('visible'));
+            allDOMElements.closeSidePanelBtn.addEventListener('click', () => allDOMElements.sidePanel.classList.remove('visible'));
+            allDOMElements.sidePanelExitBtn.addEventListener('click', () => {
+                showView('main-view');
+                allDOMElements.sidePanel.classList.remove('visible');
+                allDOMElements.websiteFrame.src = 'about:blank';
             });
-            homeFab.addEventListener('click', () => websiteFrame.src = mainProjectsUrl);
+            allDOMElements.sidePanelHomeBtn.addEventListener('click', () => allDOMElements.websiteFrame.src = mainProjectsUrl);
+            allDOMElements.sidePanelProfileBtn.addEventListener('click', () => allDOMElements.websiteFrame.src = profileUrl);
+            allDOMElements.sidePanelCalculatorBtn.addEventListener('click', () => allDOMElements.calculator.classList.toggle('visible'));
+            allDOMElements.sidePanelNotesBtn.addEventListener('click', () => allDOMElements.notesWidget.classList.toggle('visible'));
+            allDOMElements.sidePanelFocusBtn.addEventListener('click', () => {
+                allDOMElements.focusOverlay.classList.toggle('active');
+                const icon = allDOMElements.sidePanelFocusBtn.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+            allDOMElements.sidePanelPermissionsBtn.addEventListener('click', () => allDOMElements.permissionsModal.classList.add('visible'));
+            allDOMElements.closePermissionsModal.addEventListener('click', () => allDOMElements.permissionsModal.classList.remove('visible'));
+            allDOMElements.grantCameraBtn.addEventListener('click', async () => {
+                try {
+                    await navigator.mediaDevices.getUserMedia({ video: true });
+                    alert('Camera permission granted!');
+                } catch (err) {
+                    alert('Camera permission was denied.');
+                }
+            });
+            allDOMElements.grantNotifyBtn.addEventListener('click', async () => {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') new Notification('Thank you!', { body: 'Notifications are now enabled.' });
+                else alert('Notification permission was denied.');
+            });
+            allDOMElements.notesTextarea.value = localStorage.getItem(notesKey) || '';
+            allDOMElements.notesTextarea.addEventListener('keyup', () => localStorage.setItem(notesKey, allDOMElements.notesTextarea.value));
             
-            // FAB auto-hide listeners
-            window.addEventListener('mousemove', resetFabVisibility);
-            window.addEventListener('touchstart', resetFabVisibility);
-
-            // Menu and Calculator listeners
-            allDOMElements.topMenuButton.addEventListener('click', () => {
-                allDOMElements.topMenuDropdown.classList.toggle('visible');
-            });
-            allDOMElements.showCalculatorBtn.addEventListener('click', () => {
-                allDOMElements.calculator.classList.add('visible');
-                allDOMElements.topMenuDropdown.classList.remove('visible');
-            });
-            allDOMElements.calcCloseBtn.addEventListener('click', () => {
-                allDOMElements.calculator.classList.remove('visible');
-            });
-
-            // --- INITIALIZATION ---
-            setupUI(checkLoginStatus());
-            makeDraggable(allDOMElements.calculator);
+            makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
+            makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
             handleCalculator();
         });
     </script>
