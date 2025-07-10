@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Ultimate Hub | Developed by Sagar Raj</title>
+    <title>The Flawless Hub | Developed by Sagar Raj</title>
     <style>
         /* * Designed & Developed by Sagar Raj
-         * Version 17: The Ultimate Ad-Optimized Hub
+         * Version 19: The Definitive Flawless Edition
          */
 
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -21,7 +21,7 @@
             --accent-color-end: #4facfe;
             --success-color: #2ecc71;
             --danger-color: #f04747;
-            --glass-bg: rgba(30, 30, 46, 0.5);
+            --glass-bg: rgba(30, 30, 46, 0.6);
             --border-color: rgba(255, 255, 255, 0.2);
             --shadow-color: rgba(0, 0, 0, 0.5);
         }
@@ -37,100 +37,66 @@
             color: var(--primary-color);
         }
         
-        #app-container {
+        /* --- View Management --- */
+        .view {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
             height: 100%;
             width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
             background: linear-gradient(-45deg, var(--background-end), var(--background-start), #16222a, #3a6073);
             background-size: 400% 400%;
             animation: gradientBG 20s ease infinite;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+            opacity: 1;
+            visibility: visible;
             overflow-y: auto;
             scroll-behavior: smooth;
         }
+        .view.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* --- Main Header --- */
-        .main-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 30px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(10, 10, 16, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-        }
+        /* --- Main Hub UI (Splash, Sections) --- */
+        .main-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; position: sticky; top: 0; z-index: 100; background: rgba(10, 10, 16, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); }
         .logo { font-family: 'Roboto Mono', monospace; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 5px var(--accent-color-start); }
         .header-nav button { background: none; border: none; color: var(--secondary-color); font-size: 1.2rem; margin-left: 20px; cursor: pointer; transition: all 0.3s ease; }
         .header-nav button:hover { color: var(--primary-color); text-shadow: 0 0 8px var(--primary-color); }
-
-        /* --- Content Sections --- */
-        .content-section {
-            padding: 40px 30px;
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-        }
+        .content-section { padding: 40px 30px; min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-bottom: 1px solid var(--border-color); }
         .section-title { font-size: 3rem; margin-bottom: 15px; font-weight: 700; }
         .section-subtitle { font-size: 1.2rem; color: var(--secondary-color); max-width: 600px; margin-bottom: 40px; }
-
-        .styled-button {
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end));
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0, 242, 254, 0.3);
-        }
+        .styled-button { padding: 15px 40px; font-size: 1.2rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(0, 242, 254, 0.3); }
         .styled-button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.5); }
-
-        #book-scanner {
-            width: 300px;
-            height: 250px;
-            border: 2px solid var(--accent-color-start);
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 5rem;
-            color: rgba(255,255,255,0.2);
-            box-shadow: 0 0 20px var(--accent-color-start) inset;
-        }
-        #scanner-line {
-            width: 100%;
-            height: 3px;
-            background: var(--accent-color-end);
-            box-shadow: 0 0 10px var(--accent-color-end);
-            position: absolute;
-            top: 0;
-            animation: scan-book 3s linear infinite;
-        }
+        #book-scanner { width: 300px; height: 250px; border: 2px solid var(--accent-color-start); border-radius: 10px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: 5rem; color: rgba(255,255,255,0.2); box-shadow: 0 0 20px var(--accent-color-start) inset; }
+        #scanner-line { width: 100%; height: 3px; background: var(--accent-color-end); box-shadow: 0 0 10px var(--accent-color-end); position: absolute; top: 0; animation: scan-book 3s linear infinite; }
         @keyframes scan-book { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
-        #countdown-timer { font-family: 'Roboto Mono', monospace; font-size: 2rem; margin-top: 20px; }
 
-        /* --- Iframe & Focus Mode --- */
-        #iframe-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
-        #website-frame { width: 100%; height: 100%; border: none; }
-        #focus-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 49; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+        /* --- App View (Iframe & Overlays) --- */
+        #app-view { z-index: 50; background: #000; }
+        #iframe-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        #website-frame { width: 100%; height: 100%; border: none; background: #000; }
+        #iframe-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--accent-color-start); font-size: 3rem; display: none; }
+        #iframe-loader.visible { display: block; }
+        #focus-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 140; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
         #focus-overlay.active { opacity: 1; }
 
-        /* --- Modals --- */
+        /* --- Command Center (Side Panel) --- */
+        #command-center-btn { position: fixed; top: 20px; left: 20px; z-index: 155; width: 50px; height: 50px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 50%; color: white; font-size: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; opacity: 0; pointer-events: none; }
+        #command-center-btn.visible { opacity: 1; pointer-events: all; }
+        #side-panel { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: rgba(10, 10, 16, 0.9); backdrop-filter: blur(15px); z-index: 150; transform: translateX(-100%); transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); padding: 20px; display: flex; flex-direction: column; }
+        #side-panel.visible { transform: translateX(0); }
+        #side-panel-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        .side-panel-title { font-size: 1.5rem; font-weight: 600; }
+        #close-side-panel-btn { background: none; border: none; color: var(--secondary-color); font-size: 1.5rem; cursor: pointer; }
+        #side-panel-nav { display: flex; flex-direction: column; gap: 10px; }
+        .side-panel-button { background: rgba(255,255,255,0.05); border: 1px solid transparent; color: var(--secondary-color); padding: 15px; border-radius: 10px; text-align: left; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 15px; }
+        .side-panel-button:hover { background: rgba(255,255,255,0.1); border-color: var(--border-color); color: var(--primary-color); }
+        .side-panel-button.hidden { display: none; }
+
+        /* --- Modals & Widgets --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
         .modal-overlay.visible { opacity: 1; pointer-events: all; }
         .modal-content { background: var(--background-start); padding: 30px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px var(--shadow-color); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid var(--border-color); width: 90%; max-width: 450px; }
@@ -139,142 +105,57 @@
         .modal-content .subtitle { font-size: 1rem; margin-top: 0; margin-bottom: 25px; }
         #interstitial-ad-container { width: 300px; height: 250px; margin: 0 auto 20px auto; background: #000; border-radius: 8px; overflow: hidden; }
         #interstitial-ad-container iframe { width: 100%; height: 100%; border: 0; }
-        #skip-ad-button { padding: 10px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
-        #skip-ad-button:disabled { background-color: #555; color: #999; cursor: not-allowed; opacity: 0.7; }
-        #skip-ad-button:enabled { background: var(--success-color); color: white; }
         .form-group { margin-bottom: 20px; text-align: left; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
         .form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #555; background: #333; color: white; font-size: 1rem; }
         .permission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
         
-        /* --- Futuristic Nexus Bar --- */
-        #nexus-bar {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%) scale(0);
-            z-index: 150;
-            display: flex;
-            gap: 10px;
-            padding: 10px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            border-radius: 50px;
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        #nexus-bar.visible { transform: translateX(-50%) scale(1); }
-        .nexus-button {
-            width: 50px;
-            height: 50px;
-            background: transparent;
-            border: 1px solid transparent;
-            border-radius: 50%;
-            color: var(--secondary-color);
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .nexus-button:hover {
-            color: var(--primary-color);
-            background: rgba(255,255,255,0.1);
-            border-color: var(--border-color);
-            text-shadow: 0 0 8px var(--primary-color);
-        }
-        .nexus-button.hidden { display: none; }
-
-        /* --- Widgets & Ad Revenue Page --- */
-        #ad-revenue-page .content-wrapper { opacity: 1; }
-        #ad-grid { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 25px; padding: 20px; max-width: 1000px; margin: 20px 0; }
-        .ad-slot { background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .ad-slot-300x250 { width: 300px; height: 250px; }
-        .ad-slot-container-div { width: auto; height: auto; }
-        
-        #persistent-ad-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 10px;
-            background: rgba(10, 10, 16, 0.9);
-            backdrop-filter: blur(10px);
-            z-index: 90;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            border-top: 1px solid var(--border-color);
-            transition: transform 0.5s ease-out;
-        }
-        #persistent-ad-banner.hidden { transform: translateY(100%); }
-
-        .widget {
-            position: fixed;
-            z-index: 160;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            border-radius: 15px;
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        #calculator {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            width: 280px;
-        }
+        .widget { position: fixed; z-index: 160; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 15px; box-shadow: 0 8px 32px 0 var(--shadow-color); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0); }
+        .widget.visible { transform: scale(1); }
+        .widget-header { padding: 10px; cursor: move; text-align: center; font-weight: 600; }
+        #calculator { top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 280px; }
         #calculator.visible { transform: translate(-50%, -50%) scale(1); }
-        #calc-header { padding: 10px; cursor: move; text-align: center; font-weight: 600; }
         #calc-display { width: 100%; background: transparent; border: none; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); color: white; text-align: right; padding: 20px; font-size: 2.5rem; font-family: 'Roboto Mono', monospace; }
         #calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); }
         .calc-btn { background: transparent; border: none; border-right: 1px solid var(--border-color); border-top: 1px solid var(--border-color); padding: 20px; color: white; font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
-        .calc-btn:nth-child(4n) { border-right: none; }
-        .calc-btn:hover { background: rgba(255,255,255,0.2); }
-        .calc-btn.operator { color: var(--accent-color-start); }
-
-        #mini-notes {
-            bottom: 80px;
-            right: 30px;
-            width: 280px;
-            transform: scale(0);
-        }
-        #mini-notes.visible { transform: scale(1); }
-        #notes-header { padding: 10px; cursor: move; text-align: center; font-weight: 600; }
+        #mini-notes { bottom: 80px; right: 30px; width: 280px; }
         #notes-textarea { width: 100%; height: 150px; background: transparent; border: none; border-top: 1px solid var(--border-color); padding: 10px; color: white; resize: none; font-family: 'Poppins'; }
     </style>
 </head>
 <body>
 
-    <div id="app-container">
-        <header class="main-header">
-            <div class="logo">StudyHub</div>
-            <nav class="header-nav">
-                <button id="support-us-btn" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
-                <button id="permissions-btn" title="Permissions"><i class="fas fa-shield-alt"></i></button>
-                <button id="focus-mode-btn" title="Focus Mode"><i class="fas fa-eye"></i></button>
-                <button id="notes-widget-btn" title="Mini Notes"><i class="fas fa-sticky-note"></i></button>
-            </nav>
-        </header>
-
-        <main id="main-content-area">
-            <section id="toppers-section" class="content-section">
-                <h1 class="section-title">Next Toppers Batch</h1>
-                <p class="section-subtitle">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
-                <button id="login-study-btn" class="styled-button">Loading...</button>
-            </section>
-
-            <section id="books-section" class="content-section" style="background: rgba(0,0,0,0.2);">
-                <h1 class="section-title">Books Library</h1>
-                <p class="section-subtitle">A vast collection of knowledge is being curated for you. Get ready to explore.</p>
-                <div id="book-scanner"><i class="fas fa-book"></i><div id="scanner-line"></div></div>
-                <h3 id="countdown-timer">Launching Soon...</h3>
-            </section>
-        </main>
-        
-        <div id="ad-revenue-page" class="content-section hidden">
+    <div id="main-view" class="view">
+        <div id="app-container">
+            <header class="main-header">
+                <div class="logo">StudyHub</div>
+                <nav class="header-nav">
+                    <button id="support-us-btn" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
+                </nav>
+            </header>
+            <main id="main-content-area">
+                <section id="toppers-section" class="content-section">
+                    <h1 class="section-title">Next Toppers Batch</h1>
+                    <p class="section-subtitle">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
+                    <button id="login-study-btn" class="styled-button">Loading...</button>
+                </section>
+                <section id="books-section" class="content-section" style="background: rgba(0,0,0,0.2);">
+                    <h1 class="section-title">Books Library</h1>
+                    <p class="section-subtitle">A vast collection of knowledge is being curated for you. Get ready to explore.</p>
+                    <div id="book-scanner"><i class="fas fa-book"></i><div id="scanner-line"></div></div>
+                </section>
+            </main>
+            <div id="persistent-ad-banner">
+                <script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'></script>
+                <script type="text/javascript">
+                    atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+    
+    <div id="support-view" class="view hidden">
+        <div style="width: 100%; max-width: 1000px; text-align: center;">
             <h1 class="section-title">Support the Developer</h1>
             <p class="section-subtitle">Your support by viewing these ads helps keep this application running and free for everyone. Thank you!</p>
             <div id="ad-grid">
@@ -291,13 +172,44 @@
             </div>
             <button id="back-to-main-btn" class="styled-button" style="margin-top: 30px;">Back to Hub</button>
         </div>
+    </div>
 
-        <div id="persistent-ad-banner">
-            <script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'></script>
-            <script type="text/javascript">
-                atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"></script>
+    <div id="app-view" class="view hidden">
+        <div id="iframe-container">
+            <div id="iframe-loader" class="fas fa-spinner fa-spin"></div>
+            <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
+        </div>
+        <div id="focus-overlay"></div>
+        <button id="command-center-btn"><i class="fas fa-bars"></i></button>
+        <div id="side-panel">
+            <div id="side-panel-header">
+                <span class="side-panel-title">Command Center</span>
+                <button id="close-side-panel-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <nav id="side-panel-nav">
+                <button class="side-panel-button" id="side-panel-home-btn"><i class="fas fa-home fa-fw"></i> Home</button>
+                <button class="side-panel-button" id="side-panel-profile-btn"><i class="fas fa-user-circle fa-fw"></i> Profile</button>
+                <button class="side-panel-button" id="side-panel-calculator-btn"><i class="fas fa-calculator fa-fw"></i> Calculator</button>
+                <button class="side-panel-button" id="side-panel-focus-btn"><i class="fas fa-eye fa-fw"></i> Focus Mode</button>
+                <button class="side-panel-button" id="side-panel-notes-btn"><i class="fas fa-sticky-note fa-fw"></i> Mini Notes</button>
+                <button class="side-panel-button" id="side-panel-permissions-btn"><i class="fas fa-shield-alt fa-fw"></i> Permissions</button>
+                <button class="side-panel-button" id="side-panel-exit-btn" style="color: var(--danger-color);"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
+            </nav>
+        </div>
+        <div id="calculator" class="widget">
+            <div id="calc-header" class="widget-header"><i class="fas fa-arrows-alt"></i></div>
+            <input type="text" id="calc-display" disabled>
+            <div id="calc-buttons">
+                 <button class="calc-btn operator">C</button><button class="calc-btn operator">(</button><button class="calc-btn operator">)</button><button class="calc-btn operator">/</button>
+                 <button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button><button class="calc-btn operator">*</button>
+                 <button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button><button class="calc-btn operator">-</button>
+                 <button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button><button class="calc-btn operator">+</button>
+                 <button class="calc-btn">0</button><button class="calc-btn">.</button><button class="calc-btn" style="grid-column: span 2;">=</button>
+            </div>
+        </div>
+        <div id="mini-notes" class="widget">
+            <div id="notes-header" class="widget-header"><i class="fas fa-arrows-alt"></i> Mini Notes</div>
+            <textarea id="notes-textarea" placeholder="Your thoughts..."></textarea>
         </div>
     </div>
 
@@ -306,7 +218,7 @@
         <div class="modal-content">
             <p class="subtitle">Please support us by watching this ad</p>
             <div id="interstitial-ad-container"></div>
-            <button id="skip-ad-button" class="styled-button" disabled>Skip Ad in 4s</button>
+            <button id="skip-ad-button" class="styled-button">Skip Ad in 4s</button>
         </div>
     </div>
     <div id="user-info-modal" class="modal-overlay">
@@ -341,33 +253,6 @@
         </div>
     </div>
 
-    <!-- Iframe & Overlays -->
-    <div id="iframe-container">
-        <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
-    </div>
-    <div id="focus-overlay"></div>
-    <div id="nexus-bar">
-        <button class="nexus-button" id="nexus-home-btn" title="Home"><i class="fas fa-home"></i></button>
-        <button class="nexus-button" id="nexus-profile-btn" title="Profile"><i class="fas fa-user-circle"></i></button>
-        <button class="nexus-button" id="nexus-calculator-btn" title="Calculator"><i class="fas fa-calculator"></i></button>
-        <button class="nexus-button hidden" id="nexus-scroll-top-btn" title="Scroll to Top"><i class="fas fa-arrow-up"></i></button>
-    </div>
-    <div id="calculator" class="widget">
-        <div id="calc-header"><i class="fas fa-arrows-alt"></i></div>
-        <input type="text" id="calc-display" disabled>
-        <div id="calc-buttons">
-            <button class="calc-btn operator">C</button><button class="calc-btn operator">(</button><button class="calc-btn operator">)</button><button class="calc-btn operator">/</button>
-            <button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button><button class="calc-btn operator">*</button>
-            <button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button><button class="calc-btn operator">-</button>
-            <button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button><button class="calc-btn operator">+</button>
-            <button class="calc-btn">0</button><button class="calc-btn">.</button><button class="calc-btn" style="grid-column: span 2;">=</button>
-        </div>
-    </div>
-    <div id="mini-notes" class="widget">
-        <div id="notes-header"><i class="fas fa-arrows-alt"></i> Mini Notes</div>
-        <textarea id="notes-textarea" placeholder="Your thoughts..."></textarea>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const studyUrl = 'https://www.rolexcoderz.xyz/Course';
@@ -378,6 +263,9 @@
             const notesKey = 'sagarRajNotes';
 
             const allDOMElements = {
+                mainView: document.getElementById('main-view'),
+                appView: document.getElementById('app-view'),
+                supportView: document.getElementById('support-view'),
                 loginStudyBtn: document.getElementById('login-study-btn'),
                 interstitialAdModal: document.getElementById('interstitial-ad-modal'),
                 interstitialAdContainer: document.getElementById('interstitial-ad-container'),
@@ -388,28 +276,29 @@
                 closeTelegramModal: document.getElementById('close-telegram-modal'),
                 permissionsModal: document.getElementById('permissions-modal'),
                 closePermissionsModal: document.getElementById('close-permissions-modal'),
-                permissionsBtn: document.getElementById('permissions-btn'),
+                permissionsBtn: document.getElementById('side-panel-permissions-btn'),
                 grantCameraBtn: document.getElementById('grant-camera-btn'),
                 grantNotifyBtn: document.getElementById('grant-notify-btn'),
                 iframeContainer: document.getElementById('iframe-container'),
                 websiteFrame: document.getElementById('website-frame'),
+                iframeLoader: document.getElementById('iframe-loader'),
                 focusOverlay: document.getElementById('focus-overlay'),
-                focusModeBtn: document.getElementById('focus-mode-btn'),
                 notesWidget: document.getElementById('mini-notes'),
-                notesWidgetBtn: document.getElementById('notes-widget-btn'),
                 notesHeader: document.getElementById('notes-header'),
                 notesTextarea: document.getElementById('notes-textarea'),
-                nexusBar: document.getElementById('nexus-bar'),
-                nexusHomeBtn: document.getElementById('nexus-home-btn'),
-                nexusProfileBtn: document.getElementById('nexus-profile-btn'),
-                nexusScrollTopBtn: document.getElementById('nexus-scroll-top-btn'),
-                nexusCalculatorBtn: document.getElementById('nexus-calculator-btn'),
                 calculator: document.getElementById('calculator'),
                 calcHeader: document.getElementById('calc-header'),
                 calcDisplay: document.getElementById('calc-display'),
                 calcButtons: document.getElementById('calc-buttons'),
-                mainContentArea: document.getElementById('main-content-area'),
-                adRevenuePage: document.getElementById('ad-revenue-page'),
+                commandCenterBtn: document.getElementById('command-center-btn'),
+                sidePanel: document.getElementById('side-panel'),
+                closeSidePanelBtn: document.getElementById('close-side-panel-btn'),
+                sidePanelHomeBtn: document.getElementById('side-panel-home-btn'),
+                sidePanelProfileBtn: document.getElementById('side-panel-profile-btn'),
+                sidePanelCalculatorBtn: document.getElementById('side-panel-calculator-btn'),
+                sidePanelFocusBtn: document.getElementById('side-panel-focus-btn'),
+                sidePanelNotesBtn: document.getElementById('side-panel-notes-btn'),
+                sidePanelExitBtn: document.getElementById('side-panel-exit-btn'),
                 supportUsBtn: document.getElementById('support-us-btn'),
                 backToMainBtn: document.getElementById('back-to-main-btn'),
                 persistentAdBanner: document.getElementById('persistent-ad-banner'),
@@ -422,14 +311,19 @@
                 return (Date.now() - parseInt(lastLogin, 10)) < twentyFourHours;
             };
 
+            const showView = (viewId) => {
+                ['main-view', 'app-view', 'support-view'].forEach(id => {
+                    document.getElementById(id).classList.toggle('hidden', id !== viewId);
+                });
+                allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
+                allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId !== 'main-view');
+            };
+
             const launchSite = (url, setLoginTimestamp) => {
                 if (setLoginTimestamp) localStorage.setItem(loginTimestampKey, Date.now().toString());
                 allDOMElements.websiteFrame.src = url;
-                allDOMElements.iframeContainer.style.opacity = '1';
-                allDOMElements.iframeContainer.style.pointerEvents = 'all';
-                allDOMElements.nexusBar.classList.add('visible');
-                allDOMElements.persistentAdBanner.classList.add('hidden');
-                allDOMElements.nexusScrollTopBtn.classList.toggle('hidden', url !== studyUrl);
+                showView('app-view');
+                allDOMElements.iframeLoader.classList.add('visible');
             };
 
             const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
@@ -544,49 +438,44 @@
             });
 
             // Event Listeners
-            allDOMElements.supportUsBtn.addEventListener('click', () => {
-                allDOMElements.mainContentArea.style.display = 'none';
-                allDOMElements.adRevenuePage.classList.remove('hidden');
+            allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
+            allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
+            allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
+            allDOMElements.commandCenterBtn.addEventListener('click', () => allDOMElements.sidePanel.classList.add('visible'));
+            allDOMElements.closeSidePanelBtn.addEventListener('click', () => allDOMElements.sidePanel.classList.remove('visible'));
+            allDOMElements.sidePanelExitBtn.addEventListener('click', () => {
+                showView('main-view');
+                allDOMElements.sidePanel.classList.remove('visible');
+                allDOMElements.websiteFrame.src = 'about:blank';
             });
-            allDOMElements.backToMainBtn.addEventListener('click', () => {
-                allDOMElements.mainContentArea.style.display = 'block';
-                allDOMElements.adRevenuePage.classList.add('hidden');
+            allDOMElements.sidePanelHomeBtn.addEventListener('click', () => allDOMElements.websiteFrame.src = mainProjectsUrl);
+            allDOMElements.sidePanelProfileBtn.addEventListener('click', () => allDOMElements.websiteFrame.src = profileUrl);
+            allDOMElements.sidePanelCalculatorBtn.addEventListener('click', () => allDOMElements.calculator.classList.toggle('visible'));
+            allDOMElements.sidePanelNotesBtn.addEventListener('click', () => allDOMElements.notesWidget.classList.toggle('visible'));
+            allDOMElements.sidePanelFocusBtn.addEventListener('click', () => {
+                allDOMElements.focusOverlay.classList.toggle('active');
+                const icon = allDOMElements.sidePanelFocusBtn.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
             });
             allDOMElements.permissionsBtn.addEventListener('click', () => allDOMElements.permissionsModal.classList.add('visible'));
             allDOMElements.closePermissionsModal.addEventListener('click', () => allDOMElements.permissionsModal.classList.remove('visible'));
             allDOMElements.grantCameraBtn.addEventListener('click', async () => {
                 try {
                     await navigator.mediaDevices.getUserMedia({ video: true });
-                    alert('Camera permission granted! You can now use camera features on the profile page.');
+                    alert('Camera permission granted!');
                 } catch (err) {
-                    alert('Camera permission was denied. Please grant it in your browser or app settings.');
+                    alert('Camera permission was denied.');
                 }
             });
             allDOMElements.grantNotifyBtn.addEventListener('click', async () => {
                 const permission = await Notification.requestPermission();
-                if (permission === 'granted') {
-                    new Notification('Thank you!', { body: 'Notifications are now enabled.' });
-                } else {
-                    alert('Notification permission was denied.');
-                }
+                if (permission === 'granted') new Notification('Thank you!', { body: 'Notifications are now enabled.' });
+                else alert('Notification permission was denied.');
             });
-
-            allDOMElements.focusModeBtn.addEventListener('click', () => {
-                allDOMElements.focusOverlay.classList.toggle('active');
-                const icon = allDOMElements.focusModeBtn.querySelector('i');
-                icon.classList.toggle('fa-eye');
-                icon.classList.toggle('fa-eye-slash');
-            });
-
-            allDOMElements.notesWidgetBtn.addEventListener('click', () => allDOMElements.notesWidget.classList.toggle('visible'));
             allDOMElements.notesTextarea.value = localStorage.getItem(notesKey) || '';
             allDOMElements.notesTextarea.addEventListener('keyup', () => localStorage.setItem(notesKey, allDOMElements.notesTextarea.value));
             
-            allDOMElements.nexusHomeBtn.addEventListener('click', () => launchSite(mainProjectsUrl, false));
-            allDOMElements.nexusProfileBtn.addEventListener('click', () => launchSite(profileUrl, false));
-            allDOMElements.nexusCalculatorBtn.addEventListener('click', () => allDOMElements.calculator.classList.toggle('visible'));
-            allDOMElements.nexusScrollTopBtn.addEventListener('click', () => allDOMElements.websiteFrame.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }));
-
             makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
             makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
             handleCalculator();
