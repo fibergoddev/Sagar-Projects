@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-View Interactive Launcher | Developed by Sagar Raj</title>
+    <title>Definitive Launcher | Developed by Sagar Raj</title>
     <style>
         /* * Designed & Developed by Sagar Raj
-         * Version 13: Multi-View Architecture with Profile Page & Camera
+         * Version 14: Definitive Edition with All Features Restored & Perfected
+         * This is a complete, single-file application built to professional standards.
          */
 
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -15,14 +16,15 @@
         :root {
             --primary-color: #ffffff;
             --secondary-color: #cccccc;
-            --background-start: #121212;
-            --background-end: #2c3e50;
-            --accent-color-start: #8e44ad;
-            --accent-color-end: #3498db;
+            --background-start: #0a0a10;
+            --background-end: #1a1a2e;
+            --accent-color-start: #00f2fe;
+            --accent-color-end: #4facfe;
             --success-color: #2ecc71;
-            --danger-color: #e74c3c;
+            --danger-color: #f04747;
             --ad-banner-height: 50px;
-            --glass-bg: rgba(22, 22, 22, 0.5);
+            --glass-bg: rgba(30, 30, 46, 0.5);
+            --border-color: rgba(255, 255, 255, 0.2);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,8 +37,8 @@
             background-color: var(--background-start);
         }
 
-        /* --- Page Containers --- */
-        .page {
+        /* --- Page & View Containers --- */
+        .view {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -46,16 +48,17 @@
             position: fixed;
             top: 0;
             left: 0;
-            background: linear-gradient(-45deg, var(--background-end), var(--background-start), #23a6d5, #23d5ab);
+            background: linear-gradient(-45deg, var(--background-end), var(--background-start), #16222a, #3a6073);
             background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            animation: gradientBG 20s ease infinite;
             z-index: 200;
-            transition: opacity 1s ease-out, transform 1s ease-out;
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
             opacity: 1;
             overflow-y: auto;
+            padding: 20px;
         }
         
-        .page.hidden {
+        .view.hidden {
             opacity: 0;
             transform: scale(1.1);
             pointer-events: none;
@@ -67,19 +70,12 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- Unique Glitch Loader --- */
+        /* --- Loader & Splash Screen --- */
         #loader-container { display: flex; flex-direction: column; align-items: center; gap: 20px; transition: opacity 0.5s ease-out; }
-        #glitch-loader { font-family: 'Roboto Mono', monospace; font-size: 4rem; font-weight: 700; color: var(--primary-color); position: relative; text-transform: uppercase; }
-        #glitch-loader::before, #glitch-loader::after { content: 'Loading...'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: inherit; overflow: hidden; }
-        #glitch-loader::before { left: 2px; text-shadow: -2px 0 var(--danger-color); animation: glitch-anim-1 2s infinite linear reverse; }
-        #glitch-loader::after { left: -2px; text-shadow: -2px 0 var(--success-color), 2px 2px var(--accent-color-end); animation: glitch-anim-2 2s infinite linear reverse; }
-        @keyframes glitch-anim-1 { 0%, 100% { clip-path: inset(0 0 95% 0); } 25% { clip-path: inset(50% 0 20% 0); } 50% { clip-path: inset(20% 0 60% 0); } 75% { clip-path: inset(80% 0 5% 0); } }
-        @keyframes glitch-anim-2 { 0%, 100% { clip-path: inset(90% 0 5% 0); } 25% { clip-path: inset(30% 0 70% 0); } 50% { clip-path: inset(70% 0 10% 0); } 75% { clip-path: inset(10% 0 80% 0); } }
+        #glitch-loader { font-family: 'Roboto Mono', monospace; font-size: 4rem; font-weight: 700; color: var(--primary-color); position: relative; text-transform: uppercase; text-shadow: 0 0 5px var(--accent-color-start), 0 0 10px var(--accent-color-start); }
         #progress-bar { width: 250px; height: 4px; background-color: rgba(255,255,255,0.3); border-radius: 4px; overflow: hidden; }
         #progress-bar-inner { width: 100%; height: 100%; background-color: var(--primary-color); transform: scaleX(0); transform-origin: left; animation: fill-progress 2s ease-out forwards; }
         @keyframes fill-progress { to { transform: scaleX(1); } }
-
-        /* --- Main Content & Buttons --- */
         .content-wrapper { text-align: center; color: var(--primary-color); opacity: 0; transition: opacity 1s ease-in-out 0.5s; padding: 20px; }
         #splash-screen .content-wrapper { opacity: 0; }
         .title { font-size: 3rem; font-weight: 700; }
@@ -90,44 +86,80 @@
         .support-button { background: transparent; border: 2px solid var(--primary-color); }
         .footer-note { position: absolute; bottom: 20px; width: 100%; text-align: center; font-size: 0.9rem; color: var(--secondary-color); opacity: 0.7; }
         
-        #support-page .content-wrapper { opacity: 1; }
-        #ad-grid { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 25px; padding: 20px; max-width: 1000px; margin: 20px 0; }
-        .ad-slot { background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .ad-slot-320x50 { width: 320px; height: 50px; }
-        .ad-slot-300x250 { width: 300px; height: 250px; }
-        .ad-slot-container-div { width: auto; height: auto; }
-
+        /* --- Main App Iframe & Ad Banner --- */
         #iframe-container { position: fixed; top: 0; left: 0; width: 100%; height: calc(100% - var(--ad-banner-height)); z-index: 50; touch-action: pan-y; }
         #website-frame { width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 1s ease-in 0.5s; }
         #ad-banner { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--ad-banner-height); background-color: #1a1a1a; display: flex; justify-content: center; align-items: center; z-index: 60; box-shadow: 0 -2px 10px rgba(0,0,0,0.5); }
 
-        #fab-container { position: fixed; bottom: calc(var(--ad-banner-height) + 20px); right: 20px; z-index: 150; display: flex; flex-direction: column; gap: 15px; transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
-        .fab { width: 60px; height: 60px; background: linear-gradient(45deg, var(--accent-color-start), var(--accent-color-end)); border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; color: white; font-size: 22px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: scale(0); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease; }
-        .fab:hover { filter: brightness(1.2); transform: scale(1.1) !important; }
-        #fab-container.inactive { opacity: 0; transform: translateX(50px); pointer-events: none; }
+        /* --- Futuristic Nexus Bar --- */
+        #nexus-bar {
+            position: fixed;
+            bottom: calc(var(--ad-banner-height) + 15px);
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            z-index: 150;
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        #nexus-bar.visible { transform: translateX(-50%) scale(1); }
+        .nexus-button {
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 50%;
+            color: var(--secondary-color);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nexus-button:hover {
+            color: var(--primary-color);
+            background: rgba(255,255,255,0.1);
+            border-color: var(--border-color);
+            text-shadow: 0 0 8px var(--primary-color);
+        }
+        .nexus-button.hidden { display: none; }
 
+        /* --- Modals --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 400; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
         .modal-overlay.visible { opacity: 1; pointer-events: all; }
-        .modal-content { background: var(--background-start); padding: 30px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(255,255,255,0.1); }
+        .modal-content { background: var(--background-start); padding: 30px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid var(--border-color); }
         .modal-overlay.visible .modal-content { transform: scale(1); }
         #interstitial-ad-container { width: 300px; height: 250px; margin: 0 auto 20px auto; background: #000; border-radius: 8px; overflow: hidden; }
         #interstitial-ad-container iframe { width: 100%; height: 100%; border: 0; }
         #skip-ad-button { padding: 10px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
         #skip-ad-button:disabled { background-color: #555; color: #999; cursor: not-allowed; opacity: 0.7; }
         #skip-ad-button:enabled { background: var(--success-color); color: white; }
-
-        #user-info-modal .modal-content { width: 90%; max-width: 400px; }
+        #user-info-modal .modal-content, #telegram-modal .modal-content { width: 90%; max-width: 400px; }
         .form-group { margin-bottom: 20px; text-align: left; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
         .form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #555; background: #333; color: white; font-size: 1rem; }
         
-        #top-menu-button { position: fixed; top: 20px; right: 20px; z-index: 160; width: 40px; height: 40px; background: var(--glass-bg); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; color: white; font-size: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
-        #top-menu-dropdown { position: fixed; top: 70px; right: 20px; z-index: 159; background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 10px; overflow: hidden; transform: scaleY(0); transform-origin: top; transition: transform 0.3s ease; }
-        #top-menu-dropdown.visible { transform: scaleY(1); }
-        .menu-item { padding: 15px 25px; color: white; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 10px; }
-        .menu-item:hover { background: rgba(255,255,255,0.1); }
+        /* --- Profile Page View --- */
+        .profile-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; }
+        #profile-page .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; width: 100%; }
+        .profile-card { background: var(--glass-bg); border: 1px solid var(--border-color); border-radius: 15px; overflow: hidden; }
+        .profile-card .card-header { display: flex; align-items: center; gap: 15px; padding: 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border-color); }
+        .profile-card .card-header i { font-size: 1.5rem; color: var(--accent-color-start); }
+        .profile-card .card-header h3 { margin: 0; font-size: 1.2rem; }
+        .profile-card .card-content { padding: 25px; }
+        .info-card p { margin-bottom: 15px; }
+        .info-card strong { color: var(--secondary-color); margin-right: 10px; }
+        #camera-container { width: 100%; aspect-ratio: 4 / 3; background: #000; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        #camera-feed { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: none; }
+        #camera-placeholder { color: var(--secondary-color); padding: 20px; }
+        .camera-controls { display: flex; gap: 10px; justify-content: center; }
 
-        #calculator { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 170; width: 280px; background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        /* --- Calculator --- */
+        #calculator { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 170; width: 280px; background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid var(--border-color); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
         #calculator.visible { transform: translate(-50%, -50%) scale(1); }
         #calc-header { padding: 10px; background: rgba(0,0,0,0.2); cursor: move; display: flex; justify-content: space-between; align-items: center; }
         #calc-close-btn { width: 20px; height: 20px; background: var(--danger-color); color: white; border: none; border-radius: 50%; cursor: pointer; }
@@ -141,8 +173,8 @@
 </head>
 <body>
 
-    <!-- Splash Screen Section -->
-    <div id="splash-screen" class="page">
+    <!-- All Views are in the body, managed by JS -->
+    <div id="splash-screen" class="view">
         <div id="loader-container">
             <div id="glitch-loader">Loading...</div>
             <div id="progress-bar"><div id="progress-bar-inner"></div></div>
@@ -160,9 +192,8 @@
         </div>
     </div>
 
-    <!-- Support Us Page -->
-    <div id="support-page" class="page hidden">
-        <div class="content-wrapper">
+    <div id="support-page" class="view hidden">
+        <div class="content-wrapper" style="opacity: 1; width: 100%; max-width: 1000px;">
             <h1 class="title">Thank You!</h1>
             <p class="subtitle">Your support helps keep this project alive. Every ad view counts.</p>
             <div id="ad-grid">
@@ -187,6 +218,38 @@
                 </div>
             </div>
             <button id="back-to-splash-btn" class="styled-button">Go Back</button>
+        </div>
+    </div>
+
+    <div id="profile-page" class="view hidden">
+        <div class="content-wrapper" style="opacity: 1; width: 100%; max-width: 1200px;">
+            <div class="profile-header">
+                <h1 class="title" style="font-size: 2.5rem;">User Profile</h1>
+                <button id="back-from-profile-btn" class="styled-button support-button"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+            <div class="profile-grid">
+                <div class="profile-card info-card">
+                    <div class="card-header"><i class="fas fa-id-card"></i><h3>Your Info</h3></div>
+                    <div class="card-content">
+                        <p><strong>Name:</strong> <span id="info-name"></span></p>
+                        <p><strong>Class:</strong> <span id="info-class"></span></p>
+                        <p><strong>Age:</strong> <span id="info-age"></span></p>
+                    </div>
+                </div>
+                <div class="profile-card camera-card">
+                    <div class="card-header"><i class="fas fa-camera-retro"></i><h3>Style Cam</h3></div>
+                    <div class="card-content">
+                        <div id="camera-container">
+                            <video id="camera-feed" autoplay playsinline></video>
+                            <p id="camera-placeholder">Activate Style Cam to see yourself!</p>
+                        </div>
+                        <div class="camera-controls">
+                            <button id="activate-camera-btn" class="styled-button"><i class="fas fa-power-off"></i> Activate</button>
+                            <button id="disable-camera-btn" class="styled-button" style="background: var(--danger-color); display: none;"><i class="fas fa-ban"></i> Disable</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -219,8 +282,16 @@
             </form>
         </div>
     </div>
+    <div id="telegram-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="title" style="font-size: 2rem; margin-bottom: 15px;">Join Our Community!</h2>
+            <p class="subtitle" style="margin-top: 0; margin-bottom: 25px;">Get the latest updates and connect with us on Telegram.</p>
+            <a href="https://t.me/PadhaiLikhai_official" target="_blank" class="styled-button" style="width: 100%; text-decoration: none;">Join Telegram</a>
+            <button id="close-telegram-modal" class="styled-button support-button" style="width: 100%; margin-top: 15px;">Continue to App</button>
+        </div>
+    </div>
 
-    <!-- Main App Content -->
+    <!-- Main App Content (Iframe) & Overlays -->
     <div id="iframe-container">
         <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
     </div>
@@ -231,16 +302,11 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"></script>
     </div>
 
-    <!-- UI Overlays -->
-    <div id="fab-container">
-        <button id="home-fab" class="fab" title="Go to Main Page"><i class="fas fa-home"></i></button>
-        <button id="scroll-top-fab" class="fab" title="Scroll to Top"><i class="fas fa-arrow-up"></i></button>
-    </div>
-
-    <button id="top-menu-button"><i class="fas fa-ellipsis-v"></i></button>
-    <div id="top-menu-dropdown">
-        <div class="menu-item" id="profile-menu-btn"><i class="fas fa-user-circle"></i> Profile</div>
-        <div class="menu-item" id="show-calculator-btn"><i class="fas fa-calculator"></i> Calculator</div>
+    <div id="nexus-bar">
+        <button class="nexus-button" id="nexus-home-btn" title="Home"><i class="fas fa-home"></i></button>
+        <button class="nexus-button" id="nexus-profile-btn" title="Profile"><i class="fas fa-user-circle"></i></button>
+        <button class="nexus-button" id="nexus-calculator-btn" title="Calculator"><i class="fas fa-calculator"></i></button>
+        <button class="nexus-button hidden" id="nexus-scroll-top-btn" title="Scroll to Top"><i class="fas fa-arrow-up"></i></button>
     </div>
 
     <div id="calculator">
@@ -276,6 +342,7 @@
             const allDOMElements = {
                 splashScreen: document.getElementById('splash-screen'),
                 supportPage: document.getElementById('support-page'),
+                profilePage: document.getElementById('profile-page'),
                 loaderContainer: document.getElementById('loader-container'),
                 mainContent: document.getElementById('main-content'),
                 websiteFrame: document.getElementById('website-frame'),
@@ -283,27 +350,35 @@
                 actionSubtitle: document.getElementById('action-subtitle'),
                 showSupportPageBtn: document.getElementById('show-support-page-btn'),
                 backToSplashBtn: document.getElementById('back-to-splash-btn'),
-                fabContainer: document.getElementById('fab-container'),
-                homeFab: document.getElementById('home-fab'),
-                scrollTopFab: document.getElementById('scroll-top-fab'),
+                backFromProfileBtn: document.getElementById('back-from-profile-btn'),
+                nexusBar: document.getElementById('nexus-bar'),
+                nexusHomeBtn: document.getElementById('nexus-home-btn'),
+                nexusProfileBtn: document.getElementById('nexus-profile-btn'),
+                nexusCalculatorBtn: document.getElementById('nexus-calculator-btn'),
+                nexusScrollTopBtn: document.getElementById('nexus-scroll-top-btn'),
                 interstitialAdModal: document.getElementById('interstitial-ad-modal'),
                 interstitialAdContainer: document.getElementById('interstitial-ad-container'),
                 skipAdButton: document.getElementById('skip-ad-button'),
                 adTimerSpan: document.getElementById('ad-timer'),
                 userInfoModal: document.getElementById('user-info-modal'),
                 userInfoForm: document.getElementById('user-info-form'),
-                topMenuButton: document.getElementById('top-menu-button'),
-                topMenuDropdown: document.getElementById('top-menu-dropdown'),
-                profileMenuBtn: document.getElementById('profile-menu-btn'),
-                showCalculatorBtn: document.getElementById('show-calculator-btn'),
+                telegramModal: document.getElementById('telegram-modal'),
+                closeTelegramModal: document.getElementById('close-telegram-modal'),
                 calculator: document.getElementById('calculator'),
                 calcHeader: document.getElementById('calc-header'),
                 calcCloseBtn: document.getElementById('calc-close-btn'),
                 calcButtons: document.getElementById('calc-buttons'),
-                calcDisplay: document.getElementById('calc-display')
+                calcDisplay: document.getElementById('calc-display'),
+                infoName: document.getElementById('info-name'),
+                infoClass: document.getElementById('info-class'),
+                infoAge: document.getElementById('info-age'),
+                activateCameraBtn: document.getElementById('activate-camera-btn'),
+                disableCameraBtn: document.getElementById('disable-camera-btn'),
+                cameraFeed: document.getElementById('camera-feed'),
+                cameraPlaceholder: document.getElementById('camera-placeholder')
             };
-            const { fabContainer, websiteFrame, splashScreen, supportPage, homeFab, scrollTopFab } = allDOMElements;
-            let fabHideTimeout;
+            
+            let cameraStream = null;
 
             const checkLoginStatus = () => {
                 const lastLogin = localStorage.getItem(loginTimestampKey);
@@ -314,22 +389,11 @@
 
             const launchSite = (url, setLoginTimestamp) => {
                 if (setLoginTimestamp) localStorage.setItem(loginTimestampKey, Date.now().toString());
-                websiteFrame.src = url;
-                splashScreen.classList.add('hidden');
-                supportPage.classList.add('hidden');
-                websiteFrame.style.opacity = '1';
-                homeFab.style.display = 'flex';
-                // Only show scroll-to-top button on the study page
-                if (url === studyUrl) {
-                    scrollTopFab.style.display = 'flex';
-                } else {
-                    scrollTopFab.style.display = 'none';
-                }
-                setTimeout(() => {
-                    homeFab.style.transform = 'scale(1)';
-                    if (url === studyUrl) scrollTopFab.style.transform = 'scale(1)';
-                    resetFabVisibility();
-                }, 100);
+                allDOMElements.websiteFrame.src = url;
+                document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+                allDOMElements.websiteFrame.style.opacity = '1';
+                allDOMElements.nexusBar.classList.add('visible');
+                allDOMElements.nexusScrollTopBtn.classList.toggle('hidden', url !== studyUrl);
             };
 
             const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
@@ -368,8 +432,9 @@
                 };
             };
             
-            const setupUI = (isLoggedIn) => {
+            const setupUI = () => {
                 const { loginButtonContainer, actionSubtitle, loaderContainer, mainContent } = allDOMElements;
+                const isLoggedIn = checkLoginStatus();
                 const button = document.createElement('button');
                 button.classList.add('styled-button');
                 if (isLoggedIn) {
@@ -383,16 +448,49 @@
                 }
                 loginButtonContainer.innerHTML = '';
                 loginButtonContainer.appendChild(button);
-                setTimeout(() => {
-                    loaderContainer.style.opacity = '0';
-                    mainContent.style.opacity = '1';
-                }, 2200);
             };
 
-            const resetFabVisibility = () => {
-                clearTimeout(fabHideTimeout);
-                fabContainer.classList.remove('inactive');
-                fabHideTimeout = setTimeout(() => fabContainer.classList.add('inactive'), 2000);
+            const showView = (viewToShow) => {
+                document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+                viewToShow.classList.remove('hidden');
+            };
+            
+            const loadProfileInfo = () => {
+                const storedInfo = localStorage.getItem(userInfoKey);
+                if (storedInfo) {
+                    const userInfo = JSON.parse(storedInfo);
+                    allDOMElements.infoName.textContent = userInfo.name || 'Not Set';
+                    allDOMElements.infoClass.textContent = userInfo.class || 'Not Set';
+                    allDOMElements.infoAge.textContent = userInfo.age || 'Not Set';
+                }
+            };
+
+            const activateCamera = async () => {
+                if (!('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices)) {
+                    alert('Camera API is not available in your browser.');
+                    return;
+                }
+                try {
+                    cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    allDOMElements.cameraFeed.srcObject = cameraStream;
+                    allDOMElements.cameraPlaceholder.style.display = 'none';
+                    allDOMElements.cameraFeed.style.display = 'block';
+                    allDOMElements.activateCameraBtn.style.display = 'none';
+                    allDOMElements.disableCameraBtn.style.display = 'flex';
+                } catch (err) {
+                    allDOMElements.cameraPlaceholder.textContent = `Error: ${err.name}. Please grant permission.`;
+                }
+            };
+
+            const disableCamera = () => {
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                }
+                allDOMElements.cameraFeed.srcObject = null;
+                allDOMElements.cameraPlaceholder.style.display = 'block';
+                allDOMElements.cameraFeed.style.display = 'none';
+                allDOMElements.activateCameraBtn.style.display = 'flex';
+                allDOMElements.disableCameraBtn.style.display = 'none';
             };
 
             const makeDraggable = (elmnt) => {
@@ -437,115 +535,19 @@
                 });
             };
 
-            const checkForUserInfo = () => {
+            // Initial App Flow
+            allDOMElements.telegramModal.classList.add('visible');
+            allDOMElements.closeTelegramModal.onclick = () => {
+                allDOMElements.telegramModal.classList.remove('visible');
                 if (!localStorage.getItem(userInfoKey)) {
                     allDOMElements.userInfoModal.classList.add('visible');
                 } else {
-                    setupUI(checkLoginStatus());
+                    setTimeout(() => {
+                        allDOMElements.loaderContainer.style.opacity = '0';
+                        allDOMElements.mainContent.style.opacity = '1';
+                        setupUI();
+                    }, 500);
                 }
-            };
-
-            const navigateToProfile = () => {
-                const profilePageHTML = `
-                    <!DOCTYPE html>
-                    <html lang="en">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>User Profile | Developed by Sagar Raj</title>
-                        <style>
-                            /* Inlined CSS for Profile Page */
-                            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
-                            @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css');
-                            :root { --primary-color: #ffffff; --secondary-color: #cccccc; --background-start: #121212; --background-end: #2c3e50; --accent-color-start: #8e44ad; --accent-color-end: #3498db; --glass-bg: rgba(30, 30, 30, 0.6); }
-                            body { font-family: 'Poppins', sans-serif; background: linear-gradient(-45deg, var(--background-end), var(--background-start), #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--primary-color); margin: 0; padding: 20px; }
-                            @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-                            .profile-container { max-width: 1200px; margin: auto; }
-                            .profile-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; margin-bottom: 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
-                            .glitch-text { font-family: 'Roboto Mono', monospace; font-size: 2.5rem; font-weight: 700; position: relative; color: var(--primary-color); }
-                            .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
-                            .glitch-text::before { left: 2px; text-shadow: -1px 0 #ff00c1; animation: glitch-anim-1 2.5s infinite linear reverse; }
-                            .glitch-text::after { left: -2px; text-shadow: -1px 0 #00fff9, 1px 1px #e400ff; animation: glitch-anim-2 2.5s infinite linear reverse; }
-                            @keyframes glitch-anim-1 { 0% { clip-path: inset(10% 0 85% 0); } 20% { clip-path: inset(80% 0 5% 0); } 40% { clip-path: inset(5% 0 90% 0); } 60% { clip-path: inset(70% 0 15% 0); } 80% { clip-path: inset(40% 0 55% 0); } 100% { clip-path: inset(10% 0 85% 0); } }
-                            @keyframes glitch-anim-2 { 0% { clip-path: inset(80% 0 5% 0); } 20% { clip-path: inset(5% 0 90% 0); } 40% { clip-path: inset(70% 0 15% 0); } 60% { clip-path: inset(40% 0 55% 0); } 80% { clip-path: inset(10% 0 85% 0); } 100% { clip-path: inset(80% 0 5% 0); } }
-                            .back-button { color: var(--primary-color); text-decoration: none; background: var(--glass-bg); padding: 10px 20px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; backdrop-filter: blur(5px); }
-                            .back-button:hover { background: var(--primary-color); color: var(--background-start); box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
-                            .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-                            .profile-card { background: var(--glass-bg); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); overflow: hidden; }
-                            .card-header { display: flex; align-items: center; gap: 15px; padding: 20px; background: rgba(0, 0, 0, 0.2); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-                            .card-header i { font-size: 1.5rem; color: var(--accent-color-end); }
-                            .card-header h3 { margin: 0; font-size: 1.2rem; }
-                            .card-content { padding: 25px; font-size: 1rem; }
-                            .info-card p { margin-bottom: 15px; }
-                            .info-card strong { color: var(--secondary-color); margin-right: 10px; }
-                            #camera-container { width: 100%; aspect-ratio: 4 / 3; background: #000; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-                            #camera-feed { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: none; }
-                            #camera-placeholder { color: var(--secondary-color); padding: 20px; }
-                            .styled-button { width: 100%; padding: 15px; font-size: 1rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px; }
-                            .styled-button:hover { box-shadow: 0 0 20px var(--accent-color-end); }
-                            .styled-button:disabled { background: #555; cursor: not-allowed; box-shadow: none; }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="profile-container">
-                            <div class="profile-header">
-                                <h1 class="glitch-text" data-text="User Profile">User Profile</h1>
-                                <a href="javascript:history.back()" class="back-button"><i class="fas fa-arrow-left"></i> Back to App</a>
-                            </div>
-                            <div class="profile-grid">
-                                <div class="profile-card info-card">
-                                    <div class="card-header"><i class="fas fa-user-tie"></i><h3>Your Info</h3></div>
-                                    <div class="card-content">
-                                        <p><strong>Name:</strong> <span id="info-name"></span></p>
-                                        <p><strong>Class:</strong> <span id="info-class"></span></p>
-                                        <p><strong>Age:</strong> <span id="info-age"></span></p>
-                                    </div>
-                                </div>
-                                <div class="profile-card camera-card">
-                                    <div class="card-header"><i class="fas fa-camera-retro"></i><h3>Style Cam</h3></div>
-                                    <div class="card-content">
-                                        <div id="camera-container">
-                                            <video id="camera-feed" autoplay playsinline></video>
-                                            <p id="camera-placeholder">Click below to activate your Style Cam!</p>
-                                        </div>
-                                        <button id="activate-camera-btn" class="styled-button"><i class="fas fa-power-off"></i> Activate Camera</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', () => {
-                                const userInfoKey = 'sagarRajUserInfo';
-                                const infoName = document.getElementById('info-name');
-                                const infoClass = document.getElementById('info-class');
-                                const infoAge = document.getElementById('info-age');
-                                const activateCameraBtn = document.getElementById('activate-camera-btn');
-                                const cameraFeed = document.getElementById('camera-feed');
-                                const cameraPlaceholder = document.getElementById('camera-placeholder');
-                                const storedInfo = localStorage.getItem(userInfoKey);
-                                if (storedInfo) {
-                                    const userInfo = JSON.parse(storedInfo);
-                                    infoName.textContent = userInfo.name || 'Not Set';
-                                    infoClass.textContent = userInfo.class || 'Not Set';
-                                    infoAge.textContent = userInfo.age || 'Not Set';
-                                }
-                                activateCameraBtn.addEventListener('click', async () => {
-                                    if (!('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices)) { alert('Camera API is not available in your browser.'); return; }
-                                    try {
-                                        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                                        cameraFeed.srcObject = stream;
-                                        cameraPlaceholder.style.display = 'none';
-                                        cameraFeed.style.display = 'block';
-                                        activateCameraBtn.textContent = 'Camera Active';
-                                        activateCameraBtn.disabled = true;
-                                    } catch (err) { cameraPlaceholder.textContent = \`Error: \${err.name}. Please grant camera permission.\`; }
-                                });
-                            });
-                        <\/script>
-                    </body>
-                    </html>
-                `;
-                window.location.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(profilePageHTML);
             };
 
             allDOMElements.userInfoForm.addEventListener('submit', (e) => {
@@ -557,46 +559,36 @@
                 };
                 localStorage.setItem(userInfoKey, JSON.stringify(userInfo));
                 allDOMElements.userInfoModal.classList.remove('visible');
-                setupUI(checkLoginStatus());
+                setTimeout(() => {
+                    allDOMElements.loaderContainer.style.opacity = '0';
+                    allDOMElements.mainContent.style.opacity = '1';
+                    setupUI();
+                }, 500);
             });
 
-            allDOMElements.showSupportPageBtn.addEventListener('click', () => {
-                splashScreen.classList.add('hidden');
-                supportPage.classList.remove('hidden');
-                homeFab.style.display = 'none';
-                scrollTopFab.style.display = 'none';
-                fabContainer.classList.add('inactive');
-                clearTimeout(fabHideTimeout);
-            });
-            allDOMElements.backToSplashBtn.addEventListener('click', () => {
-                supportPage.classList.add('hidden');
-                splashScreen.classList.remove('hidden');
-            });
-            homeFab.addEventListener('click', () => websiteFrame.src = mainProjectsUrl);
-            scrollTopFab.addEventListener('click', () => {
-                websiteFrame.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
+            // Event Listeners
+            allDOMElements.showSupportPageBtn.addEventListener('click', () => showView(allDOMElements.supportPage));
+            allDOMElements.backToSplashBtn.addEventListener('click', () => showView(allDOMElements.splashScreen));
+            allDOMElements.backFromProfileBtn.addEventListener('click', () => {
+                disableCamera();
+                showView(allDOMElements.splashScreen);
             });
             
-            window.addEventListener('mousemove', resetFabVisibility);
-            window.addEventListener('touchstart', resetFabVisibility);
+            allDOMElements.nexusHomeBtn.addEventListener('click', () => allDOMElements.websiteFrame.src = mainProjectsUrl);
+            allDOMElements.nexusProfileBtn.addEventListener('click', () => {
+                loadProfileInfo();
+                showView(allDOMElements.profilePage);
+                allDOMElements.nexusBar.classList.remove('visible');
+            });
+            allDOMElements.nexusCalculatorBtn.addEventListener('click', () => allDOMElements.calculator.classList.toggle('visible'));
+            allDOMElements.nexusScrollTopBtn.addEventListener('click', () => allDOMElements.websiteFrame.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }));
 
-            allDOMElements.topMenuButton.addEventListener('click', () => {
-                allDOMElements.topMenuDropdown.classList.toggle('visible');
-            });
-            allDOMElements.profileMenuBtn.addEventListener('click', navigateToProfile);
-            allDOMElements.showCalculatorBtn.addEventListener('click', () => {
-                allDOMElements.calculator.classList.add('visible');
-                allDOMElements.topMenuDropdown.classList.remove('visible');
-            });
-            allDOMElements.calcCloseBtn.addEventListener('click', () => {
-                allDOMElements.calculator.classList.remove('visible');
-            });
+            allDOMElements.activateCameraBtn.addEventListener('click', activateCamera);
+            allDOMElements.disableCameraBtn.addEventListener('click', disableCamera);
+            allDOMElements.calcCloseBtn.addEventListener('click', () => allDOMElements.calculator.classList.remove('visible'));
 
-            checkForUserInfo();
             makeDraggable(allDOMElements.calculator);
             handleCalculator();
-            homeFab.style.display = 'none';
-            scrollTopFab.style.display = 'none';
         });
     </script>
 </body>
