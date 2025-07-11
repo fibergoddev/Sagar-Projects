@@ -11,7 +11,7 @@
 
     <!-- This is the main container for all application views -->
     <div id="app-shell">
-        <!-- Main Hub View (Splash, Sections) -->
+        <!-- Main Hub View: Redesigned with a dashboard layout -->
         <div id="main-view" class="view">
             <div class="main-view-container">
                 <header class="main-header">
@@ -21,18 +21,52 @@
                     </nav>
                 </header>
                 <main id="main-content-area">
-                    <section id="toppers-section" class="content-section">
-                        <h1 class="section-title">Next Toppers Batch</h1>
-                        <p class="section-subtitle">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
-                        <div id="login-button-area" class="button-group">
-                            <!-- Login/Study buttons will be injected here by JS -->
+                    <div class="dashboard-header">
+                        <div class="search-bar-container">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-bar" placeholder="Search features, courses, games...">
                         </div>
-                    </section>
-                    <section id="books-section" class="content-section">
-                        <h1 class="section-title">Books Library</h1>
-                        <p class="section-subtitle">A vast collection of knowledge is being curated for you. Get ready to explore.</p>
-                        <div id="book-scanner"><i class="fas fa-book"></i><div id="scanner-line"></div></div>
-                    </section>
+                        <div class="category-filter">
+                            <button class="category-btn active" data-category="all">All</button>
+                            <button class="category-btn" data-category="course">Courses</button>
+                            <button class="category-btn" data-category="game">Games</button>
+                            <button class="category-btn" data-category="book">Books</button>
+                        </div>
+                    </div>
+                    <div id="dashboard-grid">
+                        <!-- Card for Next Toppers Batch -->
+                        <div class="content-card" data-category="course">
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/00f2fe?text=Toppers');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Next Toppers Batch</h3>
+                                <p class="card-description">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
+                                <div id="login-button-area" class="button-group">
+                                    <!-- Login/Study buttons will be injected here by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card for Neuro-Link Game -->
+                        <div class="content-card" data-category="game">
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/f04747?text=Neuro-Link');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Neuro-Link Game</h3>
+                                <p class="card-description">Engage your mind with our futuristic memory game. Sharpen your focus and climb the leaderboard!</p>
+                                <a href="game.html" class="styled-button">Play Now</a>
+                            </div>
+                        </div>
+
+                        <!-- Card for Books Library (Ad Link) -->
+                        <div class="content-card" data-category="book">
+                             <a href="https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf" target="_blank" class="card-ad-link">
+                                <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/2ecc71?text=Library');"></div>
+                                <div class="card-content">
+                                    <h3 class="card-title">Books Library</h3>
+                                    <p class="card-description">A vast collection of knowledge is being curated for you. Click to explore our resources.</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
                 </main>
             </div>
             <div id="persistent-ad-banner">
@@ -103,7 +137,10 @@
             <div class="modal-content">
                 <p class="subtitle">Please support us by watching this ad</p>
                 <div id="interstitial-ad-container"></div>
-                <button id="skip-ad-button" class="styled-button">Skip Ad in 4s</button>
+                <div class="modal-ad-controls">
+                    <button id="skip-ad-button" class="styled-button">Skip Ad in 4s</button>
+                    <button id="close-ad-modal-btn" class="ad-close-btn"><i class="fas fa-times"></i></button>
+                </div>
             </div>
         </div>
         <div id="user-info-modal" class="modal-overlay">
