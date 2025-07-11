@@ -1,6 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 22: The Definitive Flawless Hub Logic (Final & Verified)
- * This is the complete and fully functional JavaScript for the application.
+ * Version 22: The Definitive Flawless Hub Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const studyUrl = 'https://www.rolexcoderz.xyz/Course';
     const profileUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html';
     const mainProjectsUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/padhai.html';
+    const gameUrl = 'game.html';
     const adLink = 'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf';
     const loginTimestampKey = 'sagarRajLoginTimestamp';
     const userInfoKey = 'sagarRajUserInfo';
@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         interstitialAdModal: document.getElementById('interstitial-ad-modal'),
         interstitialAdContainer: document.getElementById('interstitial-ad-container'),
         skipAdButton: document.getElementById('skip-ad-button'),
+        closeAdModalBtn: document.getElementById('close-ad-modal-btn'),
         userInfoModal: document.getElementById('user-info-modal'),
         userInfoForm: document.getElementById('user-info-form'),
         telegramModal: document.getElementById('telegram-modal'),
@@ -49,7 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
         backToMainBtn: document.getElementById('back-to-main-btn'),
         persistentAdBanner: document.getElementById('persistent-ad-banner'),
         adGrid: document.getElementById('ad-grid'),
-        booksSection: document.getElementById('books-section'),
+        booksSection: document.querySelector('.content-card[data-category="book"]'),
+        searchBar: document.getElementById('search-bar'),
+        categoryFilter: document.querySelector('.category-filter'),
     };
 
     // --- State Management ---
@@ -101,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
-        const { interstitialAdModal, interstitialAdContainer, skipAdButton } = allDOMElements;
+        const { interstitialAdModal, interstitialAdContainer, skipAdButton, closeAdModalBtn } = allDOMElements;
         interstitialAdModal.classList.add('visible');
         interstitialAdContainer.innerHTML = '';
         const adIframe = document.createElement('iframe');
@@ -127,12 +130,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 skipAdButton.textContent = 'Skip Ad';
             }
         }, 1000);
+        
+        const closeFunction = () => {
+            clearInterval(timerInterval);
+            interstitialAdModal.classList.remove('visible');
+            skipAdButton.onclick = null;
+            closeAdModalBtn.onclick = null;
+        };
+
         skipAdButton.onclick = () => {
             if (skipAdButton.disabled) return;
-            interstitialAdModal.classList.remove('visible');
+            closeFunction();
             launchSite(targetUrl, setLoginTimestamp);
-            skipAdButton.onclick = null;
         };
+        closeAdModalBtn.onclick = closeFunction;
     };
     
     const setupLoginButton = () => {
@@ -253,13 +264,12 @@ document.addEventListener('DOMContentLoaded', () => {
     allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
     allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
-    
     allDOMElements.commandCenterBtn.addEventListener('click', () => {
         allDOMElements.sidePanel.classList.toggle('visible');
         allDOMElements.commandCenterBtn.classList.toggle('open');
     });
-
-    // FIX: Use event delegation on the nav panel for robust clicks
+    
+    // Use event delegation on the nav panel for robust clicks
     allDOMElements.sidePanelNav.addEventListener('click', (e) => {
         const button = e.target.closest('.side-panel-button');
         if (!button) return;
@@ -282,6 +292,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'side-panel-profile-btn':
                 launchSite(profileUrl, false);
+                break;
+            case 'side-panel-game-btn':
+                launchSite(gameUrl, false);
                 break;
             case 'side-panel-calculator-btn':
                 allDOMElements.calculator.classList.toggle('visible');
