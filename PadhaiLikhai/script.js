@@ -1,5 +1,6 @@
 /* * Designed & Developed by Sagar Raj
- * Version 21: The Definitive Flawless Hub Logic
+ * Version 22: The Definitive Flawless Hub Logic (Final & Verified)
+ * This is the complete and fully functional JavaScript for the application.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -147,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const forceLoginBtn = document.createElement('button');
             forceLoginBtn.textContent = 'Force Login';
             forceLoginBtn.className = 'styled-button support-button';
+            forceLoginBtn.style.marginLeft = '15px';
             forceLoginBtn.onclick = () => showInterstitialAd(initialLoginUrl, true);
 
             allDOMElements.loginButtonArea.appendChild(continueBtn);
@@ -248,14 +250,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Event Listeners ---
-    allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.cla jissList.remove('visible'));
+    allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
     allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
+    
     allDOMElements.commandCenterBtn.addEventListener('click', () => {
         allDOMElements.sidePanel.classList.toggle('visible');
         allDOMElements.commandCenterBtn.classList.toggle('open');
     });
-    
+
     // FIX: Use event delegation on the nav panel for robust clicks
     allDOMElements.sidePanelNav.addEventListener('click', (e) => {
         const button = e.target.closest('.side-panel-button');
