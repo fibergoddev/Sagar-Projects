@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 19: The Definitive Flawless Hub Logic
+ * Version 20: The Definitive Flawless Hub Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sidePanelNotesBtn: document.getElementById('side-panel-notes-btn'),
         sidePanelPermissionsBtn: document.getElementById('side-panel-permissions-btn'),
         sidePanelExitBtn: document.getElementById('side-panel-exit-btn'),
+        sidePanelBackBtn: document.getElementById('side-panel-back-btn'),
         supportUsBtn: document.getElementById('support-us-btn'),
         backToMainBtn: document.getElementById('back-to-main-btn'),
         persistentAdBanner: document.getElementById('persistent-ad-banner'),
@@ -98,9 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
             allDOMElements.websiteFrame.src = prevUrl;
             allDOMElements.iframeLoader.classList.add('visible');
         } else {
-            // If no history, exit to main view
             showView('main-view');
             allDOMElements.websiteFrame.src = 'about:blank';
+            appState.iframeHistory = [];
+            appState.currentUrl = '';
         }
     };
 
@@ -219,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
     allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
+    
     allDOMElements.commandCenterBtn.addEventListener('click', () => {
         allDOMElements.sidePanel.classList.toggle('visible');
         allDOMElements.commandCenterBtn.classList.toggle('open');
@@ -227,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         allDOMElements.sidePanel.classList.remove('visible');
         allDOMElements.commandCenterBtn.classList.remove('open');
     });
+    
     allDOMElements.sidePanelExitBtn.addEventListener('click', () => {
         showView('main-view');
         allDOMElements.sidePanel.classList.remove('visible');
