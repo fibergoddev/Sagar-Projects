@@ -1,133 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Ultimate Study Hub | Developed by Sagar Raj</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-</head>
-<body>
+/* * Designed & Developed by Sagar Raj
+ * Version 19: The Definitive Flawless Hub Stylesheet
+ */
 
-    <!-- Main View: Contains the primary sections of the app -->
-    <div id="main-view" class="view">
-        <div id="app-container">
-            <header class="main-header">
-                <div class="logo">StudyHub</div>
-                <div class="header-nav">
-                    <button id="support-us-btn" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
-                </div>
-            </header>
-            <main id="main-content-area">
-                <section id="toppers-section" class="content-section">
-                    <h1 class="section-title">Next Toppers Batch</h1>
-                    <p class="section-subtitle">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
-                    <button id="login-study-btn" class="styled-button">Loading...</button>
-                </section>
-                <section id="books-section" class="content-section">
-                    <h1 class="section-title">Books Library</h1>
-                    <p class="section-subtitle">A vast collection of knowledge is being curated for you. Get ready to explore.</p>
-                    <div id="book-scanner"><i class="fas fa-book"></i><div id="scanner-line"></div></div>
-                </section>
-            </main>
-            <div id="persistent-ad-banner">
-                <!-- Ads will be loaded here by JS -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- Support/Ad Revenue View -->
-    <div id="support-view" class="view hidden">
-        <div class="support-content">
-            <h1 class="section-title">Support the Developer</h1>
-            <p class="section-subtitle">Your support helps keep this application free. Thank you!</p>
-            <div id="ad-grid">
-                <!-- Ads will be loaded here by JS -->
-            </div>
-            <button id="back-to-main-btn" class="styled-button">Back to Hub</button>
-        </div>
-    </div>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
 
-    <!-- App/Iframe View -->
-    <div id="app-view" class="view hidden">
-        <div id="iframe-container">
-            <div id="iframe-loader" class="fas fa-spinner fa-spin"></div>
-            <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
-        </div>
-        <div id="focus-overlay"></div>
-        <button id="command-center-btn"><i class="fas fa-bars"></i></button>
-        <div id="side-panel">
-            <div class="side-panel-header">
-                <span class="side-panel-title">Command Center</span>
-            </div>
-            <nav id="side-panel-nav">
-                <button class="side-panel-button" id="side-panel-back-btn"><i class="fas fa-arrow-left fa-fw"></i> Back</button>
-                <button class="side-panel-button" id="side-panel-home-btn"><i class="fas fa-home fa-fw"></i> Home</button>
-                <button class="side-panel-button" id="side-panel-profile-btn"><i class="fas fa-user-circle fa-fw"></i> Profile</button>
-                <button class="side-panel-button" id="side-panel-calculator-btn"><i class="fas fa-calculator fa-fw"></i> Calculator</button>
-                <button class="side-panel-button" id="side-panel-focus-btn"><i class="fas fa-eye fa-fw"></i> Focus Mode</button>
-                <button class="side-panel-button" id="side-panel-notes-btn"><i class="fas fa-sticky-note fa-fw"></i> Mini Notes</button>
-                <button class="side-panel-button" id="side-panel-permissions-btn"><i class="fas fa-shield-alt fa-fw"></i> Permissions</button>
-                <button class="side-panel-button" id="side-panel-exit-btn" style="color: var(--danger-color);"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
-            </nav>
-        </div>
-        <div id="calculator" class="widget">
-            <div class="widget-header" id="calc-header"><i class="fas fa-arrows-alt"></i></div>
-            <input type="text" id="calc-display" disabled>
-            <div id="calc-buttons">
-                 <button class="calc-btn operator">C</button><button class="calc-btn operator">(</button><button class="calc-btn operator">)</button><button class="calc-btn operator">/</button>
-                 <button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button><button class="calc-btn operator">*</button>
-                 <button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button><button class="calc-btn operator">-</button>
-                 <button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button><button class="calc-btn operator">+</button>
-                 <button class="calc-btn">0</button><button class="calc-btn">.</button><button class="calc-btn" style="grid-column: span 2;">=</button>
-            </div>
-        </div>
-        <div id="mini-notes" class="widget">
-            <div class="widget-header" id="notes-header"><i class="fas fa-arrows-alt"></i> Mini Notes</div>
-            <textarea id="notes-textarea" placeholder="Your thoughts..."></textarea>
-        </div>
-    </div>
+:root {
+    --primary-color: #ffffff;
+    --secondary-color: #cccccc;
+    --background-start: #0a0a10;
+    --background-end: #1a1a2e;
+    --accent-color-start: #00f2fe;
+    --accent-color-end: #4facfe;
+    --success-color: #2ecc71;
+    --danger-color: #f04747;
+    --glass-bg: rgba(30, 30, 46, 0.6);
+    --border-color: rgba(255, 255, 255, 0.2);
+    --shadow-color: rgba(0, 0, 0, 0.5);
+}
 
-    <!-- All Modals -->
-    <div id="interstitial-ad-modal" class="modal-overlay">
-        <div class="modal-content">
-            <p class="subtitle">Please support us by watching this ad</p>
-            <div id="interstitial-ad-container"></div>
-            <button id="skip-ad-button" class="styled-button">Skip Ad in 4s</button>
-        </div>
-    </div>
-    <div id="user-info-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2 class="title">Welcome!</h2>
-            <p class="subtitle">Please tell us a bit about yourself.</p>
-            <form id="user-info-form">
-                <div class="form-group"><label for="user-name">Name</label><input type="text" id="user-name" required></div>
-                <div class="form-group"><label for="user-class">Class</label><input type="text" id="user-class" required></div>
-                <div class="form-group"><label for="user-age">Age</label><input type="number" id="user-age" required></div>
-                <button type="submit" class="styled-button" style="width: 100%;">Save & Continue</button>
-            </form>
-        </div>
-    </div>
-    <div id="telegram-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2 class="title">Join Our Community!</h2>
-            <p class="subtitle">Get the latest updates on Telegram.</p>
-            <a href="https://t.me/PadhaiLikhai_official" target="_blank" class="styled-button" style="width: 100%; text-decoration: none;">Join Telegram</a>
-            <button id="close-telegram-modal" class="styled-button" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--border-color);">Continue to App</button>
-        </div>
-    </div>
-    <div id="permissions-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2 class="title">Permissions Center</h2>
-            <p class="subtitle">To use all features, please grant the necessary permissions.</p>
-            <div class="permission-grid">
-                <button id="grant-camera-btn" class="styled-button support-button"><i class="fas fa-camera"></i> Camera</button>
-                <button id="grant-notify-btn" class="styled-button support-button"><i class="fas fa-bell"></i> Notifications</button>
-            </div>
-            <button id="close-permissions-modal" class="styled-button" style="width: 100%; margin-top: 25px;">Close</button>
-        </div>
-    </div>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <script src="script.js"></script>
-</body>
-</html>
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-start);
+    color: var(--primary-color);
+}
+
+/* --- View Management --- */
+.view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(-45deg, var(--background-end), var(--background-start), #16222a, #3a6073);
+    background-size: 400% 400%;
+    animation: gradientBG 20s ease infinite;
+    transition: opacity 0.5s ease-out, visibility 0.5s;
+    opacity: 1;
+    visibility: visible;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+.view.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+@keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+/* --- Main Hub UI (Splash, Sections) --- */
+.main-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; position: sticky; top: 0; z-index: 100; background: rgba(10, 10, 16, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); }
+.logo { font-family: 'Roboto Mono', monospace; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 5px var(--accent-color-start); }
+.header-nav button { background: none; border: none; color: var(--secondary-color); font-size: 1.2rem; margin-left: 20px; cursor: pointer; transition: all 0.3s ease; }
+.header-nav button:hover { color: var(--primary-color); text-shadow: 0 0 8px var(--primary-color); }
+.content-section { padding: 40px 30px; min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-bottom: 1px solid var(--border-color); }
+.section-title { font-size: 3rem; margin-bottom: 15px; font-weight: 700; }
+.section-subtitle { font-size: 1.2rem; color: var(--secondary-color); max-width: 600px; margin-bottom: 40px; }
+.styled-button { padding: 15px 40px; font-size: 1.2rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(0, 242, 254, 0.3); }
+.styled-button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.5); }
+#book-scanner { width: 300px; height: 250px; border: 2px solid var(--accent-color-start); border-radius: 10px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: 5rem; color: rgba(255,255,255,0.2); box-shadow: 0 0 20px var(--accent-color-start) inset; cursor: pointer; }
+#scanner-line { width: 100%; height: 3px; background: var(--accent-color-end); box-shadow: 0 0 10px var(--accent-color-end); position: absolute; top: 0; animation: scan-book 3s linear infinite; }
+@keyframes scan-book { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+
+/* --- App View (Iframe & Overlays) --- */
+#app-view { z-index: 50; background: #000; }
+#iframe-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+#website-frame { width: 100%; height: 100%; border: none; background: #000; }
+#iframe-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--accent-color-start); font-size: 3rem; display: none; }
+#iframe-loader.visible { display: block; }
+#focus-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 140; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+#focus-overlay.active { opacity: 1; }
+
+/* --- Command Center (Side Panel) --- */
+#command-center-btn { position: fixed; top: 20px; left: 20px; z-index: 155; width: 50px; height: 50px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 50%; color: white; font-size: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); opacity: 0; pointer-events: none; }
+#command-center-btn.visible { opacity: 1; pointer-events: all; }
+#command-center-btn .icon-menu, #command-center-btn .icon-close { transition: transform 0.4s ease, opacity 0.4s ease; position: absolute; }
+#command-center-btn .icon-close { transform: rotate(-90deg); opacity: 0; }
+#command-center-btn.open .icon-menu { transform: rotate(90deg); opacity: 0; }
+#command-center-btn.open .icon-close { transform: rotate(0deg); opacity: 1; }
+#side-panel { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: rgba(10, 10, 16, 0.9); backdrop-filter: blur(15px); z-index: 150; transform: translateX(-100%); transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); padding: 20px; display: flex; flex-direction: column; }
+#side-panel.visible { transform: translateX(0); }
+#side-panel-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+.side-panel-title { font-size: 1.5rem; font-weight: 600; }
+#side-panel-nav { display: flex; flex-direction: column; gap: 10px; }
+.side-panel-button { background: rgba(255,255,255,0.05); border: 1px solid transparent; color: var(--secondary-color); padding: 15px; border-radius: 10px; text-align: left; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 15px; }
+.side-panel-button:hover { background: rgba(255,255,255,0.1); border-color: var(--border-color); color: var(--primary-color); }
+.side-panel-button.hidden { display: none; }
+
+/* --- Modals & Widgets --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+.modal-overlay.visible { opacity: 1; pointer-events: all; }
+.modal-content { background: var(--background-start); padding: 30px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px var(--shadow-color); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid var(--border-color); width: 90%; max-width: 450px; }
+.modal-overlay.visible .modal-content { transform: scale(1); }
+.modal-content .title { font-size: 2rem; margin-bottom: 15px; }
+.modal-content .subtitle { font-size: 1rem; margin-top: 0; margin-bottom: 25px; }
+#interstitial-ad-container { width: 300px; height: 250px; margin: 0 auto 20px auto; background: #000; border-radius: 8px; overflow: hidden; }
+#interstitial-ad-container iframe { width: 100%; height: 100%; border: 0; }
+.form-group { margin-bottom: 20px; text-align: left; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+.form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #555; background: #333; color: white; font-size: 1rem; }
+.permission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+.support-content { padding: 20px; }
+#ad-grid { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 25px; padding: 20px; max-width: 1000px; margin: 20px 0; }
+.ad-slot { background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.ad-slot-300x250 { width: 300px; height: 250px; }
+.ad-slot-container-div { width: auto; height: auto; }
+#persistent-ad-banner { position: fixed; bottom: 0; left: 0; width: 100%; padding: 10px; background: rgba(10, 10, 16, 0.9); backdrop-filter: blur(10px); z-index: 90; display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; border-top: 1px solid var(--border-color); transition: transform 0.5s ease-out; }
+#persistent-ad-banner.hidden { transform: translateY(100%); }
+        
+.widget { position: fixed; z-index: 160; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 15px; box-shadow: 0 8px 32px 0 var(--shadow-color); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0); }
+.widget.visible { transform: scale(1); }
+.widget-header { padding: 10px; cursor: move; text-align: center; font-weight: 600; }
+#calculator { top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 280px; }
+#calculator.visible { transform: translate(-50%, -50%) scale(1); }
+#calc-display { width: 100%; background: transparent; border: none; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); color: white; text-align: right; padding: 20px; font-size: 2.5rem; font-family: 'Roboto Mono', monospace; }
+#calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); }
+.calc-btn { background: transparent; border: none; border-right: 1px solid var(--border-color); border-top: 1px solid var(--border-color); padding: 20px; color: white; font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
+#mini-notes { bottom: 80px; right: 30px; width: 280px; }
+#notes-textarea { width: 100%; height: 150px; background: transparent; border: none; border-top: 1px solid var(--border-color); padding: 10px; color: white; resize: none; font-family: 'Poppins'; }
