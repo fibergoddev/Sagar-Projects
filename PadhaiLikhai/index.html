@@ -14,9 +14,9 @@
         <div id="app-container">
             <header class="main-header">
                 <div class="logo">StudyHub</div>
-                <div class="header-nav">
+                <nav class="header-nav">
                     <button id="support-us-btn" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
-                </div>
+                </nav>
             </header>
             <main id="main-content-area">
                 <section id="toppers-section" class="content-section">
@@ -30,9 +30,9 @@
                     <div id="book-scanner"><i class="fas fa-book"></i><div id="scanner-line"></div></div>
                 </section>
             </main>
-            <div id="persistent-ad-banner">
-                <!-- Ads will be loaded here by JS -->
-            </div>
+        </div>
+        <div id="persistent-ad-banner">
+            <!-- Ads will be loaded here by JS -->
         </div>
     </div>
     
@@ -40,7 +40,7 @@
     <div id="support-view" class="view hidden">
         <div class="support-content">
             <h1 class="section-title">Support the Developer</h1>
-            <p class="section-subtitle">Your support helps keep this application free. Thank you!</p>
+            <p class="section-subtitle">Your support by viewing these ads helps keep this application running and free for everyone. Thank you!</p>
             <div id="ad-grid">
                 <!-- Ads will be loaded here by JS -->
             </div>
@@ -55,7 +55,13 @@
             <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
         </div>
         <div id="focus-overlay"></div>
-        <button id="command-center-btn"><i class="fas fa-bars"></i></button>
+        <button id="command-center-btn">
+            <div class="icon-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </button>
         <div id="side-panel">
             <div class="side-panel-header">
                 <span class="side-panel-title">Command Center</span>
