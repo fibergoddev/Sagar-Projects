@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 21: The Definitive Flawless Hub Stylesheet
+ * Version 22: The Definitive Flawless Hub Stylesheet (Final & Verified)
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -64,6 +64,7 @@ html, body {
 .section-subtitle { font-size: 1.2rem; color: var(--secondary-color); max-width: 600px; margin-bottom: 40px; }
 .styled-button { padding: 15px 40px; font-size: 1.2rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(0, 242, 254, 0.3); }
 .styled-button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.5); }
+.support-button { background: transparent; border: 1px solid var(--border-color); }
 #book-scanner { width: 300px; height: 250px; border: 2px solid var(--accent-color-start); border-radius: 10px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: 5rem; color: rgba(255,255,255,0.2); box-shadow: 0 0 20px var(--accent-color-start) inset; cursor: pointer; }
 #scanner-line { width: 100%; height: 3px; background: var(--accent-color-end); box-shadow: 0 0 10px var(--accent-color-end); position: absolute; top: 0; animation: scan-book 3s linear infinite; }
 @keyframes scan-book { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
