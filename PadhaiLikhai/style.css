@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Study Hub | Developed by Sagar Raj</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Main View: Contains the primary sections of the app -->
+    <div id="main-view" class="view">
+        <div id="app-container">
+            <header class="main-header">
+                <div class="logo">StudyHub</div>
+                <div class="header-nav">
+                    <button id="support-us-btn" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
+                </div>
+            </header>
+            <main id="main-content-area">
+                <section id="toppers-section" class="content-section">
+                    <h1 class="section-title">Next Toppers Batch</h1>
+                    <p class="section-subtitle">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
+                    <button id="login-study-btn" class="styled-button">Loading...</button>
+                </section>
+                <section id="books-section" class="content-section">
+                    <h1 class="section-title">Books Library</h1>
+                    <p class="section-subtitle">A vast collection of knowledge is being curated for you. Get ready to explore.</p>
+                    <div id="book-scanner"><i class="fas fa-book"></i><div id="scanner-line"></div></div>
+                </section>
+            </main>
+            <div id="persistent-ad-banner">
+                <!-- Ads will be loaded here by JS -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Support/Ad Revenue View -->
+    <div id="support-view" class="view hidden">
+        <div class="support-content">
+            <h1 class="section-title">Support the Developer</h1>
+            <p class="section-subtitle">Your support helps keep this application free. Thank you!</p>
+            <div id="ad-grid">
+                <!-- Ads will be loaded here by JS -->
+            </div>
+            <button id="back-to-main-btn" class="styled-button">Back to Hub</button>
+        </div>
+    </div>
+
+    <!-- App/Iframe View -->
+    <div id="app-view" class="view hidden">
+        <div id="iframe-container">
+            <div id="iframe-loader" class="fas fa-spinner fa-spin"></div>
+            <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
+        </div>
+        <div id="focus-overlay"></div>
+        <button id="command-center-btn"><i class="fas fa-bars"></i></button>
+        <div id="side-panel">
+            <div class="side-panel-header">
+                <span class="side-panel-title">Command Center</span>
+            </div>
+            <nav id="side-panel-nav">
+                <button class="side-panel-button" id="side-panel-back-btn"><i class="fas fa-arrow-left fa-fw"></i> Back</button>
+                <button class="side-panel-button" id="side-panel-home-btn"><i class="fas fa-home fa-fw"></i> Home</button>
+                <button class="side-panel-button" id="side-panel-profile-btn"><i class="fas fa-user-circle fa-fw"></i> Profile</button>
+                <button class="side-panel-button" id="side-panel-calculator-btn"><i class="fas fa-calculator fa-fw"></i> Calculator</button>
+                <button class="side-panel-button" id="side-panel-focus-btn"><i class="fas fa-eye fa-fw"></i> Focus Mode</button>
+                <button class="side-panel-button" id="side-panel-notes-btn"><i class="fas fa-sticky-note fa-fw"></i> Mini Notes</button>
+                <button class="side-panel-button" id="side-panel-permissions-btn"><i class="fas fa-shield-alt fa-fw"></i> Permissions</button>
+                <button class="side-panel-button" id="side-panel-exit-btn" style="color: var(--danger-color);"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
+            </nav>
+        </div>
+        <div id="calculator" class="widget">
+            <div class="widget-header" id="calc-header"><i class="fas fa-arrows-alt"></i></div>
+            <input type="text" id="calc-display" disabled>
+            <div id="calc-buttons">
+                 <button class="calc-btn operator">C</button><button class="calc-btn operator">(</button><button class="calc-btn operator">)</button><button class="calc-btn operator">/</button>
+                 <button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button><button class="calc-btn operator">*</button>
+                 <button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button><button class="calc-btn operator">-</button>
+                 <button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button><button class="calc-btn operator">+</button>
+                 <button class="calc-btn">0</button><button class="calc-btn">.</button><button class="calc-btn" style="grid-column: span 2;">=</button>
+            </div>
+        </div>
+        <div id="mini-notes" class="widget">
+            <div class="widget-header" id="notes-header"><i class="fas fa-arrows-alt"></i> Mini Notes</div>
+            <textarea id="notes-textarea" placeholder="Your thoughts..."></textarea>
+        </div>
+    </div>
+
+    <!-- All Modals -->
+    <div id="interstitial-ad-modal" class="modal-overlay">
+        <div class="modal-content">
+            <p class="subtitle">Please support us by watching this ad</p>
+            <div id="interstitial-ad-container"></div>
+            <button id="skip-ad-button" class="styled-button">Skip Ad in 4s</button>
+        </div>
+    </div>
+    <div id="user-info-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="title">Welcome!</h2>
+            <p class="subtitle">Please tell us a bit about yourself.</p>
+            <form id="user-info-form">
+                <div class="form-group"><label for="user-name">Name</label><input type="text" id="user-name" required></div>
+                <div class="form-group"><label for="user-class">Class</label><input type="text" id="user-class" required></div>
+                <div class="form-group"><label for="user-age">Age</label><input type="number" id="user-age" required></div>
+                <button type="submit" class="styled-button" style="width: 100%;">Save & Continue</button>
+            </form>
+        </div>
+    </div>
+    <div id="telegram-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="title">Join Our Community!</h2>
+            <p class="subtitle">Get the latest updates on Telegram.</p>
+            <a href="https://t.me/PadhaiLikhai_official" target="_blank" class="styled-button" style="width: 100%; text-decoration: none;">Join Telegram</a>
+            <button id="close-telegram-modal" class="styled-button" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--border-color);">Continue to App</button>
+        </div>
+    </div>
+    <div id="permissions-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="title">Permissions Center</h2>
+            <p class="subtitle">To use all features, please grant the necessary permissions.</p>
+            <div class="permission-grid">
+                <button id="grant-camera-btn" class="styled-button support-button"><i class="fas fa-camera"></i> Camera</button>
+                <button id="grant-notify-btn" class="styled-button support-button"><i class="fas fa-bell"></i> Notifications</button>
+            </div>
+            <button id="close-permissions-modal" class="styled-button" style="width: 100%; margin-top: 25px;">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
