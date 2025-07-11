@@ -1,10 +1,10 @@
 /* * Designed & Developed by Sagar Raj
- * Version 21: The Definitive Flawless Hub Logic (Final & Verified)
- * This is the complete and fully functional JavaScript for the application.
+ * Version 21: The Definitive Flawless Hub Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Configuration ---
+    const initialLoginUrl = 'https://rolexcoderz.live/36xsuccess/';
     const studyUrl = 'https://www.rolexcoderz.xyz/Course';
     const profileUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html';
     const mainProjectsUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/padhai.html';
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mainView: document.getElementById('main-view'),
         appView: document.getElementById('app-view'),
         supportView: document.getElementById('support-view'),
-        loginStudyBtn: document.getElementById('login-study-btn'),
+        loginButtonArea: document.getElementById('login-button-area'),
         interstitialAdModal: document.getElementById('interstitial-ad-modal'),
         interstitialAdContainer: document.getElementById('interstitial-ad-container'),
         skipAdButton: document.getElementById('skip-ad-button'),
@@ -43,15 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         calcButtons: document.getElementById('calc-buttons'),
         commandCenterBtn: document.getElementById('command-center-btn'),
         sidePanel: document.getElementById('side-panel'),
-        closeSidePanelBtn: document.getElementById('close-side-panel-btn'),
-        sidePanelHomeBtn: document.getElementById('side-panel-home-btn'),
-        sidePanelProfileBtn: document.getElementById('side-panel-profile-btn'),
-        sidePanelCalculatorBtn: document.getElementById('side-panel-calculator-btn'),
-        sidePanelFocusBtn: document.getElementById('side-panel-focus-btn'),
-        sidePanelNotesBtn: document.getElementById('side-panel-notes-btn'),
-        sidePanelPermissionsBtn: document.getElementById('side-panel-permissions-btn'),
-        sidePanelExitBtn: document.getElementById('side-panel-exit-btn'),
-        sidePanelBackBtn: document.getElementById('side-panel-back-btn'),
+        sidePanelNav: document.getElementById('side-panel-nav'),
         supportUsBtn: document.getElementById('support-us-btn'),
         backToMainBtn: document.getElementById('back-to-main-btn'),
         persistentAdBanner: document.getElementById('persistent-ad-banner'),
@@ -69,8 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkLoginStatus = () => {
         const lastLogin = localStorage.getItem(loginTimestampKey);
         if (!lastLogin) return false;
-        const twentyFourHours = 24 * 60 * 60 * 1000;
-        return (Date.now() - parseInt(lastLogin, 10)) < twentyFourHours;
+        const thirtySixHours = 36 * 60 * 60 * 1000;
+        return (Date.now() - parseInt(lastLogin, 10)) < thirtySixHours;
     };
 
     const showView = (viewId) => {
@@ -144,12 +136,27 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const setupLoginButton = () => {
         const isLoggedIn = checkLoginStatus();
+        allDOMElements.loginButtonArea.innerHTML = ''; // Clear previous buttons
+
         if (isLoggedIn) {
-            allDOMElements.loginStudyBtn.textContent = 'Continue Study';
-            allDOMElements.loginStudyBtn.onclick = () => showInterstitialAd(studyUrl, false);
+            const continueBtn = document.createElement('button');
+            continueBtn.textContent = 'Continue Study';
+            continueBtn.className = 'styled-button';
+            continueBtn.onclick = () => showInterstitialAd(studyUrl, false);
+            
+            const forceLoginBtn = document.createElement('button');
+            forceLoginBtn.textContent = 'Force Login';
+            forceLoginBtn.className = 'styled-button support-button';
+            forceLoginBtn.onclick = () => showInterstitialAd(initialLoginUrl, true);
+
+            allDOMElements.loginButtonArea.appendChild(continueBtn);
+            allDOMElements.loginButtonArea.appendChild(forceLoginBtn);
         } else {
-            allDOMElements.loginStudyBtn.textContent = 'Login for 24 Hours';
-            allDOMElements.loginStudyBtn.onclick = () => showInterstitialAd(studyUrl, true);
+            const loginBtn = document.createElement('button');
+            loginBtn.textContent = 'Login for 36 Hours';
+            loginBtn.className = 'styled-button';
+            loginBtn.onclick = () => showInterstitialAd(initialLoginUrl, true);
+            allDOMElements.loginButtonArea.appendChild(loginBtn);
         }
     };
 
@@ -241,33 +248,56 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Event Listeners ---
-    allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
+    allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.cla jissList.remove('visible'));
     allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
     allDOMElements.commandCenterBtn.addEventListener('click', () => {
         allDOMElements.sidePanel.classList.toggle('visible');
         allDOMElements.commandCenterBtn.classList.toggle('open');
     });
-    allDOMElements.sidePanelExitBtn.addEventListener('click', () => {
-        showView('main-view');
+    
+    // FIX: Use event delegation on the nav panel for robust clicks
+    allDOMElements.sidePanelNav.addEventListener('click', (e) => {
+        const button = e.target.closest('.side-panel-button');
+        if (!button) return;
+
         allDOMElements.sidePanel.classList.remove('visible');
         allDOMElements.commandCenterBtn.classList.remove('open');
-        allDOMElements.websiteFrame.src = 'about:blank';
-        appState.iframeHistory = [];
-        appState.currentUrl = '';
+
+        switch (button.id) {
+            case 'side-panel-exit-btn':
+                showView('main-view');
+                allDOMElements.websiteFrame.src = 'about:blank';
+                appState.iframeHistory = [];
+                appState.currentUrl = '';
+                break;
+            case 'side-panel-back-btn':
+                navigateBack();
+                break;
+            case 'side-panel-home-btn':
+                launchSite(mainProjectsUrl, false);
+                break;
+            case 'side-panel-profile-btn':
+                launchSite(profileUrl, false);
+                break;
+            case 'side-panel-calculator-btn':
+                allDOMElements.calculator.classList.toggle('visible');
+                break;
+            case 'side-panel-notes-btn':
+                allDOMElements.notesWidget.classList.toggle('visible');
+                break;
+            case 'side-panel-focus-btn':
+                allDOMElements.focusOverlay.classList.toggle('active');
+                const icon = button.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+                break;
+            case 'side-panel-permissions-btn':
+                allDOMElements.permissionsModal.classList.add('visible');
+                break;
+        }
     });
-    allDOMElements.sidePanelBackBtn.addEventListener('click', navigateBack);
-    allDOMElements.sidePanelHomeBtn.addEventListener('click', () => launchSite(mainProjectsUrl, false));
-    allDOMElements.sidePanelProfileBtn.addEventListener('click', () => launchSite(profileUrl, false));
-    allDOMElements.sidePanelCalculatorBtn.addEventListener('click', () => allDOMElements.calculator.classList.toggle('visible'));
-    allDOMElements.sidePanelNotesBtn.addEventListener('click', () => allDOMElements.notesWidget.classList.toggle('visible'));
-    allDOMElements.sidePanelFocusBtn.addEventListener('click', () => {
-        allDOMElements.focusOverlay.classList.toggle('active');
-        const icon = allDOMElements.sidePanelFocusBtn.querySelector('i');
-        icon.classList.toggle('fa-eye');
-        icon.classList.toggle('fa-eye-slash');
-    });
-    allDOMElements.sidePanelPermissionsBtn.addEventListener('click', () => allDOMElements.permissionsModal.classList.add('visible'));
+
     allDOMElements.closePermissionsModal.addEventListener('click', () => allDOMElements.permissionsModal.classList.remove('visible'));
     allDOMElements.grantCameraBtn.addEventListener('click', async () => {
         try {
