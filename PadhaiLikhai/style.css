@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 22: The Definitive Flawless Hub Stylesheet (Final & Verified)
+ * Version 22: The Definitive Flawless Hub Stylesheet
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -54,22 +54,34 @@ html, body {
 @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
 /* --- Main Hub UI --- */
-#app-container { width: 100%; }
+.main-view-container { width: 100%; }
 .main-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; position: sticky; top: 0; z-index: 100; background: rgba(10, 10, 16, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); }
 .logo { font-family: 'Roboto Mono', monospace; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 5px var(--accent-color-start); }
 .header-nav button { background: none; border: none; color: var(--secondary-color); font-size: 1.2rem; margin-left: 20px; cursor: pointer; transition: all 0.3s ease; }
 .header-nav button:hover { color: var(--primary-color); text-shadow: 0 0 8px var(--primary-color); }
-.content-section { padding: 40px 30px; min-height: calc(100vh - 81px - 70px); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-bottom: 1px solid var(--border-color); }
-.section-title { font-size: 3rem; margin-bottom: 15px; font-weight: 700; }
-.section-subtitle { font-size: 1.2rem; color: var(--secondary-color); max-width: 600px; margin-bottom: 40px; }
-.styled-button { padding: 15px 40px; font-size: 1.2rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(0, 242, 254, 0.3); }
-.styled-button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.5); }
+#main-content-area { padding: 30px; }
+.dashboard-header { margin-bottom: 30px; }
+.search-bar-container { position: relative; max-width: 600px; margin: 0 auto 20px auto; }
+.search-bar-container i { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: var(--secondary-color); }
+#search-bar { width: 100%; padding: 15px 20px 15px 50px; background: var(--glass-bg); border: 1px solid var(--border-color); border-radius: 50px; color: white; font-size: 1rem; backdrop-filter: blur(5px); transition: all 0.3s ease; }
+#search-bar:focus { box-shadow: 0 0 15px var(--glow-color); border-color: var(--accent-color-start); }
+.category-filter { display: flex; justify-content: center; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
+.category-btn { padding: 8px 20px; background: transparent; border: 1px solid var(--border-color); color: var(--secondary-color); border-radius: 50px; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; }
+.category-btn.active, .category-btn:hover { color: white; background: var(--accent-color-start); border-color: var(--accent-color-end); box-shadow: 0 0 10px var(--glow-color); }
+#dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+.content-card { background: var(--glass-bg); border: 1px solid var(--border-color); border-radius: 15px; backdrop-filter: blur(10px); overflow: hidden; box-shadow: 0 10px 30px var(--shadow-color); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.content-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px var(--shadow-color); }
+.card-image { height: 200px; background-size: cover; background-position: center; }
+.card-content { padding: 25px; }
+.card-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
+.card-description { color: var(--secondary-color); margin-bottom: 20px; line-height: 1.6; }
+.button-group { display: flex; gap: 15px; justify-content: center; }
+.styled-button { padding: 12px 30px; font-size: 1rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.2); }
+.styled-button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 242, 254, 0.4); }
 .support-button { background: transparent; border: 1px solid var(--border-color); }
-#book-scanner { width: 300px; height: 250px; border: 2px solid var(--accent-color-start); border-radius: 10px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: 5rem; color: rgba(255,255,255,0.2); box-shadow: 0 0 20px var(--accent-color-start) inset; cursor: pointer; }
-#scanner-line { width: 100%; height: 3px; background: var(--accent-color-end); box-shadow: 0 0 10px var(--accent-color-end); position: absolute; top: 0; animation: scan-book 3s linear infinite; }
-@keyframes scan-book { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+.card-ad-link { text-decoration: none; color: inherit; display: block; }
 
-/* --- App View (Iframe & Overlays) --- */
+/* --- App View & Command Center --- */
 #app-view { z-index: 50; background: #000; }
 #iframe-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 #website-frame { width: 100%; height: 100%; border: none; background: #000; }
@@ -77,8 +89,6 @@ html, body {
 #iframe-loader.visible { display: block; }
 #focus-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 140; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
 #focus-overlay.active { opacity: 1; }
-
-/* --- Command Center (Side Panel) --- */
 #command-center-btn { position: fixed; top: 20px; left: 20px; z-index: 155; width: 50px; height: 50px; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 50%; color: white; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; opacity: 0; pointer-events: none; }
 #command-center-btn.visible { opacity: 1; pointer-events: all; }
 #command-center-btn .icon-menu span { background: #fff; border-radius: 2px; display: block; height: 2px; width: 20px; margin: 4px; transition: all .4s ease-in-out; }
@@ -94,7 +104,7 @@ html, body {
 .side-panel-button:hover { background: rgba(255,255,255,0.1); border-color: var(--border-color); color: var(--primary-color); }
 .side-panel-button.hidden { display: none; }
 
-/* --- Modals & Widgets --- */
+/* --- Modals & Widgets & Ads --- */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
 .modal-overlay.visible { opacity: 1; pointer-events: all; }
 .modal-content { background: var(--background-start); padding: 30px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px var(--shadow-color); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid var(--border-color); width: 90%; max-width: 450px; }
@@ -103,6 +113,9 @@ html, body {
 .modal-content .subtitle { font-size: 1rem; margin-top: 0; margin-bottom: 25px; }
 #interstitial-ad-container { width: 300px; height: 250px; margin: 0 auto 20px auto; background: #000; border-radius: 8px; overflow: hidden; }
 #interstitial-ad-container iframe { width: 100%; height: 100%; border: 0; }
+.modal-ad-controls { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; }
+.ad-close-btn { background: none; border: none; color: var(--secondary-color); font-size: 1.5rem; cursor: pointer; transition: color 0.2s; }
+.ad-close-btn:hover { color: var(--primary-color); }
 .form-group { margin-bottom: 20px; text-align: left; }
 .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
 .form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #555; background: #333; color: white; font-size: 1rem; }
