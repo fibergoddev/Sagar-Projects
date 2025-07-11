@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuro-Link | StudyHub Game</title>
+    <style>
+        /* * Designed & Developed by Sagar Raj
+         * Futuristic Game CSS - Neuro-Link
+         */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css');
+
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #cccccc;
+            --background-start: #0a0a10;
+            --background-end: #1a1a2e;
+            --accent-color: #00f2fe;
+            --glow-color: rgba(0, 242, 254, 0.7);
+            --danger-color: #f04747;
+            --success-color: #2ecc71;
+            --tile-bg: rgba(30, 30, 46, 0.5);
+            --border-color: rgba(0, 242, 254, 0.3);
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background: linear-gradient(-45deg, var(--background-end), var(--background-start));
+            color: var(--primary-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 95%;
+            max-width: 500px;
+            background: var(--tile-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .score-display {
+            font-size: 1.2rem;
+        }
+        .score-display span {
+            font-weight: 700;
+            color: var(--accent-color);
+            text-shadow: 0 0 8px var(--glow-color);
+        }
+
+        #game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            perspective: 1000px;
+        }
+
+        .tile {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            transform-style: preserve-3d;
+        }
+        .tile:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+        .tile.active {
+            background: var(--accent-color);
+            box-shadow: 0 0 25px var(--glow-color);
+            transform: scale(1.05) rotateY(180deg);
+            border-color: var(--primary-color);
+        }
+        .tile.correct {
+            background: var(--success-color);
+            box-shadow: 0 0 25px var(--success-color);
+        }
+        .tile.wrong {
+            background: var(--danger-color);
+            box-shadow: 0 0 25px var(--danger-color);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        #game-status {
+            min-height: 2.5rem;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .styled-button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-color-end));
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 242, 254, 0.3);
+            text-decoration: none;
+        }
+        .styled-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.5);
+        }
+        .back-button {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="score-display">Score: <span id="current-score">0</span></div>
+            <div class="score-display">High Score: <span id="high-score">0</span></div>
+        </div>
+        <div id="game-grid">
+            <!-- Tiles will be generated by JS -->
+        </div>
+        <div id="game-status">Press Start to Play</div>
+        <button id="start-btn" class="styled-button">Start Game</button>
+        <a href="index.html" class="styled-button back-button" style="margin-top: 15px; display: inline-block;">Back to Hub</a>
+    </div>
+
+    <!-- Tone.js for sound effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Game Configuration ---
+            const GRID_SIZE = 4;
+            const highScoreKey = 'neuroLinkHighScore';
+
+            // --- DOM Elements ---
+            const grid = document.getElementById('game-grid');
+            const currentScoreEl = document.getElementById('current-score');
+            const highScoreEl = document.getElementById('high-score');
+            const statusEl = document.getElementById('game-status');
+            const startBtn = document.getElementById('start-btn');
+
+            // --- Game State ---
+            let sequence = [];
+            let playerSequence = [];
+            let score = 0;
+            let highScore = localStorage.getItem(highScoreKey) || 0;
+            let canClick = false;
+            let gameInProgress = false;
+
+            // --- Sound Synthesis ---
+            const synth = new Tone.Synth({
+                oscillator: { type: 'sine' },
+                envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }
+            }).toDestination();
+
+            const playNote = (note, duration) => {
+                synth.triggerAttackRelease(note, duration);
+            };
+
+            // --- Game Logic ---
+            function createGrid() {
+                grid.innerHTML = '';
+                for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+                    const tile = document.createElement('div');
+                    tile.classList.add('tile');
+                    tile.dataset.index = i;
+                    tile.addEventListener('click', handleTileClick);
+                    grid.appendChild(tile);
+                }
+            }
+
+            function startGame() {
+                gameInProgress = true;
+                startBtn.style.display = 'none';
+                statusEl.textContent = 'Watch carefully...';
+                sequence = [];
+                playerSequence = [];
+                score = 0;
+                updateScore();
+                addNewStep();
+            }
+
+            function addNewStep() {
+                const randomIndex = Math.floor(Math.random() * (GRID_SIZE * GRID_SIZE));
+                sequence.push(randomIndex);
+                showSequence();
+            }
+
+            async function showSequence() {
+                canClick = false;
+                statusEl.textContent = 'Watch carefully...';
+                const delay = Math.max(100, 500 - score * 10); // Speed up as score increases
+
+                for (const index of sequence) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    const tile = document.querySelector(`.tile[data-index='${index}']`);
+                    tile.classList.add('active');
+                    playNote('C4', '8n');
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    tile.classList.remove('active');
+                }
+                
+                canClick = true;
+                statusEl.textContent = 'Your turn...';
+            }
+
+            function handleTileClick(event) {
+                if (!canClick) return;
+                
+                const clickedIndex = parseInt(event.target.dataset.index);
+                playerSequence.push(clickedIndex);
+
+                const tile = event.target;
+                const currentStep = playerSequence.length - 1;
+
+                if (playerSequence[currentStep] !== sequence[currentStep]) {
+                    tile.classList.add('wrong');
+                    playNote('C3', '4n');
+                    gameOver();
+                    return;
+                }
+
+                tile.classList.add('correct');
+                playNote('G4', '8n');
+                setTimeout(() => tile.classList.remove('correct'), 200);
+
+                if (playerSequence.length === sequence.length) {
+                    score++;
+                    updateScore();
+                    playerSequence = [];
+                    setTimeout(addNewStep, 1000);
+                }
+            }
+
+            function updateScore() {
+                currentScoreEl.textContent = score;
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem(highScoreKey, highScore);
+                    highScoreEl.textContent = highScore;
+                }
+            }
+
+            function gameOver() {
+                gameInProgress = false;
+                canClick = false;
+                statusEl.textContent = 'Game Over! Try again.';
+                startBtn.textContent = 'Play Again';
+                startBtn.style.display = 'inline-block';
+            }
+
+            // --- Initialization ---
+            highScoreEl.textContent = highScore;
+            startBtn.addEventListener('click', startGame);
+            createGrid();
+        });
+    </script>
+</body>
+</html>
