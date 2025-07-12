@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         booksSection: document.querySelector('.content-card[data-category="book"]'),
         searchBar: document.getElementById('search-bar'),
         categoryFilter: document.querySelector('.category-filter'),
+        dashboardGrid: document.getElementById('dashboard-grid'),
     };
 
     // --- State Management ---
@@ -236,6 +237,25 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
     };
+    
+    const filterDashboard = () => {
+        const searchTerm = allDOMElements.searchBar.value.toLowerCase();
+        const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category;
+        
+        document.querySelectorAll('#dashboard-grid .content-card').forEach(card => {
+            const keywords = card.dataset.keywords.toLowerCase();
+            const category = card.dataset.category;
+
+            const categoryMatch = activeCategory === 'all' || category === activeCategory;
+            const searchMatch = keywords.includes(searchTerm);
+
+            if (categoryMatch && searchMatch) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    };
 
     // --- Initial App Flow ---
     allDOMElements.telegramModal.classList.add('visible');
@@ -269,7 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
         allDOMElements.commandCenterBtn.classList.toggle('open');
     });
     
-    // Use event delegation on the nav panel for robust clicks
     allDOMElements.sidePanelNav.addEventListener('click', (e) => {
         const button = e.target.closest('.side-panel-button');
         if (!button) return;
@@ -330,7 +349,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     allDOMElements.notesTextarea.value = localStorage.getItem(notesKey) || '';
     allDOMElements.notesTextarea.addEventListener('keyup', () => localStorage.setItem(notesKey, allDOMElements.notesTextarea.value));
-    allDOMElements.booksSection.addEventListener('click', () => window.open(adLink, '_blank'));
+    
+    allDOMElements.searchBar.addEventListener('input', filterDashboard);
+    allDOMElements.categoryFilter.addEventListener('click', (e) => {
+        if (e.target.matches('.category-btn')) {
+            allDOMElements.categoryFilter.querySelector('.active').classList.remove('active');
+            e.target.classList.add('active');
+            filterDashboard();
+        }
+    });
     
     makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
     makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
