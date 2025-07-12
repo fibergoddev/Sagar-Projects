@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 22: The Definitive Flawless Hub Logic
+ * Version 23: The Definitive Flawless Hub Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DOM Element Cache ---
     const allDOMElements = {
+        loaderOverlay: document.getElementById('loader-overlay'),
         mainView: document.getElementById('main-view'),
         appView: document.getElementById('app-view'),
         supportView: document.getElementById('support-view'),
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         backToMainBtn: document.getElementById('back-to-main-btn'),
         persistentAdBanner: document.getElementById('persistent-ad-banner'),
         adGrid: document.getElementById('ad-grid'),
-        booksSection: document.querySelector('.content-card[data-category="book"] a'),
+        booksSectionLink: document.getElementById('books-ad-link'),
         searchBar: document.getElementById('search-bar'),
         categoryFilter: document.querySelector('.category-filter'),
         dashboardGrid: document.getElementById('dashboard-grid'),
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById(id).classList.toggle('hidden', id !== viewId);
         });
         allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
-        allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId !== 'main-view');
+        allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId === 'app-view');
     };
 
     const launchSite = (url, setLoginTimestamp) => {
@@ -258,7 +259,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Initial App Flow ---
-    allDOMElements.telegramModal.classList.add('visible');
+    setTimeout(() => {
+        allDOMElements.loaderOverlay.classList.add('hidden');
+        allDOMElements.telegramModal.classList.add('visible');
+    }, 2000); // Let loader animation play
+
     allDOMElements.closeTelegramModal.onclick = () => {
         allDOMElements.telegramModal.classList.remove('visible');
         if (!localStorage.getItem(userInfoKey)) {
@@ -313,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 launchSite(profileUrl, false);
                 break;
             case 'side-panel-game-btn':
-                launchSite(gameUrl, false);
+                showInterstitialAd(gameUrl, false);
                 break;
             case 'side-panel-calculator-btn':
                 allDOMElements.calculator.classList.toggle('visible');
@@ -360,6 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd(gameUrl, false));
+    allDOMElements.booksSectionLink.href = adLink;
     
     makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
     makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
