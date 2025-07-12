@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         backToMainBtn: document.getElementById('back-to-main-btn'),
         persistentAdBanner: document.getElementById('persistent-ad-banner'),
         adGrid: document.getElementById('ad-grid'),
-        booksSection: document.querySelector('.content-card[data-category="book"]'),
+        booksSection: document.querySelector('.content-card[data-category="book"] a'),
         searchBar: document.getElementById('search-bar'),
         categoryFilter: document.querySelector('.category-filter'),
         dashboardGrid: document.getElementById('dashboard-grid'),
