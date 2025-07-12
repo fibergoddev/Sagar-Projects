@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById(id).classList.toggle('hidden', id !== viewId);
         });
         allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
-        allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId === 'app-view');
+        allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId !== 'main-view');
     };
 
     const launchSite = (url, setLoginTimestamp) => {
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         allDOMElements.loaderOverlay.classList.add('hidden');
         allDOMElements.telegramModal.classList.add('visible');
-    }, 2000); // Let loader animation play
+    }, 2000);
 
     allDOMElements.closeTelegramModal.onclick = () => {
         allDOMElements.telegramModal.classList.remove('visible');
@@ -271,6 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             setupLoginButton();
         }
+        showView('main-view');
     };
 
     allDOMElements.userInfoForm.addEventListener('submit', (e) => {
