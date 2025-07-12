@@ -70,12 +70,14 @@ html, body {
 .category-btn.active, .category-btn:hover { color: white; background: var(--accent-color-start); border-color: var(--accent-color-end); box-shadow: 0 0 10px var(--glow-color); }
 #dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
 .content-card { background: var(--glass-bg); border: 1px solid var(--border-color); border-radius: 15px; backdrop-filter: blur(10px); overflow: hidden; box-shadow: 0 10px 30px var(--shadow-color); transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease; }
-.content-card.hidden { opacity: 0; transform: scale(0.95); }
+.content-card.hidden { opacity: 0; transform: scale(0.95); display: none; }
 .content-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px var(--shadow-color); }
 .card-image { height: 200px; background-size: cover; background-position: center; }
 .card-content { padding: 25px; }
 .card-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
 .card-description { color: var(--secondary-color); margin-bottom: 20px; line-height: 1.6; }
+.card-tags { display: flex; gap: 8px; margin-bottom: 20px; }
+.tag { background: rgba(255,255,255,0.1); color: var(--accent-color-start); padding: 5px 10px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
 .button-group { display: flex; gap: 15px; justify-content: center; }
 .styled-button { padding: 12px 30px; font-size: 1rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.2); }
 .styled-button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 242, 254, 0.4); }
