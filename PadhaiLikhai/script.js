@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         searchBar: document.getElementById('search-bar'),
         categoryFilter: document.querySelector('.category-filter'),
         dashboardGrid: document.getElementById('dashboard-grid'),
+        playGameBtn: document.getElementById('play-game-btn'),
     };
 
     // --- State Management ---
@@ -313,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 launchSite(profileUrl, false);
                 break;
             case 'side-panel-game-btn':
-                launchSite(gameUrl, false);
+                showInterstitialAd(gameUrl, false);
                 break;
             case 'side-panel-calculator-btn':
                 allDOMElements.calculator.classList.toggle('visible');
@@ -358,6 +359,8 @@ document.addEventListener('DOMContentLoaded', () => {
             filterDashboard();
         }
     });
+
+    allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd(gameUrl, false));
     
     makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
     makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
