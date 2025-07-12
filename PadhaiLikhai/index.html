@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Ultimate Study Hub | Developed by Sagar Raj</title>
+    <title>PadhaiLikhai | The Ultimate Study Hub</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
@@ -11,11 +11,25 @@
 
     <!-- This is the main container for all application views -->
     <div id="app-shell">
+        <!-- New Animated Loader -->
+        <div id="loader-overlay" class="visible">
+            <svg id="logo-loader" width="100" height="100" viewBox="0 0 100 100">
+                <path class="logo-path" d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="5"/>
+                <path class="logo-path" d="M 50 20 L 80 20 L 80 80" fill="none" stroke-width="5"/>
+            </svg>
+        </div>
+
         <!-- Main Hub View: Redesigned with a dashboard layout -->
-        <div id="main-view" class="view">
+        <div id="main-view" class="view hidden">
             <div class="main-view-container">
                 <header class="main-header">
-                    <div class="logo">StudyHub</div>
+                    <div class="logo">
+                        <svg id="header-logo" width="30" height="30" viewBox="0 0 100 100">
+                            <path d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="10"/>
+                            <path d="M 50 20 L 80 20 L 80 80" fill="none" stroke-width="10"/>
+                        </svg>
+                        <span>PadhaiLikhai</span>
+                    </div>
                     <nav class="header-nav">
                         <button id="support-us-btn" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
                     </nav>
@@ -80,9 +94,6 @@
                         </div>
                     </div>
                 </main>
-            </div>
-            <div id="persistent-ad-banner">
-                <!-- Ads will be loaded here by JS -->
             </div>
         </div>
         
@@ -185,6 +196,11 @@
                 <button id="close-permissions-modal" class="styled-button" style="width: 100%; margin-top: 25px;">Close</button>
             </div>
         </div>
+    </div>
+    
+    <!-- This ad banner is now outside the views to be truly persistent -->
+    <div id="persistent-ad-banner">
+        <!-- Ads will be loaded here by JS -->
     </div>
 
     <script src="script.js"></script>
