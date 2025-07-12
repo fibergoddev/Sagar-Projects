@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const initialLoginUrl = 'https://rolexcoderz.live/36xsuccess/';
     const studyUrl = 'https://www.rolexcoderz.xyz/Course';
     const profileUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html';
-    const mainProjectsUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/padhai.html';
     const gameUrl = 'game.html';
     const adLink = 'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf';
     const loginTimestampKey = 'sagarRajLoginTimestamp';
@@ -314,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 launchSite(profileUrl, false);
                 break;
             case 'side-panel-game-btn':
-                showInterstitialAd(gameUrl, false);
+                launchSite(gameUrl, false);
                 break;
             case 'side-panel-calculator-btn':
                 allDOMElements.calculator.classList.toggle('visible');
