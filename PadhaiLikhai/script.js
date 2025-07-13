@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 23: The Definitive Flawless Hub Logic
+ * Version 24: The Definitive Flawless Hub Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -55,6 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
         categoryFilter: document.querySelector('.category-filter'),
         dashboardGrid: document.getElementById('dashboard-grid'),
         playGameBtn: document.getElementById('play-game-btn'),
+        rightAdBar: document.getElementById('right-ad-bar'),
+        adBarToggle: document.getElementById('ad-bar-toggle'),
+        rightAdContent: document.getElementById('right-ad-content'),
     };
 
     // --- State Management ---
@@ -76,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById(id).classList.toggle('hidden', id !== viewId);
         });
         allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
-        allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId !== 'main-view');
+        allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId === 'app-view');
     };
 
     const launchSite = (url, setLoginTimestamp) => {
@@ -237,6 +240,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div id="container-5a3a56f258731c59b0ae000546a15e25"></div>
             </div>
         `;
+        allDOMElements.rightAdContent.innerHTML = `
+            <script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"></script>
+            <div id="container-5a3a56f258731c59b0ae000546a15e25"></div>
+        `;
     };
     
     const filterDashboard = () => {
@@ -365,8 +372,19 @@ document.addEventListener('DOMContentLoaded', () => {
     allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd(gameUrl, false));
     allDOMElements.booksSectionLink.href = adLink;
     
+    allDOMElements.adBarToggle.addEventListener('click', () => {
+        allDOMElements.rightAdBar.classList.toggle('visible');
+    });
+
     makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
     makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
     handleCalculator();
     loadAds();
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js');
+        });
+    }
 });
