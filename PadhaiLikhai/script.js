@@ -312,9 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'side-panel-back-btn':
                 navigateBack();
                 break;
-            case 'side-panel-home-btn':
-                launchSite(mainProjectsUrl, false);
-                break;
             case 'side-panel-profile-btn':
                 launchSite(profileUrl, false);
                 break;
