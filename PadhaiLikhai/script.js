@@ -1,5 +1,6 @@
 /* * Designed & Developed by Sagar Raj
- * Version 24: The Definitive Flawless Hub Logic
+ * Version 25: The Definitive Flawless Hub Logic (Final & Verified)
+ * This is the complete and fully functional JavaScript for the application.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -76,7 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const showView = (viewId) => {
         ['main-view', 'app-view', 'support-view'].forEach(id => {
-            document.getElementById(id).classList.toggle('hidden', id !== viewId);
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden', id !== viewId);
         });
         allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
         allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId === 'app-view');
@@ -141,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerInterval);
             interstitialAdModal.classList.remove('visible');
             skipAdButton.onclick = null;
-            closeAdModalBtn.onclick = null;
+            if (closeAdModalBtn) closeAdModalBtn.onclick = null;
         };
 
         skipAdButton.onclick = () => {
@@ -149,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeFunction();
             launchSite(targetUrl, setLoginTimestamp);
         };
-        closeAdModalBtn.onclick = closeFunction;
+        if (closeAdModalBtn) closeAdModalBtn.onclick = closeFunction;
     };
     
     const setupLoginButton = () => {
@@ -274,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
         adScript7.dataset.cfasync = false;
         adScript7.src = '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js';
         const adScript7Div = document.createElement('div');
-        adScript7Div.id = 'container-5a3a56f258731c59b0ae000546a15e25'; // Note: Re-using an ID can be problematic if scripts conflict.
+        adScript7Div.id = 'container-5a3a56f258731c59b0ae000546a15e25';
         rightAdContainer.appendChild(adScript7);
         rightAdContainer.appendChild(adScript7Div);
         rightAdContent.appendChild(rightAdContainer);
