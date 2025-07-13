@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
         allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId === 'app-view');
+        allDOMElements.rightAdBar.classList.toggle('visible', viewId === 'app-view');
     };
 
     const launchSite = (url, setLoginTimestamp) => {
@@ -221,29 +222,62 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const loadAds = () => {
-        allDOMElements.persistentAdBanner.innerHTML = `
-            <script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'><\/script>
-            <script type="text/javascript">
-                atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-            <\/script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script>
-        `;
-        allDOMElements.adGrid.innerHTML = `
-            <div class="ad-slot ad-slot-300x250">
-                <script type="text/javascript">
-                    atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-                <\/script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>
-            </div>
-            <div class="ad-slot ad-slot-container-div">
-                <script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"><\/script>
-                <div id="container-5a3a56f258731c59b0ae000546a15e25"></div>
-            </div>
-        `;
-        allDOMElements.rightAdContent.innerHTML = `
-            <script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"></script>
-            <div id="container-5a3a56f258731c59b0ae000546a15e25"></div>
-        `;
+        // Persistent Banner Ad
+        const adScript1 = document.createElement('script');
+        adScript1.src = '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js';
+        adScript1.type = 'text/javascript';
+        allDOMElements.persistentAdBanner.appendChild(adScript1);
+
+        const adScript2 = document.createElement('script');
+        adScript2.type = 'text/javascript';
+        adScript2.text = `atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };`;
+        const adScript3 = document.createElement('script');
+        adScript3.src = '//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js';
+        adScript3.type = 'text/javascript';
+        allDOMElements.persistentAdBanner.appendChild(adScript2);
+        allDOMElements.persistentAdBanner.appendChild(adScript3);
+
+        // Support Page Ads
+        const adGrid = allDOMElements.adGrid;
+        adGrid.innerHTML = ''; // Clear first
+        const bigBarContainer = document.createElement('div');
+        bigBarContainer.className = 'ad-slot ad-slot-300x250';
+        const adScript4 = document.createElement('script');
+        adScript4.type = 'text/javascript';
+        adScript4.text = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
+        const adScript5 = document.createElement('script');
+        adScript5.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
+        adScript5.type = 'text/javascript';
+        bigBarContainer.appendChild(adScript4);
+        bigBarContainer.appendChild(adScript5);
+        adGrid.appendChild(bigBarContainer);
+
+        const nativeBannerContainer = document.createElement('div');
+        nativeBannerContainer.className = 'ad-slot ad-slot-container-div';
+        const adScript6 = document.createElement('script');
+        adScript6.async = true;
+        adScript6.dataset.cfasync = false;
+        adScript6.src = '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js';
+        const adScript6Div = document.createElement('div');
+        adScript6Div.id = 'container-5a3a56f258731c59b0ae000546a15e25';
+        nativeBannerContainer.appendChild(adScript6);
+        nativeBannerContainer.appendChild(adScript6Div);
+        adGrid.appendChild(nativeBannerContainer);
+
+        // Right Side Ad Bar
+        const rightAdContent = allDOMElements.rightAdContent;
+        rightAdContent.innerHTML = '';
+        const rightAdContainer = document.createElement('div');
+        rightAdContainer.className = 'ad-slot ad-slot-container-div';
+        const adScript7 = document.createElement('script');
+        adScript7.async = true;
+        adScript7.dataset.cfasync = false;
+        adScript7.src = '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js';
+        const adScript7Div = document.createElement('div');
+        adScript7Div.id = 'container-5a3a56f258731c59b0ae000546a15e25'; // Note: Re-using an ID can be problematic if scripts conflict.
+        rightAdContainer.appendChild(adScript7);
+        rightAdContainer.appendChild(adScript7Div);
+        rightAdContent.appendChild(rightAdContainer);
     };
     
     const filterDashboard = () => {
