@@ -1,0 +1,21 @@
+{
+  "name": "PadhaiLikhai",
+  "short_name": "PadhaiLikhai",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0a0a10",
+  "theme_color": "#1a1a2e",
+  "description": "The Ultimate Study Hub by Sagar Raj.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
