@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PadhaiLikhai - Offline Sanctuary</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css');
+
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #cccccc;
+            --background-start: #0a0a10;
+            --background-end: #1a1a2e;
+            --accent-color-start: #00f2fe;
+            --accent-color-end: #4facfe;
+            --danger-color: #f04747;
+            --success-color: #2ecc71;
+            --glass-bg: rgba(30, 30, 46, 0.5);
+            --border-color: rgba(0, 242, 254, 0.3);
+            --shadow-color: rgba(0, 242, 254, 0.5);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, var(--background-end), var(--background-start));
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .view {
+            width: 100%;
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        .view.hidden {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            transform: scale(0.9);
+        }
+
+        /* --- Offline Scene Styles --- */
+        #offline-scene {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 30px auto;
+            aspect-ratio: 1 / 1;
+        }
+
+        #offline-animation {
+            width: 100%;
+            height: 100%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px var(--accent-color-start);
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+        }
+
+        .styled-button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end));
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 242, 254, 0.3);
+        }
+        .styled-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.5);
+        }
+
+        /* --- Game Styles --- */
+        #game-container {
+            width: 100%;
+            max-width: 450px;
+            margin: auto;
+            background: var(--glass-bg);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        #game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.2rem;
+        }
+        #game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            perspective: 1000px;
+        }
+        .node {
+            aspect-ratio: 1 / 1;
+            background: rgba(0,0,0,0.2);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .node::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 25%;
+            height: 25%;
+            background: var(--accent-color-start);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--glow-color);
+            opacity: 0.5;
+            transition: all 0.2s ease;
+        }
+        .node:hover::before {
+            transform: translate(-50%, -50%) scale(1.5);
+        }
+        .node.active {
+            background: var(--accent-color);
+            border-color: var(--primary-color);
+            animation: pulse-node 0.4s;
+        }
+        @keyframes pulse-node {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        #game-status {
+            min-height: 2.5rem;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Offline Message View -->
+        <div id="offline-view" class="view">
+            <div id="offline-scene">
+                <canvas id="offline-animation"></canvas>
+            </div>
+            <h1>Connection Severed</h1>
+            <p>The digital stream has paused. Engage your mind while we attempt to reconnect.</p>
+            <button id="play-game-btn" class="styled-button">Breach Quantum Lock</button>
+        </div>
+
+        <!-- Game View -->
+        <div id="game-view" class="view hidden">
+            <h1>Quantum Lock</h1>
+            <div id="game-container">
+                <div id="game-header">
+                    <span>Level: <span id="level">1</span></span>
+                    <span>High Score: <span id="high-score">0</span></span>
+                </div>
+                <div id="game-grid">
+                    <!-- Nodes generated by JS -->
+                </div>
+                <div id="game-status">Memorize the sequence...</div>
+            </div>
+             <button id="back-to-offline-btn" class="styled-button" style="margin-top: 20px; background: transparent; border: 1px solid var(--border-color);">Return to Sanctuary</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 2D Animated Scene ---
+            const canvas = document.getElementById('offline-animation');
+            const ctx = canvas.getContext('2d');
+            let width, height, rings = [];
+
+            function resizeCanvas() {
+                const container = document.getElementById('offline-scene');
+                width = canvas.width = container.clientWidth;
+                height = canvas.height = container.clientHeight;
+            }
+
+            function initAnimation() {
+                for (let i = 0; i < 5; i++) {
+                    rings.push({
+                        radius: (i + 1) * (width / 12),
+                        alpha: 0.5 - i * 0.08,
+                        lineWidth: i + 1,
+                        speed: (i + 1) * 0.001
+                    });
+                }
+            }
+
+            function drawAnimation() {
+                ctx.clearRect(0, 0, width, height);
+                const centerX = width / 2;
+                const centerY = height / 2;
+
+                rings.forEach(ring => {
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, ring.radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = `rgba(0, 242, 254, ${ring.alpha})`;
+                    ctx.lineWidth = ring.lineWidth;
+                    ctx.stroke();
+                    ring.radius += ring.speed;
+                    if (ring.radius > width / 2) {
+                        ring.radius = 0;
+                    }
+                });
+
+                // Glitchy Text
+                ctx.font = "bold 2rem 'Roboto Mono', monospace";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                if (Math.random() > 0.95) {
+                    ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
+                    ctx.fillText("CONNECTION LOST", centerX + (Math.random() - 0.5) * 10, centerY + (Math.random() - 0.5) * 10);
+                }
+                ctx.fillStyle = "rgba(0, 242, 254, 0.8)";
+                ctx.fillText("CONNECTION LOST", centerX, centerY);
+                
+                requestAnimationFrame(drawAnimation);
+            }
+            
+            resizeCanvas();
+            initAnimation();
+            drawAnimation();
+            window.addEventListener('resize', resizeCanvas);
+
+
+            // --- Quantum Lock Game Logic ---
+            const gameGrid = document.getElementById('game-grid');
+            const levelEl = document.getElementById('level');
+            const highScoreEl = document.getElementById('high-score');
+            const gameStatusEl = document.getElementById('game-status');
+            const backToOfflineBtn = document.getElementById('back-to-offline-btn');
+            
+            let sequence, playerSequence, level, highScore, canClick, gameInProgress;
+            const highScoreKey = 'quantumLockHighScore';
+
+            const synth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 },
+            }).toDestination();
+            const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5'];
+
+            function createGameGrid() {
+                gameGrid.innerHTML = '';
+                for (let i = 0; i < 9; i++) {
+                    const node = document.createElement('div');
+                    node.classList.add('node');
+                    node.dataset.index = i;
+                    node.addEventListener('click', handleNodeClick);
+                    gameGrid.appendChild(node);
+                }
+            }
+
+            function startGame() {
+                gameInProgress = true;
+                level = 1;
+                highScore = localStorage.getItem(highScoreKey) || 0;
+                levelEl.textContent = level;
+                highScoreEl.textContent = highScore;
+                nextLevel();
+            }
+
+            function nextLevel() {
+                sequence = [];
+                playerSequence = [];
+                levelEl.textContent = level;
+                gameStatusEl.textContent = 'Memorize the sequence...';
+                
+                // Add one new step to the sequence
+                for(let i = 0; i < level + 2; i++) {
+                    sequence.push(Math.floor(Math.random() * 9));
+                }
+                showSequence();
+            }
+
+            async function showSequence() {
+                canClick = false;
+                const delay = Math.max(150, 600 - level * 20);
+                const nodes = document.querySelectorAll('.node');
+                
+                for (const index of sequence) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    nodes[index].classList.add('active');
+                    playNote(notes[index], '8n');
+                    await new Promise(resolve => setTimeout(resolve, delay / 2));
+                    nodes[index].classList.remove('active');
+                }
+                
+                canClick = true;
+                gameStatusEl.textContent = 'Your turn...';
+            }
+
+            function handleNodeClick(event) {
+                if (!canClick) return;
+                
+                const clickedIndex = parseInt(event.target.dataset.index);
+                playerSequence.push(clickedIndex);
+                
+                const node = event.target;
+                const currentStep = playerSequence.length - 1;
+
+                if (playerSequence[currentStep] !== sequence[currentStep]) {
+                    playNote('C3', '4n');
+                    gameStatusEl.textContent = 'Sequence Error! Game Over.';
+                    gameStatusEl.style.color = 'var(--danger-color)';
+                    canClick = false;
+                    gameInProgress = false;
+                    return;
+                }
+                
+                node.classList.add('active');
+                playNote(notes[clickedIndex], '8n');
+                setTimeout(() => node.classList.remove('active'), 200);
+
+                if (playerSequence.length === sequence.length) {
+                    playNote('G5', '4n');
+                    gameStatusEl.textContent = 'Sequence Correct! Next Level...';
+                    gameStatusEl.style.color = 'var(--success-color)';
+                    level++;
+                    if (level > highScore) {
+                        highScore = level;
+                        localStorage.setItem(highScoreKey, highScore);
+                        highScoreEl.textContent = highScore;
+                    }
+                    canClick = false;
+                    setTimeout(nextLevel, 1500);
+                }
+            }
+            
+            // --- View Switching ---
+            const offlineView = document.getElementById('offline-view');
+            const gameView = document.getElementById('game-view');
+            const playGameBtn = document.getElementById('play-game-btn');
+
+            playGameBtn.addEventListener('click', () => {
+                offlineView.classList.add('hidden');
+                gameView.classList.remove('hidden');
+                startGame();
+            });
+
+            backToOfflineBtn.addEventListener('click', () => {
+                gameView.classList.add('hidden');
+                offlineView.classList.remove('hidden');
+                gameInProgress = false;
+            });
+
+            createGameGrid();
+        });
+    </script>
+</body>
+</html>
