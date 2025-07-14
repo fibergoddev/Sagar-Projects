@@ -1,0 +1,126 @@
+/* * Designed & Developed by Sagar Raj
+ * Admin Panel Stylesheet
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
+
+:root {
+    --primary-color: #ffffff;
+    --secondary-color: #cccccc;
+    --background-start: #0a0a10;
+    --background-end: #1a1a2e;
+    --accent-color-start: #00f2fe;
+    --accent-color-end: #4facfe;
+    --danger-color: #f04747;
+    --glass-bg: rgba(30, 30, 46, 0.6);
+    --border-color: rgba(255, 255, 255, 0.2);
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --glow-color: rgba(0, 242, 254, 0.7);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, var(--background-end), var(--background-start), #16222a, #3a6073);
+    background-size: 400% 400%;
+    animation: gradientBG 20s ease infinite;
+    color: var(--primary-color);
+    overflow-x: hidden;
+}
+
+@keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+/* --- Loader --- */
+#loader-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #0a0a10; z-index: 1000; display: flex;
+    justify-content: center; align-items: center; transition: opacity 0.5s ease;
+}
+#loader-overlay.hidden { opacity: 0; pointer-events: none; }
+#logo-loader { stroke: var(--accent-color-start); filter: drop-shadow(0 0 5px var(--glow-color)); }
+.logo-path {
+    stroke-dasharray: 300; stroke-dashoffset: 300;
+    animation: fill-logo 1.5s ease-in-out forwards;
+}
+@keyframes fill-logo { to { stroke-dashoffset: 0; } }
+
+/* --- Login Page --- */
+.login-container {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 20px;
+}
+.login-box {
+    width: 100%; max-width: 450px; padding: 40px;
+    background: var(--glass-bg); border: 1px solid var(--border-color);
+    border-radius: 16px; backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px var(--shadow-color); text-align: center;
+}
+.logo {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; font-family: 'Roboto Mono', monospace;
+    font-size: 1.5rem; font-weight: 700;
+    text-shadow: 0 0 5px var(--accent-color-start); margin-bottom: 15px;
+}
+#header-logo { stroke: var(--accent-color-start); }
+.title { font-size: 2rem; margin-bottom: 10px; }
+.subtitle { color: var(--secondary-color); margin-bottom: 30px; }
+.form-group { margin-bottom: 20px; text-align: left; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+.form-group input {
+    width: 100%; padding: 12px; border-radius: 8px;
+    border: 1px solid var(--border-color); background: rgba(0,0,0,0.2);
+    color: white; font-size: 1rem; transition: all 0.3s ease;
+}
+.form-group input:focus {
+    box-shadow: 0 0 15px var(--glow-color);
+    border-color: var(--accent-color-start);
+}
+.error-message {
+    color: var(--danger-color); min-height: 20px;
+    margin-bottom: 15px; font-size: 0.9rem;
+}
+.styled-button {
+    width: 100%; padding: 12px 30px; font-size: 1rem; font-weight: 600;
+    color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end));
+    border: none; border-radius: 50px; cursor: pointer;
+    transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.2);
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+}
+.styled-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 242, 254, 0.4);
+}
+
+/* --- Admin Panel --- */
+#panel-container.hidden { display: none; }
+.panel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 30px; background: rgba(10, 10, 16, 0.8);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color);
+    position: sticky; top: 0; z-index: 100;
+}
+.panel-header .styled-button { width: auto; }
+.panel-main { padding: 30px; }
+.section-title { font-size: 2.5rem; margin-bottom: 5px; }
+.section-subtitle { color: var(--secondary-color); margin-bottom: 30px; }
+.table-container {
+    background: var(--glass-bg); border: 1px solid var(--border-color);
+    border-radius: 16px; backdrop-filter: blur(5px);
+    overflow-x: auto;
+}
+table {
+    width: 100%; border-collapse: collapse;
+}
+th, td {
+    padding: 15px 20px; text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+thead th {
+    font-size: 1rem; font-weight: 600;
+    color: var(--accent-color-start);
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.05); }
+td { color: var(--secondary-color); font-size: 0.9rem; }
+td:first-child { color: var(--primary-color); font-weight: 600; }
