@@ -1,6 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 25: The Definitive Flawless Hub Logic (Final & Verified)
- * This is the complete and fully functional JavaScript for the application.
+ * Version 25: The Definitive Flawless Hub Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -77,8 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const showView = (viewId) => {
         ['main-view', 'app-view', 'support-view'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.classList.toggle('hidden', id !== viewId);
+            document.getElementById(id).classList.toggle('hidden', id !== viewId);
         });
         allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
         allDOMElements.persistentAdBanner.classList.toggle('hidden', viewId === 'app-view');
@@ -143,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerInterval);
             interstitialAdModal.classList.remove('visible');
             skipAdButton.onclick = null;
-            if (closeAdModalBtn) closeAdModalBtn.onclick = null;
+            closeAdModalBtn.onclick = null;
         };
 
         skipAdButton.onclick = () => {
@@ -151,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeFunction();
             launchSite(targetUrl, setLoginTimestamp);
         };
-        if (closeAdModalBtn) closeAdModalBtn.onclick = closeFunction;
+        closeAdModalBtn.onclick = closeFunction;
     };
     
     const setupLoginButton = () => {
