@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 25: The Definitive Flawless Hub Stylesheet
+ * Version 26: The Definitive Flawless Hub Stylesheet
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -17,6 +17,7 @@
     --glass-bg: rgba(30, 30, 46, 0.6);
     --border-color: rgba(255, 255, 255, 0.2);
     --shadow-color: rgba(0, 0, 0, 0.5);
+    --glow-color: rgba(0, 242, 254, 0.7);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -219,4 +220,21 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* --- New Admin Link --- */
+.main-footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+}
+.admin-login-link {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.admin-login-link:hover {
+    color: var(--accent-color-start);
+    text-shadow: 0 0 5px var(--glow-color);
 }
