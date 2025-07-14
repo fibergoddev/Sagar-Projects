@@ -2,43 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PadhaiLikhai - Offline Sanctuary</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PadhaiLikhai - Offline Protocol</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
 
         :root {
             --primary-color: #ffffff;
             --secondary-color: #cccccc;
-            --background-start: #0a0a10;
-            --background-end: #1a1a2e;
-            --accent-color-start: #00f2fe;
-            --accent-color-end: #4facfe;
+            --background-color: #0a0a10;
+            --accent-color: #00f2fe;
             --danger-color: #f04747;
             --success-color: #2ecc71;
-            --glass-bg: rgba(30, 30, 46, 0.5);
+            --powerup-color: #ffc107;
+            --glass-bg: rgba(30, 30, 46, 0.6);
             --border-color: rgba(0, 242, 254, 0.3);
             --shadow-color: rgba(0, 242, 254, 0.5);
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, var(--background-end), var(--background-start));
+            font-family: 'Roboto Mono', monospace;
+            background-color: var(--background-color);
             color: var(--primary-color);
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             text-align: center;
             overflow: hidden;
+            position: relative;
+        }
+
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .view {
@@ -53,31 +65,34 @@
         }
 
         /* --- Offline Scene Styles --- */
-        #offline-scene {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto 30px auto;
-            aspect-ratio: 1 / 1;
+        .offline-icon {
+            font-size: 6rem;
+            color: var(--danger-color);
+            text-shadow: 0 0 20px var(--danger-color);
+            animation: glitch 2s linear infinite;
+            margin-bottom: 20px;
         }
 
-        #offline-animation {
-            width: 100%;
-            height: 100%;
+        @keyframes glitch {
+            2%,64% { transform: translate(2px,0) skew(0deg); }
+            4%,60% { transform: translate(-2px,0) skew(0deg); }
+            62% { transform: translate(0,0) skew(5deg); }
         }
 
         h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            margin-top: 20px;
             margin-bottom: 10px;
-            text-shadow: 0 0 10px var(--accent-color-start);
+            text-shadow: 0 0 10px var(--accent-color);
         }
 
         p {
             font-size: 1.2rem;
             color: var(--secondary-color);
             margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .styled-button {
@@ -85,115 +100,109 @@
             font-size: 1.2rem;
             font-weight: 600;
             color: var(--primary-color);
-            background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end));
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-color-end));
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0, 242, 254, 0.3);
+            box-shadow: 0 5px 20px var(--shadow-color);
+            text-decoration: none;
         }
         .styled-button:hover {
             transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.5);
+            box-shadow: 0 10px 30px var(--shadow-color);
         }
 
         /* --- Game Styles --- */
         #game-container {
             width: 100%;
-            max-width: 450px;
             margin: auto;
-            background: var(--glass-bg);
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
+            position: relative;
         }
-        #game-header {
+        #game-canvas {
+            width: 100%;
+            background: rgba(0,0,0,0.2);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 0 20px var(--border-color) inset;
+            cursor: pointer;
+        }
+        #game-ui {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            font-family: 'Roboto Mono', monospace;
             font-size: 1.2rem;
+            pointer-events: none;
         }
-        #game-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-            perspective: 1000px;
+        #energy-bar-container {
+            width: 100px;
+            height: 15px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2px;
         }
-        .node {
-            aspect-ratio: 1 / 1;
-            background: rgba(0,0,0,0.2);
-            border: 2px solid var(--border-color);
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
+        #energy-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color-end), var(--accent-color-start));
+            border-radius: 10px;
+            transition: width 0.2s linear;
         }
-        .node::before {
-            content: '';
+        #game-over-screen {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 25%;
-            height: 25%;
-            background: var(--accent-color-start);
-            border-radius: 50%;
-            box-shadow: 0 0 15px var(--glow-color);
-            opacity: 0.5;
-            transition: all 0.2s ease;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 10, 16, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
         }
-        .node:hover::before {
-            transform: translate(-50%, -50%) scale(1.5);
-        }
-        .node.active {
-            background: var(--accent-color);
-            border-color: var(--primary-color);
-            animation: pulse-node 0.4s;
-        }
-        @keyframes pulse-node {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        #game-status {
-            min-height: 2.5rem;
-            font-size: 1.2rem;
-            color: var(--secondary-color);
-            margin-top: 20px;
+        #game-over-screen.visible {
+            opacity: 1;
+            pointer-events: all;
         }
     </style>
 </head>
 <body>
 
+    <canvas id="background-canvas"></canvas>
+
     <div class="container">
         <!-- Offline Message View -->
         <div id="offline-view" class="view">
-            <div id="offline-scene">
-                <canvas id="offline-animation"></canvas>
+            <div class="offline-icon">
+                <i class="fas fa-satellite-dish"></i>
             </div>
-            <h1>Connection Severed</h1>
-            <p>The digital stream has paused. Engage your mind while we attempt to reconnect.</p>
-            <button id="play-game-btn" class="styled-button">Breach Quantum Lock</button>
+            <h1>CONNECTION SEVERED</h1>
+            <p>The data stream is offline. Engage in a simulation while we attempt to re-establish the link.</p>
+            <button id="play-game-btn" class="styled-button">Launch Quantum Drift</button>
         </div>
 
         <!-- Game View -->
         <div id="game-view" class="view hidden">
-            <h1>Quantum Lock</h1>
             <div id="game-container">
-                <div id="game-header">
-                    <span>Level: <span id="level">1</span></span>
+                <canvas id="game-canvas"></canvas>
+                <div id="game-ui">
+                    <span>Score: <span id="score">0</span></span>
+                    <div id="energy-bar-container">
+                        <div id="energy-bar"></div>
+                    </div>
                     <span>High Score: <span id="high-score">0</span></span>
                 </div>
-                <div id="game-grid">
-                    <!-- Nodes generated by JS -->
+                <div id="game-over-screen">
+                    <h1>SIMULATION ENDED</h1>
+                    <p>Final Score: <span id="final-score">0</span></p>
+                    <button id="restart-game-btn" class="styled-button">Re-initialize</button>
                 </div>
-                <div id="game-status">Memorize the sequence...</div>
             </div>
-             <button id="back-to-offline-btn" class="styled-button" style="margin-top: 20px; background: transparent; border: 1px solid var(--border-color);">Return to Sanctuary</button>
         </div>
     </div>
 
@@ -201,186 +210,204 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- 2D Animated Scene ---
-            const canvas = document.getElementById('offline-animation');
-            const ctx = canvas.getContext('2d');
-            let width, height, rings = [];
+            // --- Background Animation ---
+            const bgCanvas = document.getElementById('background-canvas');
+            const bgCtx = bgCanvas.getContext('2d');
+            let width, height, particles = [];
 
-            function resizeCanvas() {
-                const container = document.getElementById('offline-scene');
-                width = canvas.width = container.clientWidth;
-                height = canvas.height = container.clientHeight;
+            function resizeBgCanvas() {
+                width = bgCanvas.width = window.innerWidth;
+                height = bgCanvas.height = window.innerHeight;
             }
+            resizeBgCanvas();
+            window.addEventListener('resize', resizeBgCanvas);
 
-            function initAnimation() {
-                for (let i = 0; i < 5; i++) {
-                    rings.push({
-                        radius: (i + 1) * (width / 12),
-                        alpha: 0.5 - i * 0.08,
-                        lineWidth: i + 1,
-                        speed: (i + 1) * 0.001
+            function initParticles() {
+                for (let i = 0; i < 50; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        radius: Math.random() * 1.5,
+                        vx: (Math.random() - 0.5) * 0.2,
+                        vy: (Math.random() - 0.5) * 0.2,
                     });
                 }
             }
 
-            function drawAnimation() {
-                ctx.clearRect(0, 0, width, height);
-                const centerX = width / 2;
-                const centerY = height / 2;
+            function animateBackground() {
+                bgCtx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
 
-                rings.forEach(ring => {
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY, ring.radius, 0, Math.PI * 2);
-                    ctx.strokeStyle = `rgba(0, 242, 254, ${ring.alpha})`;
-                    ctx.lineWidth = ring.lineWidth;
-                    ctx.stroke();
-                    ring.radius += ring.speed;
-                    if (ring.radius > width / 2) {
-                        ring.radius = 0;
+                    bgCtx.beginPath();
+                    bgCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    bgCtx.fillStyle = `rgba(0, 242, 254, 0.5)`;
+                    bgCtx.fill();
+                });
+                requestAnimationFrame(animateBackground);
+            }
+            initParticles();
+            animateBackground();
+
+            // --- Quantum Drift Game Logic ---
+            const gameCanvas = document.getElementById('game-canvas');
+            const ctx = gameCanvas.getContext('2d');
+            const scoreEl = document.getElementById('score');
+            const highScoreEl = document.getElementById('high-score');
+            const restartBtn = document.getElementById('restart-game-btn');
+            const gameOverScreen = document.getElementById('game-over-screen');
+            const finalScoreEl = document.getElementById('final-score');
+            const energyBar = document.getElementById('energy-bar');
+
+            let player, path, gameScore, gameHighScore, gameActive, frameCount, gameSpeed, energy;
+            let isBridging = false, bridgeLength = 0;
+            const highScoreKey = 'quantumDriftHighScore';
+
+            const synth = new Tone.Synth({ oscillator: { type: "fmsine", modulationType: "sine", harmonicity: 1.2 } }).toDestination();
+            const bridgeSynth = new Tone.MembraneSynth().toDestination();
+            const orbSynth = new Tone.Synth({ oscillator: { type: "triangle" } }).toDestination();
+
+            function playNote(note, duration, s = synth) {
+                if(Tone.context.state !== 'running') Tone.context.resume();
+                s.triggerAttackRelease(note, duration);
+            }
+
+            function initGame() {
+                gameActive = true;
+                resizeGameCanvas();
+                player = { x: 80, y: gameCanvas.height / 2, size: 10, trail: [] };
+                path = [{ x: 0, y: gameCanvas.height / 2, width: gameCanvas.width + 50 }];
+                energy = 100;
+                gameScore = 0;
+                frameCount = 0;
+                gameSpeed = 2;
+                gameHighScore = localStorage.getItem(highScoreKey) || 0;
+                scoreEl.textContent = 0;
+                highScoreEl.textContent = gameHighScore;
+                gameOverScreen.classList.remove('visible');
+                if(!gameLoopAnimation) gameLoop();
+            }
+
+            let gameLoopAnimation;
+            function gameLoop() {
+                if (!gameActive) {
+                    cancelAnimationFrame(gameLoopAnimation);
+                    gameLoopAnimation = null;
+                    return;
+                };
+
+                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+                
+                // Draw Trail
+                player.trail.push({x: player.x, y: player.y});
+                if(player.trail.length > 20) player.trail.shift();
+                ctx.strokeStyle = 'var(--accent-color-start)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(player.trail[0].x, player.trail[0].y);
+                for(let i=1; i < player.trail.length; i++) {
+                    ctx.lineTo(player.trail[i].x, player.trail[i].y);
+                }
+                ctx.stroke();
+                
+                // Draw Player
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Path logic
+                let onPath = false;
+                path.forEach((p, i) => {
+                    p.x -= gameSpeed;
+                    ctx.fillStyle = 'var(--accent-color-start)';
+                    ctx.fillRect(p.x, p.y, p.width, 3);
+
+                    if (player.x > p.x && player.x < p.x + p.width) {
+                        onPath = true;
                     }
+                    if (p.x + p.width < 0) path.splice(i, 1);
                 });
 
-                // Glitchy Text
-                ctx.font = "bold 2rem 'Roboto Mono', monospace";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                if (Math.random() > 0.95) {
-                    ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
-                    ctx.fillText("CONNECTION LOST", centerX + (Math.random() - 0.5) * 10, centerY + (Math.random() - 0.5) * 10);
+                const lastPath = path[path.length - 1];
+                if (lastPath.x + lastPath.width < gameCanvas.width) {
+                    const gap = Math.random() * 100 + 50;
+                    const newWidth = Math.random() * 200 + 100;
+                    path.push({ x: lastPath.x + lastPath.width + gap, y: gameCanvas.height / 2, width: newWidth });
                 }
-                ctx.fillStyle = "rgba(0, 242, 254, 0.8)";
-                ctx.fillText("CONNECTION LOST", centerX, centerY);
                 
-                requestAnimationFrame(drawAnimation);
+                if (!onPath && !isBridging) {
+                    endGame();
+                }
+
+                if(isBridging && energy > 0) {
+                    bridgeLength += 5;
+                    energy -= 0.5;
+                    ctx.fillStyle = `rgba(0, 242, 254, 0.5)`;
+                    ctx.fillRect(player.x, player.y, bridgeLength, 3);
+                }
+                energyBar.style.width = `${energy}%`;
+
+                gameScore++;
+                scoreEl.textContent = Math.floor(gameScore);
+                
+                gameLoopAnimation = requestAnimationFrame(gameLoop);
+            }
+
+            function startBridge() {
+                if (!gameActive) return;
+                isBridging = true;
+                bridgeLength = 0;
+                playNote('C2', '1n', bridgeSynth);
+            }
+
+            function endBridge() {
+                if (!isBridging) return;
+                isBridging = false;
+                path.push({ x: player.x, y: player.y, width: bridgeLength });
+                playNote('C4', '8n', bridgeSynth);
             }
             
-            resizeCanvas();
-            initAnimation();
-            drawAnimation();
-            window.addEventListener('resize', resizeCanvas);
-
-
-            // --- Quantum Lock Game Logic ---
-            const gameGrid = document.getElementById('game-grid');
-            const levelEl = document.getElementById('level');
-            const highScoreEl = document.getElementById('high-score');
-            const gameStatusEl = document.getElementById('game-status');
-            const backToOfflineBtn = document.getElementById('back-to-offline-btn');
-            
-            let sequence, playerSequence, level, highScore, canClick, gameInProgress;
-            const highScoreKey = 'quantumLockHighScore';
-
-            const synth = new Tone.PolySynth(Tone.Synth, {
-                oscillator: { type: "sine" },
-                envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 },
-            }).toDestination();
-            const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5'];
-
-            function createGameGrid() {
-                gameGrid.innerHTML = '';
-                for (let i = 0; i < 9; i++) {
-                    const node = document.createElement('div');
-                    node.classList.add('node');
-                    node.dataset.index = i;
-                    node.addEventListener('click', handleNodeClick);
-                    gameGrid.appendChild(node);
+            function endGame() {
+                gameActive = false;
+                if (gameScore > gameHighScore) {
+                    gameHighScore = Math.floor(gameScore);
+                    localStorage.setItem(highScoreKey, gameHighScore);
+                    highScoreEl.textContent = gameHighScore;
                 }
+                finalScoreEl.textContent = Math.floor(gameScore);
+                gameOverScreen.classList.add('visible');
+                playNote('C2', '2n', synth);
             }
 
-            function startGame() {
-                gameInProgress = true;
-                level = 1;
-                highScore = localStorage.getItem(highScoreKey) || 0;
-                levelEl.textContent = level;
-                highScoreEl.textContent = highScore;
-                nextLevel();
+            function resizeGameCanvas() {
+                const container = document.getElementById('game-container');
+                gameCanvas.width = container.clientWidth;
+                gameCanvas.height = 200;
             }
 
-            function nextLevel() {
-                sequence = [];
-                playerSequence = [];
-                levelEl.textContent = level;
-                gameStatusEl.textContent = 'Memorize the sequence...';
-                
-                // Add one new step to the sequence
-                for(let i = 0; i < level + 2; i++) {
-                    sequence.push(Math.floor(Math.random() * 9));
-                }
-                showSequence();
-            }
-
-            async function showSequence() {
-                canClick = false;
-                const delay = Math.max(150, 600 - level * 20);
-                const nodes = document.querySelectorAll('.node');
-                
-                for (const index of sequence) {
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    nodes[index].classList.add('active');
-                    playNote(notes[index], '8n');
-                    await new Promise(resolve => setTimeout(resolve, delay / 2));
-                    nodes[index].classList.remove('active');
-                }
-                
-                canClick = true;
-                gameStatusEl.textContent = 'Your turn...';
-            }
-
-            function handleNodeClick(event) {
-                if (!canClick) return;
-                
-                const clickedIndex = parseInt(event.target.dataset.index);
-                playerSequence.push(clickedIndex);
-                
-                const node = event.target;
-                const currentStep = playerSequence.length - 1;
-
-                if (playerSequence[currentStep] !== sequence[currentStep]) {
-                    playNote('C3', '4n');
-                    gameStatusEl.textContent = 'Sequence Error! Game Over.';
-                    gameStatusEl.style.color = 'var(--danger-color)';
-                    canClick = false;
-                    gameInProgress = false;
-                    return;
-                }
-                
-                node.classList.add('active');
-                playNote(notes[clickedIndex], '8n');
-                setTimeout(() => node.classList.remove('active'), 200);
-
-                if (playerSequence.length === sequence.length) {
-                    playNote('G5', '4n');
-                    gameStatusEl.textContent = 'Sequence Correct! Next Level...';
-                    gameStatusEl.style.color = 'var(--success-color)';
-                    level++;
-                    if (level > highScore) {
-                        highScore = level;
-                        localStorage.setItem(highScoreKey, highScore);
-                        highScoreEl.textContent = highScore;
-                    }
-                    canClick = false;
-                    setTimeout(nextLevel, 1500);
-                }
-            }
-            
-            // --- View Switching ---
+            // --- View Switching & Event Listeners ---
             const offlineView = document.getElementById('offline-view');
             const gameView = document.getElementById('game-view');
             const playGameBtn = document.getElementById('play-game-btn');
 
             playGameBtn.addEventListener('click', () => {
+                if (Tone.context.state !== 'running') Tone.context.resume();
                 offlineView.classList.add('hidden');
                 gameView.classList.remove('hidden');
-                startGame();
+                resizeGameCanvas();
+                initGame();
             });
 
-            backToOfflineBtn.addEventListener('click', () => {
-                gameView.classList.add('hidden');
-                offlineView.classList.remove('hidden');
-                gameInProgress = false;
-            });
-
-            createGameGrid();
+            restartBtn.addEventListener('click', initGame);
+            gameCanvas.addEventListener('mousedown', startBridge);
+            gameCanvas.addEventListener('mouseup', endBridge);
+            gameCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); startBridge(); });
+            gameCanvas.addEventListener('touchend', (e) => { e.preventDefault(); endBridge(); });
+            window.addEventListener('resize', resizeGameCanvas);
         });
     </script>
 </body>
