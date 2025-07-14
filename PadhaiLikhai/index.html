@@ -97,9 +97,6 @@
                     </div>
                 </main>
             </div>
-            <div id="persistent-ad-banner">
-                <!-- Ads will be loaded here by JS -->
-            </div>
         </div>
         
         <!-- Support/Ad Revenue View -->
@@ -141,6 +138,9 @@
                     <button class="side-panel-button" id="side-panel-permissions-btn"><i class="fas fa-shield-alt fa-fw"></i> Permissions</button>
                     <button class="side-panel-button" id="side-panel-exit-btn"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
                 </nav>
+                <div id="side-panel-ad-container">
+                    <!-- Ad will be loaded here by JS -->
+                </div>
             </div>
             <div id="calculator" class="widget">
                 <div class="widget-header" id="calc-header"><i class="fas fa-arrows-alt"></i></div>
@@ -203,17 +203,8 @@
         </div>
     </div>
     
-    <!-- This ad banner is now outside the views to be truly persistent -->
     <div id="persistent-ad-banner">
         <!-- Ads will be loaded here by JS -->
-    </div>
-
-    <!-- New Retractable Right Ad Bar -->
-    <div id="right-ad-bar">
-        <button id="ad-bar-toggle"><i class="fas fa-chevron-left"></i></button>
-        <div id="right-ad-content">
-            <!-- Ad will be loaded here by JS -->
-        </div>
     </div>
 
     <script src="script.js"></script>
