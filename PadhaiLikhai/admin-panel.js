@@ -7,18 +7,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Page Protection & Data Fetching ---
     const checkAuthAndLoadData = () => {
-        // Check sessionStorage to see if the admin is authenticated.
         const isAdmin = sessionStorage.getItem('isAdminAuthenticated');
 
-        if (isAdmin) {
-            // --- FIX: Immediately show panel and hide loader ---
-            console.log('Admin authenticated. Showing panel...');
-            panelContainer.classList.remove('hidden');
-            loader.classList.add('hidden');
-            
-            // Now, proceed to load data from the local DB.
+        if (!isAdmin) {
+            // If not admin, redirect immediately. No need to do anything else.
+            console.log('Admin not authenticated. Redirecting to login.');
+            window.location.href = 'admin-login.html';
+            return; // Stop execution
+        }
+
+        // If we reach here, user IS an admin. Show the panel and hide the loader.
+        // This is the guaranteed fix for the stuck loader.
+        panelContainer.classList.remove('hidden');
+        loader.classList.add('hidden');
+        
+        try {
+            // Now, proceed to load data from the local DB inside a try...catch block.
             console.log('Fetching data from local DB...');
-            const users = getUsers(); // Get users from localDB.js
+            const users = getUsers(); // This now safely returns an array.
+
             usersTableBody.innerHTML = ''; // Clear existing table data
 
             if (users.length === 0) {
@@ -31,8 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             users.forEach(userData => {
                 const row = document.createElement('tr');
-                
-                // Format the timestamp to a readable date and time
                 const lastSeenDate = userData.lastSeen ? new Date(userData.lastSeen).toLocaleString() : 'N/A';
 
                 row.innerHTML = `
@@ -45,25 +50,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 usersTableBody.appendChild(row);
             });
-
-        } else {
-            // No admin auth found, redirect to the login page.
-            console.log('Admin not authenticated. Redirecting to login.');
-            window.location.href = 'admin-login.html';
+        } catch (error) {
+            console.error("Error while rendering user data:", error);
+            usersTableBody.innerHTML = `<tr><td colspan="6">A critical error occurred while displaying data.</td></tr>`;
         }
     };
 
     // --- Event Listeners ---
     logoutBtn.addEventListener('click', () => {
-        // Show loader for feedback during logout process
         loader.classList.remove('hidden');
         panelContainer.classList.add('hidden');
 
-        // Clear the session flag to log out.
         sessionStorage.removeItem('isAdminAuthenticated');
         console.log('Admin signed out.');
         
-        // Redirect to login page after a short delay.
         setTimeout(() => {
             window.location.href = 'admin-login.html';
         }, 500);
