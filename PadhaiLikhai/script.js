@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 27: Flawless Hub Logic with Local Storage Database
+ * Version 28: Flawless Hub Logic with Fixed Ads and Local DB
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         supportUsBtn: document.getElementById('support-us-btn'),
         backToMainBtn: document.getElementById('back-to-main-btn'),
         persistentAdBanner: document.getElementById('persistent-ad-banner'),
+        persistentAdContainer: document.getElementById('persistent-ad-container'),
         adGrid: document.getElementById('ad-grid'),
         booksSectionLink: document.getElementById('books-ad-link'),
         searchBar: document.getElementById('search-bar'),
@@ -228,11 +229,49 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
-
-    const loadAds = () => {
-        // Ads loading logic remains the same...
-    };
     
+    // --- FIXED: Ad Loading Logic ---
+    const loadAds = () => {
+        const adPlacements = [
+            // Ads for the main support page grid
+            { container: allDOMElements.adGrid, key: 'de366f663355ebaa73712755e3876ab8', width: 300, height: 250, count: 4 },
+            // Ad for the persistent bottom banner
+            { container: allDOMElements.persistentAdContainer, key: '3ad08b148f03cc313b5357f5e120feaf', width: 728, height: 90, count: 1 },
+            // Ad for the right-side sliding bar
+            { container: allDOMElements.rightAdContent, key: 'de366f663355ebaa73712755e3876ab8', width: 300, height: 250, count: 1 }
+        ];
+
+        adPlacements.forEach(placement => {
+            if (!placement.container) return;
+            placement.container.innerHTML = ''; // Clear previous ads
+
+            for (let i = 0; i < placement.count; i++) {
+                const adSlot = document.createElement('div');
+                adSlot.className = 'ad-slot-container-div';
+                placement.container.appendChild(adSlot);
+
+                const adScript = document.createElement('script');
+                adScript.type = 'text/javascript';
+                adScript.innerHTML = `
+                    atOptions = {
+                        'key' : '${placement.key}',
+                        'format' : 'iframe',
+                        'height' : ${placement.height},
+                        'width' : ${placement.width},
+                        'params' : {}
+                    };
+                `;
+                
+                const adLoaderScript = document.createElement('script');
+                adLoaderScript.type = 'text/javascript';
+                adLoaderScript.src = `//www.highperformanceformat.com/${placement.key}/invoke.js`;
+                
+                adSlot.appendChild(adScript);
+                adSlot.appendChild(adLoaderScript);
+            }
+        });
+    };
+
     const filterDashboard = () => {
         const searchTerm = allDOMElements.searchBar.value.toLowerCase();
         const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category;
@@ -255,7 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- New Local User Tracking ---
     const getIpAddress = async () => {
         try {
-            // This is a free service, consider rate limits for high traffic.
             const response = await fetch('https://api.ipify.org?format=json');
             if (!response.ok) throw new Error('Failed to fetch IP');
             const data = await response.json();
@@ -285,37 +323,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial App Flow ---
     const initializeApp = () => {
-        // 1. Check or set a unique user ID for this browser session.
         let userId = localStorage.getItem(userIdKey);
         if (!userId) {
             userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             localStorage.setItem(userIdKey, userId);
         }
 
-        // 2. Check if this user's info is already in our local DB.
         const users = getUsers();
         const existingUser = users.find(user => user.id === userId);
 
-        // 3. Decide what to show.
         if (existingUser) {
-            // User is recognized, proceed to the main app.
             setupLoginButton();
             showView('main-view');
         } else {
-            // New user, show the welcome flow.
             allDOMElements.telegramModal.classList.add('visible');
         }
 
-        // 4. Hide loader now that logic is complete. This fixes the stuck screen.
         setTimeout(() => {
             allDOMElements.loaderOverlay.classList.add('hidden');
-        }, 1500); // A small delay to let the animation finish.
+        }, 1500);
     };
 
     // --- Event Listeners ---
     allDOMElements.closeTelegramModal.onclick = () => {
         allDOMElements.telegramModal.classList.remove('visible');
-        // After closing telegram modal, show the user info modal for new users.
         const users = getUsers();
         const existingUser = users.find(user => user.id === localStorage.getItem(userIdKey));
         if (!existingUser) {
@@ -337,7 +368,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
-    allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
+    
+    allDOMElements.supportUsBtn.addEventListener('click', () => {
+        showView('support-view');
+        loadAds(); // Load ads every time the support page is viewed
+    });
+
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
     allDOMElements.commandCenterBtn.addEventListener('click', () => {
         allDOMElements.sidePanel.classList.toggle('visible');
@@ -421,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
     makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
     makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
     handleCalculator();
-    loadAds();
+    loadAds(); // Initial load for banners
 
     // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
