@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 28: Flawless Hub Logic with Fixed Ads and Local DB
+ * Version 29: Bulletproof Logic for Loader and Local DB
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -230,20 +230,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     
-    // --- FIXED: Ad Loading Logic ---
     const loadAds = () => {
         const adPlacements = [
-            // Ads for the main support page grid
             { container: allDOMElements.adGrid, key: 'de366f663355ebaa73712755e3876ab8', width: 300, height: 250, count: 4 },
-            // Ad for the persistent bottom banner
             { container: allDOMElements.persistentAdContainer, key: '3ad08b148f03cc313b5357f5e120feaf', width: 728, height: 90, count: 1 },
-            // Ad for the right-side sliding bar
             { container: allDOMElements.rightAdContent, key: 'de366f663355ebaa73712755e3876ab8', width: 300, height: 250, count: 1 }
         ];
 
         adPlacements.forEach(placement => {
             if (!placement.container) return;
-            placement.container.innerHTML = ''; // Clear previous ads
+            placement.container.innerHTML = ''; 
 
             for (let i = 0; i < placement.count; i++) {
                 const adSlot = document.createElement('div');
@@ -283,15 +279,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const categoryMatch = activeCategory === 'all' || category === activeCategory;
             const searchMatch = keywords.includes(searchTerm);
 
-            if (categoryMatch && searchMatch) {
-                card.classList.remove('hidden');
-            } else {
-                card.classList.add('hidden');
-            }
+            card.style.display = (categoryMatch && searchMatch) ? 'block' : 'none';
         });
     };
 
-    // --- New Local User Tracking ---
     const getIpAddress = async () => {
         try {
             const response = await fetch('https://api.ipify.org?format=json');
@@ -314,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             lastSeen: new Date().toISOString()
         };
         
-        addUser(fullUserInfo); // Uses the function from localDB.js
+        addUser(fullUserInfo);
         
         allDOMElements.userInfoModal.classList.remove('visible');
         setupLoginButton();
@@ -323,25 +314,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial App Flow ---
     const initializeApp = () => {
-        let userId = localStorage.getItem(userIdKey);
-        if (!userId) {
-            userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            localStorage.setItem(userIdKey, userId);
-        }
+        // CRITICAL FIX: Use a try...finally block to guarantee the loader is hidden.
+        try {
+            let userId = localStorage.getItem(userIdKey);
+            if (!userId) {
+                userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                localStorage.setItem(userIdKey, userId);
+            }
 
-        const users = getUsers();
-        const existingUser = users.find(user => user.id === userId);
+            const users = getUsers();
+            const existingUser = users.find(user => user.id === userId);
 
-        if (existingUser) {
-            setupLoginButton();
+            if (existingUser) {
+                setupLoginButton();
+                showView('main-view');
+            } else {
+                allDOMElements.telegramModal.classList.add('visible');
+            }
+        } catch (error) {
+            console.error("A critical error occurred during app initialization:", error);
+            // Show the main view even if there's an error, so the user is not stuck.
             showView('main-view');
-        } else {
-            allDOMElements.telegramModal.classList.add('visible');
+        } finally {
+            // This will run regardless of whether an error occurred or not.
+            // This guarantees the loader is always hidden.
+            setTimeout(() => {
+                allDOMElements.loaderOverlay.classList.remove('visible');
+                allDOMElements.loaderOverlay.classList.add('hidden');
+            }, 500); // A shorter delay is sufficient.
         }
-
-        setTimeout(() => {
-            allDOMElements.loaderOverlay.classList.add('hidden');
-        }, 1500);
     };
 
     // --- Event Listeners ---
@@ -371,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     allDOMElements.supportUsBtn.addEventListener('click', () => {
         showView('support-view');
-        loadAds(); // Load ads every time the support page is viewed
+        loadAds();
     });
 
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
@@ -457,15 +458,13 @@ document.addEventListener('DOMContentLoaded', () => {
     makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
     makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
     handleCalculator();
-    loadAds(); // Initial load for banners
+    loadAds();
 
-    // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js');
         });
     }
 
-    // Start the application
     initializeApp();
 });
