@@ -30,7 +30,7 @@
 
         <main class="panel-main">
             <h1 class="section-title">User Data</h1>
-            <p class="section-subtitle">Real-time list of all users who have accessed the app.</p>
+            <p class="section-subtitle">List of all users from the local database.</p>
             <div class="table-container">
                 <table id="users-table">
                     <thead>
@@ -51,12 +51,9 @@
         </main>
     </div>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <!-- Local JS -->
+    <!-- Local Database Helper -->
+    <script src="localDB.js"></script>
+    <!-- Admin Panel Logic -->
     <script src="admin-panel.js"></script>
 </body>
 </html>
