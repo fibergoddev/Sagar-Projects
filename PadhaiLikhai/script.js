@@ -1,27 +1,8 @@
 /* * Designed & Developed by Sagar Raj
- * Version 26: The Definitive Flawless Hub Logic with Firebase Integration
+ * Version 27: Flawless Hub Logic with Local Storage Database
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- IMPORTANT: Firebase Configuration ---
-    // Replace with your own Firebase project configuration.
-    // This MUST be the same config used in the admin files.
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-
-    // --- Initialize Firebase ---
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
     // --- Configuration ---
     const initialLoginUrl = 'https://rolexcoderz.live/36xsuccess/';
     const studyUrl = 'https://www.rolexcoderz.xyz/Course';
@@ -30,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const adLink = 'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf';
     const loginTimestampKey = 'sagarRajLoginTimestamp';
     const notesKey = 'sagarRajNotes';
+    const userIdKey = 'sagarRajUserId';
 
     // --- DOM Element Cache ---
     const allDOMElements = {
@@ -82,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const appState = {
         iframeHistory: [],
         currentUrl: '',
-        currentUser: null,
     };
 
     // --- Core Functions ---
@@ -134,16 +115,23 @@ document.addEventListener('DOMContentLoaded', () => {
         interstitialAdModal.classList.add('visible');
         interstitialAdContainer.innerHTML = '';
         const adIframe = document.createElement('iframe');
+        adIframe.scrolling = 'no';
+        adIframe.frameBorder = '0';
+        adIframe.style.width = '300px';
+        adIframe.style.height = '250px';
         interstitialAdContainer.appendChild(adIframe);
+        
         const adScriptContent = `
             <script type="text/javascript">
                 atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
             <\/script>
             <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>
         `;
-        adIframe.contentWindow.document.open();
-        adIframe.contentWindow.document.write(adScriptContent);
-        adIframe.contentWindow.document.close();
+        const adDoc = adIframe.contentWindow.document;
+        adDoc.open();
+        adDoc.write(adScriptContent);
+        adDoc.close();
+
         let timeLeft = 4;
         skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
         skipAdButton.disabled = true;
@@ -264,10 +252,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- New Firebase User Tracking ---
+    // --- New Local User Tracking ---
     const getIpAddress = async () => {
         try {
+            // This is a free service, consider rate limits for high traffic.
             const response = await fetch('https://api.ipify.org?format=json');
+            if (!response.ok) throw new Error('Failed to fetch IP');
             const data = await response.json();
             return data.ip;
         } catch (error) {
@@ -276,80 +266,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const saveUserData = async (userInfo) => {
-        if (!appState.currentUser) {
-            console.error("No authenticated user to save data for.");
-            return;
-        }
-        
-        const userRef = db.collection('users').doc(appState.currentUser.uid);
+    const saveAndProceed = async (userInfo) => {
         const ipAddress = await getIpAddress();
-        const deviceInfo = navigator.userAgent;
-
-        const dataToSave = {
+        const fullUserInfo = {
             ...userInfo,
+            id: localStorage.getItem(userIdKey),
             ipAddress,
-            deviceInfo,
-            lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+            deviceInfo: navigator.userAgent,
+            lastSeen: new Date().toISOString()
         };
-
-        // Use set with merge:true to create or update the document
-        userRef.set(dataToSave, { merge: true })
-            .then(() => console.log("User data saved to Firestore."))
-            .catch(error => console.error("Error saving user data:", error));
+        
+        addUser(fullUserInfo); // Uses the function from localDB.js
+        
+        allDOMElements.userInfoModal.classList.remove('visible');
+        setupLoginButton();
+        showView('main-view');
     };
 
     // --- Initial App Flow ---
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            // User is signed in.
-            appState.currentUser = user;
-            console.log("User signed in anonymously:", user.uid);
-            
-            // Check if user has info, if not, show modal. If yes, just update lastSeen.
-            const userDocRef = db.collection('users').doc(user.uid);
-            userDocRef.get().then(doc => {
-                if (doc.exists) {
-                    // User exists, just update their last seen time
-                    userDocRef.update({ lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
-                    setupLoginButton();
-                } else {
-                    // New user, need to get their info
-                     if (!allDOMElements.telegramModal.classList.contains('visible')) {
-                        allDOMElements.userInfoModal.classList.add('visible');
-                    }
-                }
-                 // Hide loader and show main content after auth check
-                setTimeout(() => {
-                    allDOMElements.loaderOverlay.classList.add('hidden');
-                    if (!doc.exists) {
-                        allDOMElements.telegramModal.classList.add('visible');
-                    } else {
-                        showView('main-view');
-                    }
-                }, 1000);
-            });
-        } else {
-            // User is signed out. Sign them in anonymously.
-            auth.signInAnonymously().catch(error => {
-                console.error("Anonymous sign-in failed:", error);
-                // Handle error, maybe show a message to the user
-            });
+    const initializeApp = () => {
+        // 1. Check or set a unique user ID for this browser session.
+        let userId = localStorage.getItem(userIdKey);
+        if (!userId) {
+            userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            localStorage.setItem(userIdKey, userId);
         }
-    });
 
+        // 2. Check if this user's info is already in our local DB.
+        const users = getUsers();
+        const existingUser = users.find(user => user.id === userId);
+
+        // 3. Decide what to show.
+        if (existingUser) {
+            // User is recognized, proceed to the main app.
+            setupLoginButton();
+            showView('main-view');
+        } else {
+            // New user, show the welcome flow.
+            allDOMElements.telegramModal.classList.add('visible');
+        }
+
+        // 4. Hide loader now that logic is complete. This fixes the stuck screen.
+        setTimeout(() => {
+            allDOMElements.loaderOverlay.classList.add('hidden');
+        }, 1500); // A small delay to let the animation finish.
+    };
+
+    // --- Event Listeners ---
     allDOMElements.closeTelegramModal.onclick = () => {
         allDOMElements.telegramModal.classList.remove('visible');
-        // The onAuthStateChanged logic will handle showing the user info modal if needed
-        const userDocRef = db.collection('users').doc(appState.currentUser.uid);
-        userDocRef.get().then(doc => {
-            if (!doc.exists) {
-                allDOMElements.userInfoModal.classList.add('visible');
-            } else {
-                setupLoginButton();
-                showView('main-view');
-            }
-        });
+        // After closing telegram modal, show the user info modal for new users.
+        const users = getUsers();
+        const existingUser = users.find(user => user.id === localStorage.getItem(userIdKey));
+        if (!existingUser) {
+            allDOMElements.userInfoModal.classList.add('visible');
+        } else {
+            setupLoginButton();
+            showView('main-view');
+        }
     };
 
     allDOMElements.userInfoForm.addEventListener('submit', (e) => {
@@ -359,13 +333,9 @@ document.addEventListener('DOMContentLoaded', () => {
             class: document.getElementById('user-class').value,
             age: document.getElementById('user-age').value,
         };
-        saveUserData(userInfo); // Save to Firestore
-        allDOMElements.userInfoModal.classList.remove('visible');
-        setupLoginButton();
-        showView('main-view');
+        saveAndProceed(userInfo);
     });
 
-    // --- Event Listeners ---
     allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
     allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
@@ -459,4 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
             navigator.serviceWorker.register('/sw.js');
         });
     }
+
+    // Start the application
+    initializeApp();
 });
