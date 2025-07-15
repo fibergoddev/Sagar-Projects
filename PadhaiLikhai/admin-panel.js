@@ -11,11 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const isAdmin = sessionStorage.getItem('isAdminAuthenticated');
 
         if (isAdmin) {
-            // Admin is authenticated, proceed to load data.
-            console.log('Admin authenticated. Fetching data from local DB...');
+            // --- FIX: Immediately show panel and hide loader ---
+            console.log('Admin authenticated. Showing panel...');
             panelContainer.classList.remove('hidden');
             loader.classList.add('hidden');
-
+            
+            // Now, proceed to load data from the local DB.
+            console.log('Fetching data from local DB...');
             const users = getUsers(); // Get users from localDB.js
             usersTableBody.innerHTML = ''; // Clear existing table data
 
@@ -23,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 usersTableBody.innerHTML = `<tr><td colspan="6">No user data found in local database.</td></tr>`;
                 return;
             }
+
+            // Sort users by last seen date, most recent first
+            users.sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen));
 
             users.forEach(userData => {
                 const row = document.createElement('tr');
@@ -50,7 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
     logoutBtn.addEventListener('click', () => {
+        // Show loader for feedback during logout process
         loader.classList.remove('hidden');
+        panelContainer.classList.add('hidden');
+
         // Clear the session flag to log out.
         sessionStorage.removeItem('isAdminAuthenticated');
         console.log('Admin signed out.');
