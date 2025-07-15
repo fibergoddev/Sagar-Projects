@@ -1,49 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | PadhaiLikhai</title>
-    <link rel="stylesheet" href="admin-style.css">
-    <link rel="icon" type="image/png" href="icon-512.png">
-</head>
-<body>
-    <div id="loader-overlay" class="hidden">
-        <svg id="logo-loader" width="100" height="100" viewBox="0 0 100 100">
-            <path class="logo-path" d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="5"/>
-            <path class="logo-path" d="M 50 20 L 80 20 L 80 80" fill="none" stroke-width="5"/>
-        </svg>
-    </div>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- DOM Elements ---
+    const loginForm = document.getElementById('admin-login-form');
+    const emailInput = document.getElementById('admin-email');
+    const passwordInput = document.getElementById('admin-password');
+    const errorMessage = document.getElementById('login-error-message');
+    const loader = document.getElementById('loader-overlay');
 
-    <div class="login-container">
-        <div class="login-box">
-            <div class="logo">
-                <svg id="header-logo" width="40" height="40" viewBox="0 0 100 100">
-                    <path d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="10"/>
-                    <path d="M 50 20 L 80 20 L 80 80" fill="none" stroke-width="10"/>
-                </svg>
-                <span>PadhaiLikhai Admin</span>
-            </div>
-            <h2 class="title">Secure Admin Access</h2>
-            <p class="subtitle">Enter your credentials to manage the hub.</p>
-            <form id="admin-login-form">
-                <div class="form-group">
-                    <label for="admin-email">Email</label>
-                    <input type="email" id="admin-email" required value="admin@padhai.com">
-                </div>
-                <div class="form-group">
-                    <label for="admin-password">Password</label>
-                    <input type="password" id="admin-password" required value="password123">
-                </div>
-                <p id="login-error-message" class="error-message"></p>
-                <button type="submit" class="styled-button">Login</button>
-            </form>
-        </div>
-    </div>
+    // --- Event Listeners ---
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevent form from submitting the traditional way
+        
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        
+        errorMessage.textContent = ''; // Clear previous errors
+        loader.classList.remove('hidden'); // Show loader
 
-    <!-- Local Database Helper -->
-    <script src="localDB.js"></script>
-    <!-- Admin Login Logic -->
-    <script src="admin-login.js"></script>
-</body>
-</html>
+        // --- Local Authentication ---
+        // Get the hardcoded credentials from our local DB helper.
+        const adminCreds = getAdminCredentials();
+
+        // Simulate a network delay for better UX
+        setTimeout(() => {
+            if (email === adminCreds.email && password === adminCreds.password) {
+                // If credentials match, set a flag in sessionStorage and redirect.
+                // sessionStorage is used so the login state is cleared when the browser tab is closed.
+                sessionStorage.setItem('isAdminAuthenticated', 'true');
+                console.log('Admin authenticated successfully.');
+                window.location.href = 'admin-panel.html';
+            } else {
+                // If credentials do not match, show an error.
+                console.error('Admin login failed: Invalid credentials.');
+                errorMessage.textContent = 'Invalid email or password.';
+                loader.classList.add('hidden'); // Hide loader on error
+            }
+        }, 1000); // 1-second delay
+    });
+});
