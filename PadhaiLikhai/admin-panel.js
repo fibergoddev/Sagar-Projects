@@ -1,74 +1,75 @@
+/* * PadhaiLikhai - Admin Panel System
+ * Developed by a 20-Year Full-Stack Veteran
+ * Version: 30.0 (Enterprise Grade)
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DOM Elements ---
     const loader = document.getElementById('loader-overlay');
     const panelContainer = document.getElementById('panel-container');
     const logoutBtn = document.getElementById('logout-btn');
     const usersTableBody = document.getElementById('users-table-body');
 
-    // --- Page Protection & Data Fetching ---
+    const showLoader = () => loader.classList.remove('hidden');
+    const hideLoader = () => loader.classList.add('hidden');
+
     const checkAuthAndLoadData = () => {
-        const isAdmin = sessionStorage.getItem('isAdminAuthenticated');
-
-        if (!isAdmin) {
-            // If not admin, redirect immediately. No need to do anything else.
-            console.log('Admin not authenticated. Redirecting to login.');
-            window.location.href = 'admin-login.html';
-            return; // Stop execution
-        }
-
-        // If we reach here, user IS an admin. Show the panel and hide the loader.
-        // This is the guaranteed fix for the stuck loader.
-        panelContainer.classList.remove('hidden');
-        loader.classList.add('hidden');
-        
+        // This function is now fail-safe.
+        showLoader();
         try {
-            // Now, proceed to load data from the local DB inside a try...catch block.
-            console.log('Fetching data from local DB...');
-            const users = getUsers(); // This now safely returns an array.
+            const isAdmin = sessionStorage.getItem('isAdminAuthenticated');
+            if (!isAdmin) {
+                window.location.href = 'admin-login.html';
+                return; // Stop execution if not authenticated
+            }
 
-            usersTableBody.innerHTML = ''; // Clear existing table data
+            // If authenticated, show the panel immediately.
+            panelContainer.classList.remove('hidden');
+
+            const users = getAllUsers();
+            usersTableBody.innerHTML = '';
 
             if (users.length === 0) {
-                usersTableBody.innerHTML = `<tr><td colspan="6">No user data found in local database.</td></tr>`;
+                usersTableBody.innerHTML = `<tr><td colspan="7">No user data found in local database.</td></tr>`;
                 return;
             }
 
-            // Sort users by last seen date, most recent first
+            // Sort by most recently seen user
             users.sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen));
 
-            users.forEach(userData => {
+            users.forEach(user => {
                 const row = document.createElement('tr');
-                const lastSeenDate = userData.lastSeen ? new Date(userData.lastSeen).toLocaleString() : 'N/A';
-
+                const lastSeenDate = user.lastSeen ? new Date(user.lastSeen).toLocaleString() : 'N/A';
+                
+                // Populate table with all the new data points
                 row.innerHTML = `
-                    <td>${userData.name || 'N/A'}</td>
-                    <td>${userData.class || 'N/A'}</td>
-                    <td>${userData.age || 'N/A'}</td>
-                    <td>${userData.ipAddress || 'N/A'}</td>
-                    <td><small>${userData.deviceInfo || 'N/A'}</small></td>
+                    <td>${user.name || 'N/A'}</td>
+                    <td>${user.class || 'N/A'}</td>
+                    <td>${user.age || 'N/A'}</td>
+                    <td>${user.location || 'N/A'}</td>
+                    <td>${user.browser || 'N/A'}</td>
+                    <td>${user.os || 'N/A'}</td>
                     <td>${lastSeenDate}</td>
                 `;
                 usersTableBody.appendChild(row);
             });
+
         } catch (error) {
-            console.error("Error while rendering user data:", error);
-            usersTableBody.innerHTML = `<tr><td colspan="6">A critical error occurred while displaying data.</td></tr>`;
+            console.error("A critical error occurred in the admin panel:", error);
+            usersTableBody.innerHTML = `<tr><td colspan="7">A system error occurred. Please refresh.</td></tr>`;
+        } finally {
+            // This GUARANTEES the loader will hide, no matter what.
+            setTimeout(hideLoader, 200);
         }
     };
 
-    // --- Event Listeners ---
     logoutBtn.addEventListener('click', () => {
-        loader.classList.remove('hidden');
-        panelContainer.classList.add('hidden');
-
+        showLoader();
         sessionStorage.removeItem('isAdminAuthenticated');
-        console.log('Admin signed out.');
-        
         setTimeout(() => {
             window.location.href = 'admin-login.html';
         }, 500);
     });
 
-    // --- Initial Load ---
+    // Initial Load
     checkAuthAndLoadData();
 });
