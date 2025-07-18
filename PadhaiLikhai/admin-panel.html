@@ -9,6 +9,7 @@
     <link rel="icon" type="image/png" href="icon-512.png">
 </head>
 <body>
+    <!-- Universal Loader -->
     <div id="loader-overlay" class="visible">
         <svg id="logo-loader" width="100" height="100" viewBox="0 0 100 100">
             <path class="logo-path" d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="5"/>
@@ -30,7 +31,7 @@
 
         <main class="panel-main">
             <h1 class="section-title">User Data</h1>
-            <p class="section-subtitle">List of all users from the local database.</p>
+            <p class="section-subtitle">Complete user data from the local server database.</p>
             <div class="table-container">
                 <table id="users-table">
                     <thead>
@@ -38,8 +39,9 @@
                             <th>Name</th>
                             <th>Class</th>
                             <th>Age</th>
-                            <th>IP Address</th>
-                            <th>Device Info</th>
+                            <th>Location</th>
+                            <th>Browser</th>
+                            <th>OS</th>
                             <th>Last Seen</th>
                         </tr>
                     </thead>
@@ -51,9 +53,7 @@
         </main>
     </div>
 
-    <!-- Local Database Helper -->
     <script src="localDB.js"></script>
-    <!-- Admin Panel Logic -->
     <script src="admin-panel.js"></script>
 </body>
 </html>
