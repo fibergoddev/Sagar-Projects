@@ -11,17 +11,17 @@
 </head>
 <body>
 
-    <!-- This is the main container for all application views -->
-    <div id="app-shell">
-        <!-- New Animated Loader -->
-        <div id="loader-overlay" class="visible">
-            <svg id="logo-loader" width="100" height="100" viewBox="0 0 100 100">
-                <path class="logo-path" d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="5"/>
-                <path class="logo-path" d="M 50 20 L 80 20 L 80 80" fill="none" stroke-width="5"/>
-            </svg>
-        </div>
+    <!-- Universal Loader -->
+    <div id="loader-overlay" class="visible">
+        <svg id="logo-loader" width="100" height="100" viewBox="0 0 100 100">
+            <path class="logo-path" d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="5"/>
+            <path class="logo-path" d="M 50 20 L 80 20 L 80 80" fill="none" stroke-width="5"/>
+        </svg>
+    </div>
 
-        <!-- Main Hub View: Redesigned with a dashboard layout -->
+    <!-- Main Application Shell -->
+    <div id="app-shell">
+        <!-- Main Hub View -->
         <div id="main-view" class="view hidden">
             <div class="main-view-container">
                 <header class="main-header">
@@ -56,15 +56,15 @@
                             <div class="card-content">
                                 <h3 class="card-title">Next Toppers Batch</h3>
                                 <p class="card-description">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
-                                <div class="card-tags">
-                                    <span class="tag">Course</span>
-                                    <span class="tag">Study</span>
-                                </div>
+                                <div class="card-tags"><span class="tag">Course</span><span class="tag">Study</span></div>
                                 <div id="login-button-area" class="button-group">
                                     <button class="styled-button">Loading...</button>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Native Ad Banner Integrated into the Grid -->
+                        <div id="native-ad-container"></div>
 
                         <!-- Card for Neuro-Link Game -->
                         <div class="content-card" data-category="game" data-keywords="neuro-link game memory focus">
@@ -72,10 +72,7 @@
                             <div class="card-content">
                                 <h3 class="card-title">Neuro-Link Game</h3>
                                 <p class="card-description">Engage your mind with our futuristic memory game. Sharpen your focus and climb the leaderboard!</p>
-                                <div class="card-tags">
-                                    <span class="tag">Game</span>
-                                    <span class="tag">Focus</span>
-                                </div>
+                                <div class="card-tags"><span class="tag">Game</span><span class="tag">Focus</span></div>
                                 <button id="play-game-btn" class="styled-button">Play Now</button>
                             </div>
                         </div>
@@ -87,10 +84,7 @@
                                 <div class="card-content">
                                     <h3 class="card-title">Books Library</h3>
                                     <p class="card-description">A vast collection of knowledge is being curated for you. Click to explore our resources.</p>
-                                     <div class="card-tags">
-                                        <span class="tag">Book</span>
-                                        <span class="tag">Resources</span>
-                                    </div>
+                                     <div class="card-tags"><span class="tag">Book</span><span class="tag">Resources</span></div>
                                 </div>
                             </a>
                         </div>
@@ -107,9 +101,7 @@
             <div class="support-content">
                 <h1 class="section-title">Support the Developer</h1>
                 <p class="section-subtitle">Your support by viewing these ads helps keep this application running and free for everyone. Thank you!</p>
-                <div id="ad-grid">
-                    <!-- Ads will be loaded here by JS -->
-                </div>
+                <div id="ad-grid"></div>
                 <button id="back-to-main-btn" class="styled-button">Back to Hub</button>
             </div>
         </div>
@@ -121,25 +113,17 @@
                 <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
             </div>
             <div id="focus-overlay"></div>
-            <button id="command-center-btn">
-                <div class="icon-menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </button>
+            <button id="command-center-btn"><div class="icon-menu"><span></span><span></span><span></span></div></button>
             <div id="side-panel">
-                <div class="side-panel-header">
-                    <span class="side-panel-title">Command Center</span>
-                </div>
+                <div class="side-panel-header"><span class="side-panel-title">Command Center</span></div>
                 <nav id="side-panel-nav">
+                    <button class="side-panel-button" id="side-panel-exit-btn"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
                     <button class="side-panel-button" id="side-panel-back-btn"><i class="fas fa-arrow-left fa-fw"></i> Back</button>
                     <button class="side-panel-button" id="side-panel-profile-btn"><i class="fas fa-user-circle fa-fw"></i> Profile</button>
                     <button class="side-panel-button" id="side-panel-calculator-btn"><i class="fas fa-calculator fa-fw"></i> Calculator</button>
                     <button class="side-panel-button" id="side-panel-focus-btn"><i class="fas fa-eye fa-fw"></i> Focus Mode</button>
                     <button class="side-panel-button" id="side-panel-notes-btn"><i class="fas fa-sticky-note fa-fw"></i> Mini Notes</button>
                     <button class="side-panel-button" id="side-panel-permissions-btn"><i class="fas fa-shield-alt fa-fw"></i> Permissions</button>
-                    <button class="side-panel-button" id="side-panel-exit-btn"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
                 </nav>
             </div>
             <div id="calculator" class="widget">
@@ -159,7 +143,7 @@
             </div>
         </div>
 
-        <!-- All Modals -->
+        <!-- Modals -->
         <div id="interstitial-ad-modal" class="modal-overlay">
             <div class="modal-content">
                 <p class="subtitle">Please support us by watching this ad</p>
@@ -197,28 +181,19 @@
                 <div class="permission-grid">
                     <button id="grant-camera-btn" class="styled-button support-button"><i class="fas fa-camera"></i> Camera</button>
                     <button id="grant-notify-btn" class="styled-button support-button"><i class="fas fa-bell"></i> Notifications</button>
+                    <button id="grant-location-btn" class="styled-button support-button"><i class="fas fa-map-marker-alt"></i> Location</button>
                 </div>
                 <button id="close-permissions-modal" class="styled-button" style="width: 100%; margin-top: 25px;">Close</button>
             </div>
         </div>
     </div>
     
-    <div id="persistent-ad-banner" class="hidden">
-        <div id="persistent-ad-container">
-            <!-- Persistent ad will be loaded here -->
-        </div>
-    </div>
+    <!-- Persistent Ad Placements -->
+    <div id="persistent-ad-banner" class="hidden"></div>
+    <div id="right-ad-bar"><button id="ad-bar-toggle"><i class="fas fa-chevron-left"></i></button><div id="right-ad-content"></div></div>
 
-    <div id="right-ad-bar">
-        <button id="ad-bar-toggle"><i class="fas fa-chevron-left"></i></button>
-        <div id="right-ad-content">
-            <!-- Right ad bar content will be loaded here -->
-        </div>
-    </div>
-
-    <!-- Local Database Helper -->
+    <!-- Core Scripts -->
     <script src="localDB.js"></script>
-    <!-- Main Application Logic -->
     <script src="script.js"></script>
 </body>
 </html>
