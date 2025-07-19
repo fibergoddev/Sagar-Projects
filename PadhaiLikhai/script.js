@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 32: Self-Initializing Module Fix
+ * Version 33: Final Self-Contained Initialization
  */
 
 // Import Firebase modules
@@ -7,6 +7,18 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+// --- Firebase Configuration ---
+// This is your specific configuration, now safely inside the script.
+const firebaseConfig = {
+    apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
+    authDomain: "padhailikhai-app.firebaseapp.com",
+    projectId: "padhailikhai-app",
+    storageBucket: "padhailikhai-app.appspot.com",
+    messagingSenderId: "205786528118",
+    appId: "1:205786528118:web:2f09f0a2073144f3846257",
+    measurementId: "G-4MGMPE2DYV"
+};
 
 // --- DOM Element Cache ---
 const allDOMElements = {
@@ -57,20 +69,7 @@ const allDOMElements = {
     notificationContainer: document.getElementById('notification-container'),
 };
 
-// --- Configuration & State ---
-const initialLoginUrl = 'https://rolexcoderz.live/36xsuccess/';
-const studyUrl = 'https://www.rolexcoderz.xyz/Course';
-const profileUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html';
-const gameUrl = 'game.html';
-const libraryAdUrl = 'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf';
-const directAdLinks = [
-    'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf',
-    'https://www.profitableratecpm.com/ezn24hhv5?key=a7daf987a4d652e9dfb0fd1fe4cd1cd5'
-];
-const loginTimestampKey = 'sagarRajLoginTimestamp';
-const userInfoKey = 'sagarRajUserInfo';
-const notesKey = 'sagarRajNotes';
-
+// --- App State ---
 const appState = {
     iframeHistory: [],
     currentUrl: '',
@@ -80,7 +79,6 @@ const appState = {
 };
 
 // --- Core Functions ---
-
 const showNotification = (message, type = 'info') => {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
@@ -92,11 +90,10 @@ const showNotification = (message, type = 'info') => {
     setTimeout(() => notification.remove(), 5000);
 };
 
-// --- Firebase Data Collection ---
 const trackUserData = async () => {
     if (!appState.db || !appState.userId) return;
     try {
-        const storedUserInfo = JSON.parse(localStorage.getItem(userInfoKey) || '{}');
+        const storedUserInfo = JSON.parse(localStorage.getItem('sagarRajUserInfo') || '{}');
         const getDeviceType = () => {
             const ua = navigator.userAgent;
             if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "Tablet";
@@ -123,23 +120,22 @@ const trackUserData = async () => {
 };
 
 const checkLoginStatus = () => {
-    const lastLogin = localStorage.getItem(loginTimestampKey);
+    const lastLogin = localStorage.getItem('sagarRajLoginTimestamp');
     if (!lastLogin) return false;
-    const thirtySixHours = 36 * 60 * 60 * 1000;
-    return (Date.now() - parseInt(lastLogin, 10)) < thirtySixHours;
+    return (Date.now() - parseInt(lastLogin, 10)) < (36 * 60 * 60 * 1000);
 };
 
 const showView = (viewId) => {
     ['main-view', 'app-view', 'support-view'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.toggle('hidden', id !== viewId);
+        document.getElementById(id)?.classList.toggle('hidden', id !== viewId);
     });
-    allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
-    allDOMElements.rightAdBar.classList.toggle('visible-view', viewId === 'app-view');
+    allDOMElements.commandCenterBtn?.classList.toggle('visible', viewId === 'app-view');
+    allDOMElements.rightAdBar?.classList.toggle('visible-view', viewId === 'app-view');
 };
 
+// Other app functions (launchSite, navigateBack, etc.) remain the same...
 const launchSite = (url, setLoginTimestamp) => {
-    if (setLoginTimestamp) localStorage.setItem(loginTimestampKey, Date.now().toString());
+    if (setLoginTimestamp) localStorage.setItem('sagarRajLoginTimestamp', Date.now().toString());
     if (url !== appState.currentUrl && appState.currentUrl) appState.iframeHistory.push(appState.currentUrl);
     appState.currentUrl = url;
     allDOMElements.websiteFrame.src = 'about:blank';
@@ -168,15 +164,9 @@ const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
     interstitialAdModal.classList.add('visible');
     interstitialAdContainer.innerHTML = '';
     const adScriptContainer = document.createElement('div');
-    const adScript1 = document.createElement('script');
-    adScript1.type = 'text/javascript';
-    adScript1.innerHTML = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
-    const adScript2 = document.createElement('script');
-    adScript2.type = 'text/javascript';
-    adScript2.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
-    adScriptContainer.appendChild(adScript1);
-    adScriptContainer.appendChild(adScript2);
+    adScriptContainer.innerHTML = `<script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>`;
     interstitialAdContainer.appendChild(adScriptContainer);
+    
     let timeLeft = 4;
     skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
     skipAdButton.disabled = true;
@@ -192,37 +182,27 @@ const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
     const closeFunction = () => {
         clearInterval(timerInterval);
         interstitialAdModal.classList.remove('visible');
-        skipAdButton.onclick = null;
-        closeAdModalBtn.onclick = null;
     };
     skipAdButton.onclick = () => {
-        if (skipAdButton.disabled) return;
-        closeFunction();
-        if (targetUrl) launchSite(targetUrl, setLoginTimestamp);
+        if (!skipAdButton.disabled) {
+            closeFunction();
+            if (targetUrl) launchSite(targetUrl, setLoginTimestamp);
+        }
     };
     closeAdModalBtn.onclick = closeFunction;
 };
 
 const setupLoginButton = () => {
-    const isLoggedIn = checkLoginStatus();
     allDOMElements.loginButtonArea.innerHTML = '';
-    if (isLoggedIn) {
-        const continueBtn = document.createElement('button');
-        continueBtn.textContent = 'Continue Study';
-        continueBtn.className = 'styled-button';
-        continueBtn.onclick = () => showInterstitialAd(studyUrl, false);
-        const forceLoginBtn = document.createElement('button');
-        forceLoginBtn.textContent = 'Force Login';
-        forceLoginBtn.className = 'styled-button support-button';
-        forceLoginBtn.onclick = () => showInterstitialAd(initialLoginUrl, true);
-        allDOMElements.loginButtonArea.appendChild(continueBtn);
-        allDOMElements.loginButtonArea.appendChild(forceLoginBtn);
+    if (checkLoginStatus()) {
+        allDOMElements.loginButtonArea.innerHTML = `
+            <button class="styled-button" id="continue-study-btn">Continue Study</button>
+            <button class="styled-button support-button" id="force-login-btn">Force Login</button>`;
+        document.getElementById('continue-study-btn').onclick = () => showInterstitialAd('https://www.rolexcoderz.xyz/Course', false);
+        document.getElementById('force-login-btn').onclick = () => showInterstitialAd('https://rolexcoderz.live/36xsuccess/', true);
     } else {
-        const loginBtn = document.createElement('button');
-        loginBtn.textContent = 'Login for 36 Hours';
-        loginBtn.className = 'styled-button';
-        loginBtn.onclick = () => showInterstitialAd(initialLoginUrl, true);
-        allDOMElements.loginButtonArea.appendChild(loginBtn);
+        allDOMElements.loginButtonArea.innerHTML = `<button class="styled-button" id="login-btn">Login for 36 Hours</button>`;
+        document.getElementById('login-btn').onclick = () => showInterstitialAd('https://rolexcoderz.live/36xsuccess/', true);
     }
 };
 
@@ -231,7 +211,6 @@ const makeDraggable = (elmnt, header) => {
     const dragHeader = header.querySelector('.fa-arrows-alt') || header;
     dragHeader.onmousedown = dragMouseDown;
     function dragMouseDown(e) {
-        e = e || window.event;
         e.preventDefault();
         pos3 = e.clientX;
         pos4 = e.clientY;
@@ -239,8 +218,6 @@ const makeDraggable = (elmnt, header) => {
         document.onmousemove = elementDrag;
     }
     function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
         pos1 = pos3 - e.clientX;
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
@@ -264,8 +241,7 @@ const handleCalculator = () => {
             display.value = '';
         } else if (key === '=') {
             try {
-                const result = new Function('return ' + display.value.replace(/[^-()\d/*+.]/g, ''))();
-                display.value = result;
+                display.value = new Function('return ' + display.value.replace(/[^-()\d/*+.]/g, ''))();
             } catch {
                 display.value = 'Error';
             }
@@ -277,63 +253,16 @@ const handleCalculator = () => {
 };
 
 const loadAds = () => {
-    const bannerContainer = allDOMElements.persistentAdBanner;
-    bannerContainer.innerHTML = '';
-    const adScript1 = document.createElement('script');
-    adScript1.type = 'text/javascript';
-    adScript1.innerHTML = `atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };`;
-    const adScript2 = document.createElement('script');
-    adScript2.type = 'text/javascript';
-    adScript2.src = '//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js';
-    bannerContainer.appendChild(adScript1);
-    bannerContainer.appendChild(adScript2);
-    const adScript3 = document.createElement('script');
-    adScript3.type = 'text/javascript';
-    adScript3.src = '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js';
-    bannerContainer.appendChild(adScript3);
-    const adGrid = allDOMElements.adGrid;
-    adGrid.innerHTML = '';
-    const bigBarContainer = document.createElement('div');
-    bigBarContainer.className = 'ad-slot ad-slot-300x250';
-    const adScript4 = document.createElement('script');
-    adScript4.type = 'text/javascript';
-    adScript4.innerHTML = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
-    const adScript5 = document.createElement('script');
-    adScript5.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
-    bigBarContainer.appendChild(adScript4);
-    bigBarContainer.appendChild(adScript5);
-    adGrid.appendChild(bigBarContainer);
-    const nativeBannerContainer = document.createElement('div');
-    nativeBannerContainer.className = 'ad-slot ad-slot-container-div';
-    const adScript6 = document.createElement('script');
-    adScript6.async = true;
-    adScript6.dataset.cfasync = false;
-    adScript6.src = '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js';
-    const adScript6Div = document.createElement('div');
-    adScript6Div.id = 'container-5a3a56f258731c59b0ae000546a15e25';
-    nativeBannerContainer.appendChild(adScript6);
-    nativeBannerContainer.appendChild(adScript6Div);
-    adGrid.appendChild(nativeBannerContainer);
-    const rightAdContent = allDOMElements.rightAdContent;
-    rightAdContent.innerHTML = '';
-    const rightAdContainer = document.createElement('div');
-    rightAdContainer.className = 'ad-slot ad-slot-300x250';
-    const adScript7 = document.createElement('script');
-    adScript7.type = 'text/javascript';
-    adScript7.innerHTML = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
-    const adScript8 = document.createElement('script');
-    adScript8.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
-    rightAdContainer.appendChild(adScript7);
-    rightAdContainer.appendChild(adScript8);
-    rightAdContent.appendChild(rightAdContainer);
+    allDOMElements.persistentAdBanner.innerHTML = `<script type="text/javascript">atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script><script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'><\/script>`;
+    allDOMElements.adGrid.innerHTML = `<div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div><div class="ad-slot ad-slot-container-div"><script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"><\/script><div id="container-5a3a56f258731c59b0ae000546a15e25"></div></div>`;
+    allDOMElements.rightAdContent.innerHTML = `<div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div>`;
 };
 
 const filterDashboard = () => {
     const searchTerm = allDOMElements.searchBar.value.toLowerCase().trim();
     const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category;
-    const cards = document.querySelectorAll('#dashboard-grid .content-card');
     let resultsFound = false;
-    cards.forEach(card => {
+    document.querySelectorAll('#dashboard-grid .content-card').forEach(card => {
         const keywords = card.dataset.keywords.toLowerCase();
         const category = card.dataset.category;
         const categoryMatch = activeCategory === 'all' || category === activeCategory;
@@ -356,8 +285,7 @@ const handleDirectAd = () => {
         setTimeout(() => overlay.classList.remove('active'), 10000);
     };
     overlay.addEventListener('click', () => {
-        const randomLink = directAdLinks[Math.floor(Math.random() * directAdLinks.length)];
-        window.open(randomLink, '_blank');
+        window.open(directAdLinks[Math.floor(Math.random() * directAdLinks.length)], '_blank');
         overlay.classList.remove('active');
     });
     setInterval(activateAd, Math.random() * 20000 + 25000);
@@ -365,25 +293,16 @@ const handleDirectAd = () => {
 
 // --- App Initialization ---
 async function initializeApp() {
-    // The firebaseConfig object is now expected to be on the window object
-    if (typeof window.firebaseConfig === 'undefined' || !window.firebaseConfig.apiKey) {
-        showNotification("Firebase is not configured correctly.", "error");
-        allDOMElements.loaderOverlay.classList.add('hidden');
-        return;
-    }
-    
     try {
-        const app = initializeApp(window.firebaseConfig);
-        const analytics = getAnalytics(app); // Initialize analytics
+        const app = initializeApp(firebaseConfig);
+        getAnalytics(app);
         appState.db = getFirestore(app);
         appState.auth = getAuth(app);
         
         const userCredential = await signInAnonymously(appState.auth);
         appState.userId = userCredential.user.uid;
-        console.log("Firebase Anonymous Auth successful, UID:", appState.userId);
         
-        // --- Start the app flow after successful auth ---
-        // This is the key fix: The timeout was inside the DOMContentLoaded, but now it's part of the main flow
+        // ** THE FIX **: App flow starts AFTER successful authentication
         setTimeout(() => {
             allDOMElements.loaderOverlay.classList.add('hidden');
             allDOMElements.telegramModal.classList.add('visible');
@@ -397,7 +316,7 @@ async function initializeApp() {
     }
 }
 
-// ** FIX **: The main execution block.
+// --- Main Execution Block ---
 // This ensures all code runs after the DOM is ready.
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Firebase first.
@@ -406,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Then, set up all the event listeners.
     allDOMElements.closeTelegramModal.onclick = () => {
         allDOMElements.telegramModal.classList.remove('visible');
-        if (!localStorage.getItem(userInfoKey)) {
+        if (!localStorage.getItem('sagarRajUserInfo')) {
             allDOMElements.userInfoModal.classList.add('visible');
         } else {
             setupLoginButton();
@@ -422,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
             class: document.getElementById('user-class').value,
             age: document.getElementById('user-age').value,
         };
-        localStorage.setItem(userInfoKey, JSON.stringify(userInfo));
+        localStorage.setItem('sagarRajUserInfo', JSON.stringify(userInfo));
         allDOMElements.userInfoModal.classList.remove('visible');
         setupLoginButton();
         trackUserData();
@@ -441,50 +360,28 @@ document.addEventListener('DOMContentLoaded', () => {
         allDOMElements.sidePanel.classList.remove('visible');
         allDOMElements.commandCenterBtn.classList.remove('open');
         switch (button.id) {
-            case 'side-panel-exit-btn':
-                showView('main-view');
-                allDOMElements.websiteFrame.src = 'about:blank';
-                appState.iframeHistory = [];
-                appState.currentUrl = '';
-                break;
+            case 'side-panel-exit-btn': showView('main-view'); allDOMElements.websiteFrame.src = 'about:blank'; appState.iframeHistory = []; appState.currentUrl = ''; break;
             case 'side-panel-back-btn': navigateBack(); break;
             case 'side-panel-profile-btn': launchSite(profileUrl, false); break;
             case 'side-panel-game-btn': showInterstitialAd(gameUrl, false); break;
             case 'side-panel-calculator-btn': allDOMElements.calculator.classList.toggle('visible'); break;
             case 'side-panel-notes-btn': allDOMElements.notesWidget.classList.toggle('visible'); break;
-            case 'side-panel-focus-btn':
-                allDOMElements.focusOverlay.classList.toggle('active');
-                const icon = button.querySelector('i');
-                icon.classList.toggle('fa-eye');
-                icon.classList.toggle('fa-eye-slash');
-                break;
+            case 'side-panel-focus-btn': allDOMElements.focusOverlay.classList.toggle('active'); button.querySelector('i').classList.toggle('fa-eye-slash'); break;
             case 'side-panel-permissions-btn': allDOMElements.permissionsModal.classList.add('visible'); break;
         }
     });
     allDOMElements.closePermissionsModal.addEventListener('click', () => allDOMElements.permissionsModal.classList.remove('visible'));
     allDOMElements.grantCameraBtn.addEventListener('click', async () => {
-        try {
-            await navigator.mediaDevices.getUserMedia({ video: true });
-            showNotification('Camera permission granted!', 'success');
-        } catch (err) {
-            showNotification('Camera permission was denied.', 'error');
-        }
+        try { await navigator.mediaDevices.getUserMedia({ video: true }); showNotification('Camera permission granted!', 'success'); } catch (err) { showNotification('Camera permission was denied.', 'error'); }
     });
     allDOMElements.grantNotifyBtn.addEventListener('click', async () => {
         try {
             const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                showNotification('Notifications are now enabled.', 'success');
-                new Notification('Thank you!', { body: 'You will receive updates from PadhaiLikhai.' });
-            } else {
-                showNotification('Notification permission was denied.', 'error');
-            }
-        } catch (err) {
-            showNotification('Could not request notification permission.', 'error');
-        }
+            if (permission === 'granted') { showNotification('Notifications are now enabled.', 'success'); new Notification('Thank you!', { body: 'You will receive updates from PadhaiLikhai.' }); } else { showNotification('Notification permission was denied.', 'error'); }
+        } catch (err) { showNotification('Could not request notification permission.', 'error'); }
     });
-    allDOMElements.notesTextarea.value = localStorage.getItem(notesKey) || '';
-    allDOMElements.notesTextarea.addEventListener('keyup', () => localStorage.setItem(notesKey, allDOMElements.notesTextarea.value));
+    allDOMElements.notesTextarea.value = localStorage.getItem('sagarRajNotes') || '';
+    allDOMElements.notesTextarea.addEventListener('keyup', () => localStorage.setItem('sagarRajNotes', allDOMElements.notesTextarea.value));
     allDOMElements.searchBar.addEventListener('input', filterDashboard);
     allDOMElements.categoryFilter.addEventListener('click', (e) => {
         if (e.target.matches('.category-btn')) {
