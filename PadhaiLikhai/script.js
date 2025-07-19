@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 33: Final Self-Contained Initialization
+ * Version 33: Definitive Self-Contained Initialization
  */
 
 // Import Firebase modules
@@ -133,7 +133,6 @@ const showView = (viewId) => {
     allDOMElements.rightAdBar?.classList.toggle('visible-view', viewId === 'app-view');
 };
 
-// Other app functions (launchSite, navigateBack, etc.) remain the same...
 const launchSite = (url, setLoginTimestamp) => {
     if (setLoginTimestamp) localStorage.setItem('sagarRajLoginTimestamp', Date.now().toString());
     if (url !== appState.currentUrl && appState.currentUrl) appState.iframeHistory.push(appState.currentUrl);
@@ -291,8 +290,8 @@ const handleDirectAd = () => {
     setInterval(activateAd, Math.random() * 20000 + 25000);
 };
 
-// --- App Initialization ---
-async function initializeApp() {
+// --- App Initialization Sequence ---
+async function main() {
     try {
         const app = initializeApp(firebaseConfig);
         getAnalytics(app);
@@ -303,26 +302,27 @@ async function initializeApp() {
         appState.userId = userCredential.user.uid;
         
         // ** THE FIX **: App flow starts AFTER successful authentication
+        // This guarantees the loader is hidden only when the app is ready.
         setTimeout(() => {
             allDOMElements.loaderOverlay.classList.add('hidden');
             allDOMElements.telegramModal.classList.add('visible');
             trackUserData();
-        }, 1500);
+        }, 1500); // A slight delay for a smoother visual transition
 
     } catch (error) {
         console.error("Firebase Initialization Error:", error);
         showNotification("Could not connect to app services.", "error");
-        allDOMElements.loaderOverlay.classList.add('hidden');
+        allDOMElements.loaderOverlay.classList.add('hidden'); // Ensure loader hides even on error
     }
 }
 
 // --- Main Execution Block ---
 // This ensures all code runs after the DOM is ready.
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Firebase first.
-    initializeApp();
+    // Start the application's main initialization sequence.
+    main();
 
-    // Then, set up all the event listeners.
+    // Attach all other event listeners for user interaction.
     allDOMElements.closeTelegramModal.onclick = () => {
         allDOMElements.telegramModal.classList.remove('visible');
         if (!localStorage.getItem('sagarRajUserInfo')) {
@@ -362,8 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
         switch (button.id) {
             case 'side-panel-exit-btn': showView('main-view'); allDOMElements.websiteFrame.src = 'about:blank'; appState.iframeHistory = []; appState.currentUrl = ''; break;
             case 'side-panel-back-btn': navigateBack(); break;
-            case 'side-panel-profile-btn': launchSite(profileUrl, false); break;
-            case 'side-panel-game-btn': showInterstitialAd(gameUrl, false); break;
+            case 'side-panel-profile-btn': launchSite('https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html', false); break;
+            case 'side-panel-game-btn': showInterstitialAd('game.html', false); break;
             case 'side-panel-calculator-btn': allDOMElements.calculator.classList.toggle('visible'); break;
             case 'side-panel-notes-btn': allDOMElements.notesWidget.classList.toggle('visible'); break;
             case 'side-panel-focus-btn': allDOMElements.focusOverlay.classList.toggle('active'); button.querySelector('i').classList.toggle('fa-eye-slash'); break;
@@ -390,8 +390,8 @@ document.addEventListener('DOMContentLoaded', () => {
             filterDashboard();
         }
     });
-    allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd(gameUrl, false));
-    allDOMElements.booksSectionLink.href = libraryAdUrl;
+    allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd('game.html', false));
+    allDOMElements.booksSectionLink.href = 'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf';
     allDOMElements.adBarToggle.addEventListener('click', () => allDOMElements.rightAdBar.classList.toggle('expanded'));
 
     makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
