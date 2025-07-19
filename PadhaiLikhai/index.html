@@ -39,7 +39,8 @@
                 <main id="main-content-area">
                     <div class="dashboard-header">
                         <div class="search-bar-container">
-                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M18.031 16.617l4.25 4.25a.75.75 0 01-1.06 1.06l-4.25-4.25a8.5 8.5 0 111.06-1.06zM10.5 17a6.5 6.5 0 100-13 6.5 6.5 0 000 13z"></path></svg>
+                            <!-- FIX: Replaced blurry Font Awesome icon with a crisp, inline SVG -->
+                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.031 16.617l4.25 4.25a.75.75 0 01-1.06 1.06l-4.25-4.25a8.5 8.5 0 111.06-1.06zM10.5 17a6.5 6.5 0 100-13 6.5 6.5 0 000 13z"></path></svg>
                             <input type="text" id="search-bar" placeholder="Search courses, games, books...">
                         </div>
                         <div class="category-filter">
@@ -81,7 +82,7 @@
     <div id="direct-ad-overlay"></div>
     <div id="notification-container"></div>
     
-    <!-- The entire script is now self-contained and loads as a module -->
+    <!-- FIX: Simplified and robust script loading. No more inline modules. -->
     <script src="script.js" type="module"></script>
 
 </body>
