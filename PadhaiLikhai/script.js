@@ -1,316 +1,444 @@
-/* * PadhaiLikhai - Professional Application Engine
- * Developed by a 20-Year Full-Stack Veteran
- * Version: 31.0 (Enterprise Grade, Fail-Safe)
+/* * Designed & Developed by Sagar Raj
+ * Version 25: The Definitive Flawless Hub Logic
  */
 
-const App = {
-    // --- CONFIGURATION ---
-    config: {
-        urls: {
-            initialLogin: 'https://rolexcoderz.live/36xsuccess/',
-            study: 'https://www.rolexcoderz.xyz/Course',
-            profile: 'https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html',
-            game: 'game.html',
-        },
-        adLinks: {
-            primaryDirect: 'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf',
-            highImpactDirect: 'https://www.profitableratecpm.com/ezn24hhv5?key=a7daf987a4d652e9dfb0fd1fe4cd1cd5',
-            bottomBanner: { key: '7f09cc75a479e1c1557ae48261980b12', width: 320, height: 50 },
-            bigBanner: { key: 'de366f663355ebaa73712755e3876ab8', width: 300, height: 250 },
-            socialBar: 'f435c96959f348c08e52ceb50abf087e',
-            nativeBanner: '5a3a56f258731c59b0ae000546a15e25'
-        },
-        storageKeys: {
-            loginTimestamp: 'sagarRajLoginTimestamp',
-            notes: 'sagarRajNotes',
-            userId: 'sagarRajUserId'
-        }
-    },
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Configuration ---
+    const initialLoginUrl = 'https://rolexcoderz.live/36xsuccess/';
+    const studyUrl = 'https://www.rolexcoderz.xyz/Course';
+    const profileUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html';
+    const gameUrl = 'game.html';
+    const directAdLinks = [
+        'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf',
+        'https://www.profitableratecpm.com/ezn24hhv5?key=a7daf987a4d652e9dfb0fd1fe4cd1cd5'
+    ];
+    const loginTimestampKey = 'sagarRajLoginTimestamp';
+    const userInfoKey = 'sagarRajUserInfo';
+    const notesKey = 'sagarRajNotes';
 
-    // --- DOM ELEMENTS ---
-    DOMElements: {},
+    // --- DOM Element Cache ---
+    const allDOMElements = {
+        loaderOverlay: document.getElementById('loader-overlay'),
+        mainView: document.getElementById('main-view'),
+        appView: document.getElementById('app-view'),
+        supportView: document.getElementById('support-view'),
+        loginButtonArea: document.getElementById('login-button-area'),
+        interstitialAdModal: document.getElementById('interstitial-ad-modal'),
+        interstitialAdContainer: document.getElementById('interstitial-ad-container'),
+        skipAdButton: document.getElementById('skip-ad-button'),
+        closeAdModalBtn: document.getElementById('close-ad-modal-btn'),
+        userInfoModal: document.getElementById('user-info-modal'),
+        userInfoForm: document.getElementById('user-info-form'),
+        telegramModal: document.getElementById('telegram-modal'),
+        closeTelegramModal: document.getElementById('close-telegram-modal'),
+        permissionsModal: document.getElementById('permissions-modal'),
+        closePermissionsModal: document.getElementById('close-permissions-modal'),
+        grantCameraBtn: document.getElementById('grant-camera-btn'),
+        grantNotifyBtn: document.getElementById('grant-notify-btn'),
+        iframeContainer: document.getElementById('iframe-container'),
+        websiteFrame: document.getElementById('website-frame'),
+        iframeLoader: document.getElementById('iframe-loader'),
+        focusOverlay: document.getElementById('focus-overlay'),
+        notesWidget: document.getElementById('mini-notes'),
+        notesHeader: document.getElementById('notes-header'),
+        notesTextarea: document.getElementById('notes-textarea'),
+        calculator: document.getElementById('calculator'),
+        calcHeader: document.getElementById('calc-header'),
+        calcDisplay: document.getElementById('calc-display'),
+        calcButtons: document.getElementById('calc-buttons'),
+        commandCenterBtn: document.getElementById('command-center-btn'),
+        sidePanel: document.getElementById('side-panel'),
+        sidePanelNav: document.getElementById('side-panel-nav'),
+        supportUsBtn: document.getElementById('support-us-btn'),
+        backToMainBtn: document.getElementById('back-to-main-btn'),
+        persistentAdBanner: document.getElementById('persistent-ad-banner'),
+        adGrid: document.getElementById('ad-grid'),
+        booksSectionLink: document.getElementById('books-ad-link'),
+        searchBar: document.getElementById('search-bar'),
+        categoryFilter: document.querySelector('.category-filter'),
+        dashboardGrid: document.getElementById('dashboard-grid'),
+        playGameBtn: document.getElementById('play-game-btn'),
+        rightAdBar: document.getElementById('right-ad-bar'),
+        adBarToggle: document.getElementById('ad-bar-toggle'),
+        rightAdContent: document.getElementById('right-ad-content'),
+        directAdOverlay: document.getElementById('direct-ad-overlay'),
+    };
 
-    // --- APP STATE ---
-    state: {
-        iframeHistory: []
-    },
+    // --- State Management ---
+    const appState = {
+        iframeHistory: [],
+        currentUrl: '',
+    };
 
-    // --- INITIALIZATION ---
-    init: function() {
-        // This is the main entry point.
-        document.addEventListener('DOMContentLoaded', () => {
-            this.showLoader();
-            try {
-                this.cacheDOMElements();
-                this.bindEvents();
-                this.initializeAppLogic();
-            } catch (e) {
-                console.error("FATAL ERROR during initialization:", e);
-                // Even if everything fails, we guarantee the loader hides.
-                this.hideLoader();
-            }
-        });
-    },
+    // --- Core Functions ---
+    const checkLoginStatus = () => {
+        const lastLogin = localStorage.getItem(loginTimestampKey);
+        if (!lastLogin) return false;
+        const thirtySixHours = 36 * 60 * 60 * 1000;
+        return (Date.now() - parseInt(lastLogin, 10)) < thirtySixHours;
+    };
 
-    cacheDOMElements: function() {
-        const ids = [
-            'loader-overlay', 'main-view', 'app-view', 'support-view', 'login-button-area',
-            'interstitial-ad-modal', 'interstitial-ad-container', 'skip-ad-button', 'close-ad-modal-btn',
-            'user-info-modal', 'user-info-form', 'telegram-modal', 'close-telegram-modal',
-            'permissions-modal', 'close-permissions-modal', 'grant-camera-btn', 'grant-notify-btn',
-            'grant-location-btn', 'iframe-container', 'website-frame', 'iframe-loader', 'focus-overlay',
-            'notes-widget', 'notes-header', 'notes-textarea', 'calculator', 'calc-header', 'calc-display',
-            'calc-buttons', 'command-center-btn', 'side-panel', 'side-panel-nav', 'support-us-btn',
-            'back-to-main-btn', 'persistent-ad-banner', 'native-ad-container', 'ad-grid',
-            'books-ad-link', 'search-bar', 'play-game-btn', 'right-ad-bar', 'ad-bar-toggle',
-            'right-ad-content'
-        ];
-        ids.forEach(id => { this.DOMElements[id] = document.getElementById(id); });
-        this.DOMElements.categoryFilter = document.querySelector('.category-filter');
-    },
-
-    bindEvents: function() {
-        // This function sets up all event listeners, ensuring no "null" errors.
-        const { DOMElements } = this;
-        DOMElements.supportUsBtn.addEventListener('click', () => this.showView('support-view'));
-        DOMElements.backToMainBtn.addEventListener('click', () => this.showView('main-view'));
-        DOMElements.closeTelegramModal.addEventListener('click', () => {
-            DOMElements.telegramModal.classList.remove('visible');
-            DOMElements.userInfoModal.classList.add('visible');
-        });
-        DOMElements.userInfoForm.addEventListener('submit', (e) => this.handleUserInfoSubmit(e));
-        DOMElements.commandCenterBtn.addEventListener('click', () => this.toggleSidePanel());
-        DOMElements.sidePanelNav.addEventListener('click', (e) => this.handleSidePanelNav(e));
-        DOMElements.playGameBtn.addEventListener('click', () => this.launchSite(this.config.urls.game));
-        DOMElements.closePermissionsModal.addEventListener('click', () => DOMElements.permissionsModal.classList.remove('visible'));
-        DOMElements.grantLocationBtn.addEventListener('click', () => this.requestLocation(true));
-        DOMElements.calcButtons.addEventListener('click', (e) => this.handleCalculator(e));
-        DOMElements.notesTextarea.addEventListener('keyup', () => this.saveNotes());
-        this.makeDraggable(DOMElements.notesWidget, DOMElements.notesHeader);
-        this.makeDraggable(DOMElements.calculator, DOMElements.calcHeader);
-    },
-
-    initializeAppLogic: async function() {
-        try {
-            let userId = localStorage.getItem(this.config.storageKeys.userId);
-            if (!userId) {
-                userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                localStorage.setItem(this.config.storageKeys.userId, userId);
-            }
-
-            const users = getAllUsers();
-            const existingUser = users.find(user => user.id === userId);
-
-            if (existingUser) {
-                upsertUser({ id: userId, lastSeen: new Date().toISOString() });
-                this.setupLoginButton();
-                this.showView('main-view');
-            } else {
-                this.DOMElements.telegramModal.classList.add('visible');
-            }
-            this.loadAds();
-            this.loadNotes();
-            this.DOMElements.booksSectionLink.href = this.config.adLinks.primaryDirect;
-        } catch (e) {
-            console.error("Error in main app logic:", e);
-            this.showView('main-view'); // Default to a safe state
-        } finally {
-            // This guarantees the loader hides, no matter what.
-            setTimeout(() => this.hideLoader(), 500);
-        }
-    },
-
-    // --- CORE FEATURES ---
-    showLoader: function() { this.DOMElements.loaderOverlay.classList.remove('hidden'); },
-    hideLoader: function() { this.DOMElements.loaderOverlay.classList.add('hidden'); },
-
-    showView: function(viewId) {
+    const showView = (viewId) => {
         ['main-view', 'app-view', 'support-view'].forEach(id => {
-            this.DOMElements[id].classList.toggle('hidden', id !== viewId);
+            document.getElementById(id).classList.toggle('hidden', id !== viewId);
         });
-        this.DOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
-        this.DOMElements.persistentAdBanner.classList.toggle('hidden', viewId !== 'main-view');
-        this.DOMElements.rightAdBar.classList.toggle('visible', viewId === 'app-view');
-        if (viewId === 'support-view') {
-            this.loadSupportPageAds(); // Reload ads for support page
-        }
-    },
+        allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
+    };
 
-    setupLoginButton: function() {
-        const { DOMElements, config } = this;
-        const isLoggedIn = this.checkLoginStatus();
-        DOMElements.loginButtonArea.innerHTML = '';
+    const launchSite = (url, setLoginTimestamp) => {
+        if (setLoginTimestamp) localStorage.setItem(loginTimestampKey, Date.now().toString());
         
-        let btn;
-        if (isLoggedIn) {
-            btn = document.createElement('button');
-            btn.textContent = 'Continue Study';
-            btn.className = 'styled-button';
-            btn.onclick = () => this.handleHighImpactClick(config.urls.study, false);
+        if (url !== appState.currentUrl && appState.currentUrl) {
+            appState.iframeHistory.push(appState.currentUrl);
+        }
+        appState.currentUrl = url;
+
+        allDOMElements.websiteFrame.src = url;
+        showView('app-view');
+        allDOMElements.iframeLoader.classList.add('visible');
+    };
+
+    const navigateBack = () => {
+        if (appState.iframeHistory.length > 0) {
+            const prevUrl = appState.iframeHistory.pop();
+            appState.currentUrl = prevUrl;
+            allDOMElements.websiteFrame.src = prevUrl;
+            allDOMElements.iframeLoader.classList.add('visible');
         } else {
-            btn = document.createElement('button');
-            btn.textContent = 'Login for 36 Hours';
-            btn.className = 'styled-button';
-            btn.onclick = () => this.handleHighImpactClick(config.urls.initialLogin, true);
+            showView('main-view');
+            allDOMElements.websiteFrame.src = 'about:blank';
+            appState.currentUrl = '';
         }
-        DOMElements.loginButtonArea.appendChild(btn);
-    },
+    };
 
-    handleUserInfoSubmit: async function(e) {
-        e.preventDefault();
-        this.showLoader();
-        const deviceData = this.getDeviceData();
-        const location = await this.requestLocation();
-        const userInfo = {
-            id: localStorage.getItem(this.config.storageKeys.userId),
-            name: document.getElementById('user-name').value,
-            class: document.getElementById('user-class').value,
-            age: document.getElementById('user-age').value,
-            location: location,
-            ...deviceData,
-            lastSeen: new Date().toISOString(),
+    const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
+        const { interstitialAdModal, interstitialAdContainer, skipAdButton, closeAdModalBtn } = allDOMElements;
+        interstitialAdModal.classList.add('visible');
+        interstitialAdContainer.innerHTML = '';
+        const adIframe = document.createElement('iframe');
+        interstitialAdContainer.appendChild(adIframe);
+        const adScriptContent = `
+            <script type="text/javascript">
+                atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+            <\/script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>
+        `;
+        adIframe.contentWindow.document.open();
+        adIframe.contentWindow.document.write(adScriptContent);
+        adIframe.contentWindow.document.close();
+        let timeLeft = 4;
+        skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
+        skipAdButton.disabled = true;
+        const timerInterval = setInterval(() => {
+            timeLeft--;
+            skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                skipAdButton.disabled = false;
+                skipAdButton.textContent = 'Skip Ad';
+            }
+        }, 1000);
+        
+        const closeFunction = () => {
+            clearInterval(timerInterval);
+            interstitialAdModal.classList.remove('visible');
+            skipAdButton.onclick = null;
+            closeAdModalBtn.onclick = null;
         };
-        upsertUser(userInfo);
-        this.setupLoginButton();
-        this.showView('main-view');
-        this.hideLoader();
-    },
 
-    toggleSidePanel: function() {
-        this.DOMElements.sidePanel.classList.toggle('visible');
-        this.DOMElements.commandCenterBtn.classList.toggle('open');
-    },
+        skipAdButton.onclick = () => {
+            if (skipAdButton.disabled) return;
+            closeFunction();
+            launchSite(targetUrl, setLoginTimestamp);
+        };
+        closeAdModalBtn.onclick = closeFunction;
+    };
+    
+    const setupLoginButton = () => {
+        const isLoggedIn = checkLoginStatus();
+        allDOMElements.loginButtonArea.innerHTML = ''; // Clear previous buttons
 
-    handleSidePanelNav: function(e) {
-        const button = e.target.closest('.side-panel-button');
-        if (!button) return;
-        this.toggleSidePanel();
+        if (isLoggedIn) {
+            const continueBtn = document.createElement('button');
+            continueBtn.textContent = 'Continue Study';
+            continueBtn.className = 'styled-button';
+            continueBtn.onclick = () => showInterstitialAd(studyUrl, false);
+            
+            const forceLoginBtn = document.createElement('button');
+            forceLoginBtn.textContent = 'Force Login';
+            forceLoginBtn.className = 'styled-button support-button';
+            forceLoginBtn.style.marginLeft = '15px';
+            forceLoginBtn.onclick = () => showInterstitialAd(initialLoginUrl, true);
 
-        switch (button.id) {
-            case 'side-panel-exit-btn':
-                this.triggerSocialBar();
-                this.showView('main-view');
-                break;
-            case 'side-panel-back-btn': /* Logic for iframe back needed */ break;
-            case 'side-panel-profile-btn': this.launchSite(this.config.urls.profile); break;
-            case 'side-panel-calculator-btn': this.DOMElements.calculator.classList.toggle('visible'); break;
-            case 'side-panel-notes-btn': this.DOMElements.notesWidget.classList.toggle('visible'); break;
-            case 'side-panel-focus-btn': this.DOMElements.focusOverlay.classList.toggle('active'); break;
-            case 'side-panel-permissions-btn': this.DOMElements.permissionsModal.classList.add('visible'); break;
+            allDOMElements.loginButtonArea.appendChild(continueBtn);
+            allDOMElements.loginButtonArea.appendChild(forceLoginBtn);
+        } else {
+            const loginBtn = document.createElement('button');
+            loginBtn.textContent = 'Login for 36 Hours';
+            loginBtn.className = 'styled-button';
+            loginBtn.onclick = () => showInterstitialAd(initialLoginUrl, true);
+            allDOMElements.loginButtonArea.appendChild(loginBtn);
         }
-    },
+    };
 
-    launchSite: function(url) {
-        this.DOMElements.websiteFrame.src = url;
-        this.showView('app-view');
-    },
-
-    // --- ADVERTISEMENT ENGINE ---
-    loadAds: function() {
-        try {
-            const { adLinks } = this.config;
-            // Bottom Banner
-            this.DOMElements.persistentAdBanner.innerHTML = `<script type="text/javascript"> atOptions = {'key' : '${adLinks.bottomBanner.key}','format' : 'iframe','height' : ${adLinks.bottomBanner.height},'width' : ${adLinks.bottomBanner.width},'params' : {}};<\/script><script type="text/javascript" src="//www.highperformanceformat.com/${adLinks.bottomBanner.key}/invoke.js"><\/script>`;
-            // Native Banner
-            this.DOMElements.nativeAdContainer.innerHTML = `<script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/${adLinks.nativeBanner}/invoke.js"><\/script><div id="container-${adLinks.nativeBanner}"></div>`;
-            // Right Bar
-            this.DOMElements.rightAdContent.innerHTML = `<script type="text/javascript"> atOptions = {'key' : '${adLinks.bigBanner.key}','format' : 'iframe','height' : ${adLinks.bigBanner.height},'width' : ${adLinks.bigBanner.width},'params' : {}};<\/script><script type="text/javascript" src="//www.highperformanceformat.com/${adLinks.bigBanner.key}/invoke.js"><\/script>`;
-        } catch (e) { console.error("Error loading primary ads:", e); }
-    },
-    
-    loadSupportPageAds: function() {
-        try {
-            const { adLinks } = this.config;
-            this.DOMElements.adGrid.innerHTML = '';
-            for (let i = 0; i < 4; i++) {
-                const adSlot = document.createElement('div');
-                adSlot.className = 'ad-slot-container-div';
-                adSlot.innerHTML = `<script type="text/javascript"> atOptions = {'key' : '${adLinks.bigBanner.key}','format' : 'iframe','height' : ${adLinks.bigBanner.height},'width' : ${adLinks.bigBanner.width},'params' : {}};<\/script><script type="text/javascript" src="//www.highperformanceformat.com/${adLinks.bigBanner.key}/invoke.js"><\/script>`;
-                this.DOMElements.adGrid.appendChild(adSlot);
-            }
-        } catch(e) { console.error("Error loading support page ads:", e); }
-    },
-
-    handleHighImpactClick: function(targetUrl, setLoginTimestamp) {
-        window.open(this.config.adLinks.highImpactDirect, '_blank');
-        this.launchSite(targetUrl);
-        if (setLoginTimestamp) localStorage.setItem(this.config.storageKeys.loginTimestamp, Date.now().toString());
-    },
-
-    triggerSocialBar: function() {
-        try {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = `//pl27121918.profitableratecpm.com/${this.config.adLinks.socialBar}.js`;
-            document.head.appendChild(script);
-        } catch(e) { console.error("Error triggering social bar ad:", e); }
-    },
-
-    // --- UTILITIES ---
-    checkLoginStatus: function() {
-        const lastLogin = localStorage.getItem(this.config.storageKeys.loginTimestamp);
-        return lastLogin && (Date.now() - parseInt(lastLogin, 10)) < (36 * 60 * 60 * 1000);
-    },
-    
-    getDeviceData: function() {
-        const ua = navigator.userAgent;
-        let os = "Unknown", browser = "Unknown";
-        if (ua.includes("Win")) os = "Windows";
-        if (ua.includes("Mac")) os = "MacOS";
-        if (ua.includes("Linux")) os = "Linux";
-        if (ua.includes("Android")) os = "Android";
-        if (ua.includes("like Mac")) os = "iOS";
-        if (ua.includes("Chrome")) browser = "Chrome";
-        else if (ua.includes("Firefox")) browser = "Firefox";
-        else if (ua.includes("Safari")) browser = "Safari";
-        return { os, browser };
-    },
-
-    requestLocation: function(isManual = false) {
-        return new Promise((resolve) => {
-            if ('geolocation' in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => resolve(`${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`),
-                    () => resolve('Denied'), { timeout: 5000 }
-                );
-            } else { resolve('Not Supported'); }
-        }).then(location => {
-            if(isManual) {
-                upsertUser({ id: localStorage.getItem(this.config.storageKeys.userId), location: location });
-                alert(`Location status: ${location}`);
-            }
-            return location;
-        });
-    },
-
-    handleCalculator: function(e) {
-        if (!e.target.matches('.calc-btn')) return;
-        const key = e.target.textContent;
-        const display = this.DOMElements.calcDisplay;
-        if (key === 'C') display.value = '';
-        else if (key === '=') try { display.value = eval(display.value.replace(/[^-()\d/*+.]/g, '')); } catch { display.value = 'Error'; }
-        else display.value += key;
-    },
-    
-    loadNotes: function() { this.DOMElements.notesTextarea.value = localStorage.getItem(this.config.storageKeys.notes) || ''; },
-    saveNotes: function() { localStorage.setItem(this.config.storageKeys.notes, this.DOMElements.notesTextarea.value); },
-    
-    makeDraggable: function(elmnt, header) {
+    const makeDraggable = (elmnt, header) => {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         if (header) header.onmousedown = dragMouseDown;
         function dragMouseDown(e) {
+            e = e || window.event;
             e.preventDefault();
-            pos3 = e.clientX; pos4 = e.clientY;
-            document.onmouseup = closeDragElement; document.onmousemove = elementDrag;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
         }
         function elementDrag(e) {
-            pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
-            pos3 = e.clientX; pos4 = e.clientY;
+            e = e || window.event;
+            e.preventDefault();
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
         }
-        function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
-    }
-};
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    };
 
-App.init(); // Start the application.
+    const handleCalculator = () => {
+        allDOMElements.calcButtons.addEventListener('click', (e) => {
+            if (!e.target.matches('.calc-btn')) return;
+            const key = e.target.textContent;
+            const display = allDOMElements.calcDisplay;
+            if (key === 'C') {
+                display.value = '';
+            } else if (key === '=') {
+                try { display.value = eval(display.value.replace(/[^-()\d/*+.]/g, '')); } catch { display.value = 'Error'; }
+            } else {
+                display.value += key;
+            }
+        });
+    };
+
+    const loadAds = () => {
+        // Persistent Banner Ad
+        const adScript1 = document.createElement('script');
+        adScript1.src = '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js';
+        adScript1.type = 'text/javascript';
+        allDOMElements.persistentAdBanner.appendChild(adScript1);
+
+        const adScript2 = document.createElement('script');
+        adScript2.type = 'text/javascript';
+        adScript2.text = `atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };`;
+        const adScript3 = document.createElement('script');
+        adScript3.src = '//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js';
+        adScript3.type = 'text/javascript';
+        allDOMElements.persistentAdBanner.appendChild(adScript2);
+        allDOMElements.persistentAdBanner.appendChild(adScript3);
+
+        // Support Page Ads
+        const adGrid = allDOMElements.adGrid;
+        adGrid.innerHTML = ''; // Clear first
+        const bigBarContainer = document.createElement('div');
+        bigBarContainer.className = 'ad-slot ad-slot-300x250';
+        const adScript4 = document.createElement('script');
+        adScript4.type = 'text/javascript';
+        adScript4.text = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
+        const adScript5 = document.createElement('script');
+        adScript5.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
+        adScript5.type = 'text/javascript';
+        bigBarContainer.appendChild(adScript4);
+        bigBarContainer.appendChild(adScript5);
+        adGrid.appendChild(bigBarContainer);
+
+        const nativeBannerContainer = document.createElement('div');
+        nativeBannerContainer.className = 'ad-slot ad-slot-container-div';
+        const adScript6 = document.createElement('script');
+        adScript6.async = true;
+        adScript6.dataset.cfasync = false;
+        adScript6.src = '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js';
+        const adScript6Div = document.createElement('div');
+        adScript6Div.id = 'container-5a3a56f258731c59b0ae000546a15e25';
+        nativeBannerContainer.appendChild(adScript6);
+        nativeBannerContainer.appendChild(adScript6Div);
+        adGrid.appendChild(nativeBannerContainer);
+
+        // Right Side Ad Bar
+        const rightAdContent = allDOMElements.rightAdContent;
+        rightAdContent.innerHTML = '';
+        const rightAdContainer = document.createElement('div');
+        rightAdContainer.className = 'ad-slot ad-slot-container-div';
+        const adScript7 = document.createElement('script');
+        adScript7.async = true;
+        adScript7.dataset.cfasync = false;
+        adScript7.src = '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js';
+        const adScript7Div = document.createElement('div');
+        adScript7Div.id = 'container-5a3a56f258731c59b0ae000546a15e25';
+        rightAdContainer.appendChild(adScript7);
+        rightAdContainer.appendChild(adScript7Div);
+        rightAdContent.appendChild(rightAdContainer);
+    };
+    
+    const filterDashboard = () => {
+        const searchTerm = allDOMElements.searchBar.value.toLowerCase();
+        const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category;
+        
+        document.querySelectorAll('#dashboard-grid .content-card').forEach(card => {
+            const keywords = card.dataset.keywords.toLowerCase();
+            const category = card.dataset.category;
+
+            const categoryMatch = activeCategory === 'all' || category === activeCategory;
+            const searchMatch = keywords.includes(searchTerm);
+
+            if (categoryMatch && searchMatch) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    };
+
+    const handleDirectAd = () => {
+        const overlay = allDOMElements.directAdOverlay;
+        
+        const activateAd = () => {
+            overlay.classList.add('active');
+        };
+
+        overlay.addEventListener('click', () => {
+            const randomLink = directAdLinks[Math.floor(Math.random() * directAdLinks.length)];
+            window.open(randomLink, '_blank');
+            overlay.classList.remove('active');
+        });
+
+        // Activate ad at random intervals
+        setInterval(activateAd, Math.random() * 15000 + 15000); // Between 15-30 seconds
+    };
+
+    // --- Initial App Flow ---
+    setTimeout(() => {
+        allDOMElements.loaderOverlay.classList.add('hidden');
+        allDOMElements.telegramModal.classList.add('visible');
+    }, 2000);
+
+    allDOMElements.closeTelegramModal.onclick = () => {
+        allDOMElements.telegramModal.classList.remove('visible');
+        if (!localStorage.getItem(userInfoKey)) {
+            allDOMElements.userInfoModal.classList.add('visible');
+        } else {
+            setupLoginButton();
+        }
+        showView('main-view');
+        handleDirectAd(); // Start the direct ad timer system
+    };
+
+    allDOMElements.userInfoForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const userInfo = {
+            name: document.getElementById('user-name').value,
+            class: document.getElementById('user-class').value,
+            age: document.getElementById('user-age').value,
+        };
+        localStorage.setItem(userInfoKey, JSON.stringify(userInfo));
+        allDOMElements.userInfoModal.classList.remove('visible');
+        setupLoginButton();
+    });
+
+    // --- Event Listeners ---
+    allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
+    allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
+    allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
+    allDOMElements.commandCenterBtn.addEventListener('click', () => {
+        allDOMElements.sidePanel.classList.toggle('visible');
+        allDOMElements.commandCenterBtn.classList.toggle('open');
+    });
+    
+    allDOMElements.sidePanelNav.addEventListener('click', (e) => {
+        const button = e.target.closest('.side-panel-button');
+        if (!button) return;
+
+        allDOMElements.sidePanel.classList.remove('visible');
+        allDOMElements.commandCenterBtn.classList.remove('open');
+
+        switch (button.id) {
+            case 'side-panel-exit-btn':
+                showView('main-view');
+                allDOMElements.websiteFrame.src = 'about:blank';
+                appState.iframeHistory = [];
+                appState.currentUrl = '';
+                break;
+            case 'side-panel-back-btn':
+                navigateBack();
+                break;
+            case 'side-panel-profile-btn':
+                launchSite(profileUrl, false);
+                break;
+            case 'side-panel-game-btn':
+                showInterstitialAd(gameUrl, false);
+                break;
+            case 'side-panel-calculator-btn':
+                allDOMElements.calculator.classList.toggle('visible');
+                break;
+            case 'side-panel-notes-btn':
+                allDOMElements.notesWidget.classList.toggle('visible');
+                break;
+            case 'side-panel-focus-btn':
+                allDOMElements.focusOverlay.classList.toggle('active');
+                const icon = button.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+                break;
+            case 'side-panel-permissions-btn':
+                allDOMElements.permissionsModal.classList.add('visible');
+                break;
+        }
+    });
+
+    allDOMElements.closePermissionsModal.addEventListener('click', () => allDOMElements.permissionsModal.classList.remove('visible'));
+    allDOMElements.grantCameraBtn.addEventListener('click', async () => {
+        try {
+            await navigator.mediaDevices.getUserMedia({ video: true });
+            alert('Camera permission granted!');
+        } catch (err) {
+            alert('Camera permission was denied.');
+        }
+    });
+    allDOMElements.grantNotifyBtn.addEventListener('click', async () => {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') new Notification('Thank you!', { body: 'Notifications are now enabled.' });
+        else alert('Notification permission was denied.');
+    });
+    allDOMElements.notesTextarea.value = localStorage.getItem(notesKey) || '';
+    allDOMElements.notesTextarea.addEventListener('keyup', () => localStorage.setItem(notesKey, allDOMElements.notesTextarea.value));
+    
+    allDOMElements.searchBar.addEventListener('input', filterDashboard);
+    allDOMElements.categoryFilter.addEventListener('click', (e) => {
+        if (e.target.matches('.category-btn')) {
+            allDOMElements.categoryFilter.querySelector('.active').classList.remove('active');
+            e.target.classList.add('active');
+            filterDashboard();
+        }
+    });
+
+    allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd(gameUrl, false));
+    allDOMElements.booksSectionLink.href = adLink;
+    
+    allDOMElements.adBarToggle.addEventListener('click', () => {
+        allDOMElements.rightAdBar.classList.toggle('visible');
+    });
+
+    makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
+    makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
+    handleCalculator();
+    loadAds();
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js');
+        });
+    }
+});
