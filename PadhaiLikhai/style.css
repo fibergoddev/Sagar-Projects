@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 25: The Definitive Flawless Hub Stylesheet
+ * Version 26: The Definitive Flawless Hub Stylesheet
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -131,7 +131,6 @@ html, body {
 .ad-slot-300x250 { width: 300px; height: 250px; }
 .ad-slot-container-div { width: auto; height: auto; }
 #persistent-ad-banner { position: fixed; bottom: 0; left: 0; width: 100%; padding: 10px; background: rgba(10, 10, 16, 0.9); backdrop-filter: blur(10px); z-index: 90; display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; border-top: 1px solid var(--border-color); transition: transform 0.5s ease-out; overflow-x: auto; }
-#persistent-ad-banner.hidden { transform: translateY(100%); }
         
 .widget { position: fixed; z-index: 160; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 15px; box-shadow: 0 8px 32px 0 var(--shadow-color); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0); }
 .widget.visible { transform: scale(1); }
