@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 34: Definitive Connection & Loader Fix
+ * Version 35: Definitive Ad System & Revenue Maximization
  */
 
 // Import Firebase modules
@@ -9,12 +9,11 @@ import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/1
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Firebase Configuration ---
-// ** THE DEFINITIVE FIX **: Corrected the storageBucket URL to the required SDK format.
 const firebaseConfig = {
     apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
     authDomain: "padhailikhai-app.firebaseapp.com",
     projectId: "padhailikhai-app",
-    storageBucket: "padhailikhai-app.appspot.com", // This was the critical error. It is now fixed.
+    storageBucket: "padhailikhai-app.appspot.com",
     messagingSenderId: "205786528118",
     appId: "1:205786528118:web:2f09f0a2073144f3846257",
     measurementId: "G-4MGMPE2DYV"
@@ -162,6 +161,8 @@ const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
     const { interstitialAdModal, interstitialAdContainer, skipAdButton, closeAdModalBtn } = allDOMElements;
     interstitialAdModal.classList.add('visible');
     interstitialAdContainer.innerHTML = '';
+    
+    // Ad 2: Big Bar (300x250) in the interstitial
     const adScriptContainer = document.createElement('div');
     adScriptContainer.innerHTML = `<script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>`;
     interstitialAdContainer.appendChild(adScriptContainer);
@@ -209,25 +210,9 @@ const makeDraggable = (elmnt, header) => {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     const dragHeader = header.querySelector('.fa-arrows-alt') || header;
     dragHeader.onmousedown = dragMouseDown;
-    function dragMouseDown(e) {
-        e.preventDefault();
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
-    }
-    function elementDrag(e) {
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
+    function dragMouseDown(e) { e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; }
+    function elementDrag(e) { pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; }
+    function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
 };
 
 const handleCalculator = () => {
@@ -236,25 +221,32 @@ const handleCalculator = () => {
         if (!target) return;
         const key = target.textContent;
         const display = allDOMElements.calcDisplay;
-        if (key === 'C') {
-            display.value = '';
-        } else if (key === '=') {
-            try {
-                display.value = new Function('return ' + display.value.replace(/[^-()\d/*+.]/g, ''))();
-            } catch {
-                display.value = 'Error';
-            }
-        } else {
-            if (display.value === 'Error') display.value = '';
-            display.value += key;
-        }
+        if (key === 'C') { display.value = ''; } 
+        else if (key === '=') { try { display.value = new Function('return ' + display.value.replace(/[^-()\d/*+.]/g, ''))(); } catch { display.value = 'Error'; } } 
+        else { if (display.value === 'Error') display.value = ''; display.value += key; }
     });
 };
 
+// ** THE FIX **: A centralized function to load all ads strategically.
 const loadAds = () => {
-    allDOMElements.persistentAdBanner.innerHTML = `<script type="text/javascript">atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script><script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'><\/script>`;
-    allDOMElements.adGrid.innerHTML = `<div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div><div class="ad-slot ad-slot-container-div"><script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"><\/script><div id="container-5a3a56f258731c59b0ae000546a15e25"></div></div>`;
+    // Layer 1: Always-On Ads
+    // Ad 1: Bottom Bar (320x50)
+    allDOMElements.persistentAdBanner.innerHTML = `<script type="text/javascript">atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script>`;
+    
+    // Ad 3: Social Bar (Aggressive pop-under/redirect) - Loaded into the body
+    const socialBarScript = document.createElement('script');
+    socialBarScript.type = 'text/javascript';
+    socialBarScript.src = '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js';
+    document.body.appendChild(socialBarScript);
+
+    // Layer 2: High-Engagement Ads
+    // Ad 2: Big Bar (300x250) for the right-side panel
     allDOMElements.rightAdContent.innerHTML = `<div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div>`;
+
+    // Ad Grid for "Support Us" page, combining the Big Bar and the one valid Native Banner
+    allDOMElements.adGrid.innerHTML = `
+        <div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div>
+        <div class="ad-slot ad-slot-container-div"><script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"><\/script><div id="container-5a3a56f258731c59b0ae000546a15e25"></div></div>`;
 };
 
 const filterDashboard = () => {
@@ -277,6 +269,10 @@ const filterDashboard = () => {
 };
 
 const handleDirectAd = () => {
+    const directAdLinks = [
+        'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf',
+        'https://www.profitableratecpm.com/ezn24hhv5?key=a7daf987a4d652e9dfb0fd1fe4cd1cd5'
+    ];
     const overlay = allDOMElements.directAdOverlay;
     if (!overlay) return;
     const activateAd = () => {
@@ -301,31 +297,23 @@ async function main() {
         const userCredential = await signInAnonymously(appState.auth);
         appState.userId = userCredential.user.uid;
         
-        // ** THE FIX **: App flow starts AFTER successful authentication.
-        // This guarantees the loader is hidden only when the app is ready.
+        // App flow starts AFTER successful authentication.
         setTimeout(() => {
             allDOMElements.loaderOverlay.classList.add('hidden');
             allDOMElements.telegramModal.classList.add('visible');
             trackUserData();
-        }, 1500); // A slight delay for a smoother visual transition
+        }, 1500);
 
     } catch (error) {
         console.error("Firebase Initialization Error:", error);
         showNotification("Could not connect to app services. Please check your connection and refresh.", "error");
-        // ** ENHANCED ERROR HANDLING **: Show a retry button on failure
-        allDOMElements.loaderOverlay.innerHTML = `
-            <div style="text-align: center; color: white;">
-                <p>Connection Failed</p>
-                <button id="retry-btn" class="styled-button support-button" style="margin-top: 20px;">Retry</button>
-            </div>
-        `;
+        allDOMElements.loaderOverlay.innerHTML = `<div style="text-align: center; color: white;"><p>Connection Failed</p><button id="retry-btn" class="styled-button support-button" style="margin-top: 20px;">Retry</button></div>`;
         document.getElementById('retry-btn').onclick = () => window.location.reload();
     }
 }
 
 // --- Main Execution Block ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Start the application's main initialization sequence.
     main();
 
     // Attach all other event listeners for user interaction.
@@ -397,6 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd('game.html', false));
+    // Set the strategic direct link for the library
     allDOMElements.booksSectionLink.href = 'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf';
     allDOMElements.adBarToggle.addEventListener('click', () => allDOMElements.rightAdBar.classList.toggle('expanded'));
 
