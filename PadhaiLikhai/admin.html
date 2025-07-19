@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PadhaiLikhai | Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div id="admin-view" class="view">
+        <!-- Login View -->
+        <div id="admin-login-view">
+            <div class="modal-content" style="max-width: 400px;">
+                <h2 class="title">Admin Login</h2>
+                <form id="admin-login-form">
+                    <div class="form-group">
+                        <label for="admin-username">Username</label>
+                        <input type="text" id="admin-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-password">Password</label>
+                        <input type="password" id="admin-password" required>
+                    </div>
+                    <button type="submit" class="styled-button" style="width: 100%;">Login</button>
+                    <p id="login-error-msg" class="error-text" style="display: none; margin-top: 15px;"></p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="admin-dashboard-view" class="hidden">
+            <header class="main-header">
+                <div class="logo">
+                    <span>PadhaiLikhai Admin</span>
+                </div>
+                <button id="logout-btn" class="styled-button support-button">Logout</button>
+            </header>
+            <main id="main-content-area">
+                <h1 class="section-title">User Data</h1>
+                <div class="table-container">
+                    <table id="user-data-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Age</th>
+                                <th>Device</th>
+                                <th>Location</th>
+                                <th>IP Address</th>
+                                <th>Last Visited</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- User data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
