@@ -157,12 +157,34 @@ const navigateBack = () => {
     }
 };
 
+// ** THE FIX **: Centralized function to load all ads strategically.
+const loadAds = () => {
+    // Layer 1: Always-On Ads
+    // Ad 1: Bottom Bar (320x50)
+    allDOMElements.persistentAdBanner.innerHTML = `<script type="text/javascript">atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script>`;
+    
+    // Ad 3: Social Bar (Aggressive pop-under/redirect) - Loaded into the body
+    const socialBarScript = document.createElement('script');
+    socialBarScript.type = 'text/javascript';
+    socialBarScript.src = '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js';
+    document.body.appendChild(socialBarScript);
+
+    // Layer 2: High-Engagement Ads
+    // Ad 2: Big Bar (300x250) for the right-side panel
+    allDOMElements.rightAdContent.innerHTML = `<div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div>`;
+
+    // Ad Grid for "Support Us" page, combining the Big Bar and the one valid Native Banner
+    allDOMElements.adGrid.innerHTML = `
+        <div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div>
+        <div class="ad-slot ad-slot-container-div"><script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"><\/script><div id="container-5a3a56f258731c59b0ae000546a15e25"></div></div>`;
+};
+
 const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
     const { interstitialAdModal, interstitialAdContainer, skipAdButton, closeAdModalBtn } = allDOMElements;
     interstitialAdModal.classList.add('visible');
     interstitialAdContainer.innerHTML = '';
     
-    // Ad 2: Big Bar (300x250) in the interstitial
+    // Ad 2: Big Bar (300x250) in the interstitial, as requested
     const adScriptContainer = document.createElement('div');
     adScriptContainer.innerHTML = `<script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>`;
     interstitialAdContainer.appendChild(adScriptContainer);
@@ -227,28 +249,6 @@ const handleCalculator = () => {
     });
 };
 
-// ** THE FIX **: A centralized function to load all ads strategically.
-const loadAds = () => {
-    // Layer 1: Always-On Ads
-    // Ad 1: Bottom Bar (320x50)
-    allDOMElements.persistentAdBanner.innerHTML = `<script type="text/javascript">atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script>`;
-    
-    // Ad 3: Social Bar (Aggressive pop-under/redirect) - Loaded into the body
-    const socialBarScript = document.createElement('script');
-    socialBarScript.type = 'text/javascript';
-    socialBarScript.src = '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js';
-    document.body.appendChild(socialBarScript);
-
-    // Layer 2: High-Engagement Ads
-    // Ad 2: Big Bar (300x250) for the right-side panel
-    allDOMElements.rightAdContent.innerHTML = `<div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div>`;
-
-    // Ad Grid for "Support Us" page, combining the Big Bar and the one valid Native Banner
-    allDOMElements.adGrid.innerHTML = `
-        <div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div>
-        <div class="ad-slot ad-slot-container-div"><script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"><\/script><div id="container-5a3a56f258731c59b0ae000546a15e25"></div></div>`;
-};
-
 const filterDashboard = () => {
     const searchTerm = allDOMElements.searchBar.value.toLowerCase().trim();
     const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category;
@@ -297,7 +297,6 @@ async function main() {
         const userCredential = await signInAnonymously(appState.auth);
         appState.userId = userCredential.user.uid;
         
-        // App flow starts AFTER successful authentication.
         setTimeout(() => {
             allDOMElements.loaderOverlay.classList.add('hidden');
             allDOMElements.telegramModal.classList.add('visible');
@@ -316,7 +315,6 @@ async function main() {
 document.addEventListener('DOMContentLoaded', () => {
     main();
 
-    // Attach all other event listeners for user interaction.
     allDOMElements.closeTelegramModal.onclick = () => {
         allDOMElements.telegramModal.classList.remove('visible');
         if (!localStorage.getItem('sagarRajUserInfo')) {
@@ -385,7 +383,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd('game.html', false));
-    // Set the strategic direct link for the library
     allDOMElements.booksSectionLink.href = 'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf';
     allDOMElements.adBarToggle.addEventListener('click', () => allDOMElements.rightAdBar.classList.toggle('expanded'));
 
