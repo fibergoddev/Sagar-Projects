@@ -9,12 +9,12 @@ import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/1
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Firebase Configuration ---
-// ** THE FIX **: Corrected the storageBucket URL to the required SDK format.
+// ** THE DEFINITIVE FIX **: Corrected the storageBucket URL to the required SDK format.
 const firebaseConfig = {
     apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
     authDomain: "padhailikhai-app.firebaseapp.com",
     projectId: "padhailikhai-app",
-    storageBucket: "padhailikhai-app.firebasestorage.app", // This was the critical error. It is now fixed.
+    storageBucket: "padhailikhai-app.appspot.com", // This was the critical error. It is now fixed.
     messagingSenderId: "205786528118",
     appId: "1:205786528118:web:2f09f0a2073144f3846257",
     measurementId: "G-4MGMPE2DYV"
@@ -312,7 +312,14 @@ async function main() {
     } catch (error) {
         console.error("Firebase Initialization Error:", error);
         showNotification("Could not connect to app services. Please check your connection and refresh.", "error");
-        allDOMElements.loaderOverlay.classList.add('hidden'); // Ensure loader hides even on error
+        // ** ENHANCED ERROR HANDLING **: Show a retry button on failure
+        allDOMElements.loaderOverlay.innerHTML = `
+            <div style="text-align: center; color: white;">
+                <p>Connection Failed</p>
+                <button id="retry-btn" class="styled-button support-button" style="margin-top: 20px;">Retry</button>
+            </div>
+        `;
+        document.getElementById('retry-btn').onclick = () => window.location.reload();
     }
 }
 
