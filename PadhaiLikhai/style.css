@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 35: Definitive User App Stylesheet
+ * Version 36: Definitive User App Stylesheet
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -97,7 +97,7 @@ html, body {
 .side-panel-button:hover { background: rgba(255,255,255,0.1); border-color: var(--border-color); color: var(--primary-color); }
 
 /* --- Modals & Widgets & Ads --- */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 5000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
 .modal-overlay.visible { opacity: 1; pointer-events: all; }
 .modal-content { background: var(--background-start); padding: 30px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px var(--shadow-color); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid var(--border-color); width: 90%; max-width: 450px; position: relative; }
 .modal-overlay.visible .modal-content { transform: scale(1); }
@@ -136,7 +136,7 @@ html, body {
 #notes-textarea { width: 100%; height: 200px; background: transparent; border: none; padding: 15px; color: white; resize: vertical; font-family: 'Poppins'; font-size: 1rem; }
 
 /* --- Animated Loader --- */
-#loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a10; z-index: 1000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-out; }
+#loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a10; z-index: 10000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-out; }
 #loader-overlay.hidden { opacity: 0; pointer-events: none; }
 #logo-loader { stroke: var(--accent-color-start); filter: drop-shadow(0 0 5px var(--glow-color)); }
 .logo-path { stroke-dasharray: 300; stroke-dashoffset: 300; animation: fill-logo 1.5s ease-in-out forwards; }
@@ -156,8 +156,8 @@ html, body {
 #direct-ad-overlay { position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
 #direct-ad-overlay.active { pointer-events: auto; }
 
-/* --- Notification System --- */
-#notification-container { position: fixed; top: 20px; right: 20px; z-index: 1001; display: flex; flex-direction: column; gap: 10px; }
+/* --- ** THE FIX **: Notification System z-index --- */
+#notification-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
 .notification { padding: 15px 20px; border-radius: 10px; color: white; font-weight: 600; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); backdrop-filter: blur(10px); border: 1px solid; animation: slideIn 0.5s forwards, slideOut 0.5s forwards 4.5s; }
 .notification.success { background: rgba(46, 204, 113, 0.8); border-color: var(--success-color); }
 .notification.error { background: rgba(240, 71, 71, 0.8); border-color: var(--danger-color); }
