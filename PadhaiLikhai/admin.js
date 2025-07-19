@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 30: Static Hosting Firebase Fix
+ * Version 31: Guaranteed Static Hosting Fix
  */
 
 // Import Firebase modules
@@ -114,13 +114,13 @@ logoutBtn.addEventListener('click', async () => {
 });
 
 // --- App Initialization ---
-async function initializeAdminApp() {
-    if (typeof window.firebaseConfig === 'undefined' || !window.firebaseConfig.apiKey) {
-        showNotification("Firebase is not configured correctly.", "error");
-        console.error("Firebase config is missing. Please add it to admin.html");
+// This function is now EXPORTED to be called from the inline script in admin.html
+export async function initializeAdminAppWithConfig(firebaseConfig) {
+    if (!firebaseConfig || !firebaseConfig.apiKey) {
+        showNotification("Firebase configuration is missing.", "error");
         return;
     }
-    const app = initializeApp(window.firebaseConfig);
+    const app = initializeApp(firebaseConfig);
     db = getFirestore(app);
     auth = getAuth(app);
 
@@ -134,5 +134,3 @@ async function initializeAdminApp() {
         }
     });
 }
-
-document.addEventListener('DOMContentLoaded', initializeAdminApp);
