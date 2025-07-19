@@ -10,13 +10,13 @@
 <body>
     <div id="admin-view" class="view">
         <!-- Login View -->
-        <div id="admin-login-view">
+        <div id="admin-login-view" class="modal-overlay visible">
             <div class="modal-content" style="max-width: 400px;">
                 <h2 class="title">Admin Login</h2>
                 <form id="admin-login-form">
                     <div class="form-group">
-                        <label for="admin-username">Username</label>
-                        <input type="text" id="admin-username" required>
+                        <label for="admin-email">Email</label>
+                        <input type="email" id="admin-email" required>
                     </div>
                     <div class="form-group">
                         <label for="admin-password">Password</label>
@@ -37,7 +37,8 @@
                 <button id="logout-btn" class="styled-button support-button">Logout</button>
             </header>
             <main id="main-content-area">
-                <h1 class="section-title">User Data</h1>
+                <h1 class="section-title">User Data Dashboard</h1>
+                <p class="section-subtitle">Showing real-time data from all app users.</p>
                 <div class="table-container">
                     <table id="user-data-table">
                         <thead>
@@ -48,12 +49,12 @@
                                 <th>Age</th>
                                 <th>Device</th>
                                 <th>Location</th>
-                                <th>IP Address</th>
                                 <th>Last Visited</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- User data will be populated here -->
+                            <!-- Real-time user data will be populated here -->
+                            <tr><td colspan="7" style="text-align:center;">Loading user data...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -61,8 +62,11 @@
         </div>
     </div>
 
+    <!-- Custom Notification System -->
     <div id="notification-container"></div>
 
-    <script src="admin.js"></script>
+    <!-- Firebase SDK -->
+    <script type="module" src="admin.js"></script>
+    
 </body>
 </html>
