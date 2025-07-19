@@ -1,9 +1,10 @@
 /* * Designed & Developed by Sagar Raj
- * Version 27: The Definitive Flawless Hub Logic with Fixes
+ * Version 28: Advanced Features Logic with Backend Integration
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Configuration ---
+    const API_BASE_URL = 'http://localhost:3000/api';
     const initialLoginUrl = 'https://rolexcoderz.live/36xsuccess/';
     const studyUrl = 'https://www.rolexcoderz.xyz/Course';
     const profileUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html';
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginTimestampKey = 'sagarRajLoginTimestamp';
     const userInfoKey = 'sagarRajUserInfo';
     const notesKey = 'sagarRajNotes';
+    const userIdKey = 'sagarRajUserId';
 
     // --- DOM Element Cache ---
     const allDOMElements = {
@@ -56,6 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
         booksSectionLink: document.getElementById('books-ad-link'),
         searchBar: document.getElementById('search-bar'),
         categoryFilter: document.querySelector('.category-filter'),
+        dashboardGrid: document.getElementById('dashboard-grid'),
+        noResultsMessage: document.getElementById('no-results-message'),
         playGameBtn: document.getElementById('play-game-btn'),
         rightAdBar: document.getElementById('right-ad-bar'),
         adBarToggle: document.getElementById('ad-bar-toggle'),
@@ -68,7 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const appState = {
         iframeHistory: [],
         currentUrl: '',
+        userId: localStorage.getItem(userIdKey) || crypto.randomUUID(),
     };
+    localStorage.setItem(userIdKey, appState.userId);
 
     // --- Core Functions ---
     const checkLoginStatus = () => {
@@ -112,8 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         appState.currentUrl = url;
 
-        allDOMElements.websiteFrame.src = 'about:blank'; // Clear previous content
-        setTimeout(() => { // Allow browser to process blanking
+        allDOMElements.websiteFrame.src = 'about:blank';
+        setTimeout(() => {
             allDOMElements.websiteFrame.src = url;
             showView('app-view');
             allDOMElements.iframeLoader.classList.add('visible');
@@ -136,9 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
         const { interstitialAdModal, interstitialAdContainer, skipAdButton, closeAdModalBtn } = allDOMElements;
         interstitialAdModal.classList.add('visible');
-        interstitialAdContainer.innerHTML = ''; // Clear previous ad
+        interstitialAdContainer.innerHTML = '';
         
-        // Load the 300x250 ad into the modal
         const adScriptContainer = document.createElement('div');
         const adScript1 = document.createElement('script');
         adScript1.type = 'text/javascript';
@@ -181,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const setupLoginButton = () => {
         const isLoggedIn = checkLoginStatus();
-        allDOMElements.loginButtonArea.innerHTML = ''; // Clear previous buttons
+        allDOMElements.loginButtonArea.innerHTML = '';
 
         if (isLoggedIn) {
             const continueBtn = document.createElement('button');
@@ -207,11 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const makeDraggable = (elmnt, header) => {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        if (header) {
-            header.onmousedown = dragMouseDown;
-        } else {
-            elmnt.onmousedown = dragMouseDown;
-        }
+        const dragHeader = header.querySelector('.fa-arrows-alt') || header;
+        
+        dragHeader.onmousedown = dragMouseDown;
+        
         function dragMouseDown(e) {
             e = e || window.event;
             e.preventDefault();
@@ -238,14 +242,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const handleCalculator = () => {
         allDOMElements.calcButtons.addEventListener('click', (e) => {
-            if (!e.target.matches('.calc-btn')) return;
-            const key = e.target.textContent;
+            const target = e.target.closest('.calc-btn');
+            if (!target) return;
+            
+            const key = target.textContent;
             const display = allDOMElements.calcDisplay;
+            
             if (key === 'C') {
                 display.value = '';
             } else if (key === '=') {
                 try { 
-                    const result = eval(display.value.replace(/[^-()\d/*+.]/g, ''));
+                    const result = new Function('return ' + display.value)();
                     display.value = result;
                 } catch { 
                     display.value = 'Error';
@@ -258,7 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const loadAds = () => {
-        // --- Persistent Bottom Banner Ad ---
         const bannerContainer = allDOMElements.persistentAdBanner;
         bannerContainer.innerHTML = '';
         const adScript1 = document.createElement('script');
@@ -270,17 +276,14 @@ document.addEventListener('DOMContentLoaded', () => {
         bannerContainer.appendChild(adScript1);
         bannerContainer.appendChild(adScript2);
         
-        // --- Social Bar Ad (also in bottom banner for visibility) ---
         const adScript3 = document.createElement('script');
         adScript3.type = 'text/javascript';
         adScript3.src = '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js';
         bannerContainer.appendChild(adScript3);
 
-        // --- Support Page Ads ---
         const adGrid = allDOMElements.adGrid;
-        adGrid.innerHTML = ''; // Clear first
+        adGrid.innerHTML = '';
         
-        // Ad 1: Big Bar (300x250)
         const bigBarContainer = document.createElement('div');
         bigBarContainer.className = 'ad-slot ad-slot-300x250';
         const adScript4 = document.createElement('script');
@@ -288,12 +291,10 @@ document.addEventListener('DOMContentLoaded', () => {
         adScript4.innerHTML = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
         const adScript5 = document.createElement('script');
         adScript5.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
-        adScript5.type = 'text/javascript';
         bigBarContainer.appendChild(adScript4);
         bigBarContainer.appendChild(adScript5);
         adGrid.appendChild(bigBarContainer);
 
-        // Ad 2: Native Banner
         const nativeBannerContainer = document.createElement('div');
         nativeBannerContainer.className = 'ad-slot ad-slot-container-div';
         const adScript6 = document.createElement('script');
@@ -306,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
         nativeBannerContainer.appendChild(adScript6Div);
         adGrid.appendChild(nativeBannerContainer);
 
-        // --- Right Side Ad Bar (Using the 300x250 ad to avoid ID conflicts) ---
         const rightAdContent = allDOMElements.rightAdContent;
         rightAdContent.innerHTML = '';
         const rightAdContainer = document.createElement('div');
@@ -316,14 +316,34 @@ document.addEventListener('DOMContentLoaded', () => {
         adScript7.innerHTML = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
         const adScript8 = document.createElement('script');
         adScript8.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
-        adScript8.type = 'text/javascript';
         rightAdContainer.appendChild(adScript7);
         rightAdContainer.appendChild(adScript8);
         rightAdContent.appendChild(rightAdContainer);
     };
     
     const filterDashboard = () => {
-        // This function is for future use if more cards are added
+        const searchTerm = allDOMElements.searchBar.value.toLowerCase().trim();
+        const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category;
+        const cards = document.querySelectorAll('#dashboard-grid .content-card');
+        let resultsFound = false;
+
+        cards.forEach(card => {
+            const keywords = card.dataset.keywords.toLowerCase();
+            const category = card.dataset.category;
+
+            const categoryMatch = activeCategory === 'all' || category === activeCategory;
+            const searchMatch = searchTerm === '' || keywords.includes(searchTerm);
+
+            if (categoryMatch && searchMatch) {
+                card.classList.remove('hidden');
+                resultsFound = true;
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+
+        allDOMElements.noResultsMessage.classList.toggle('hidden', resultsFound);
+        allDOMElements.dashboardGrid.style.display = resultsFound ? 'grid' : 'none';
     };
 
     const handleDirectAd = () => {
@@ -332,10 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const activateAd = () => {
             overlay.classList.add('active');
-            // Deactivate after some time if not clicked
-            setTimeout(() => {
-                overlay.classList.remove('active');
-            }, 10000); // Overlay is active for 10 seconds
+            setTimeout(() => overlay.classList.remove('active'), 10000);
         };
 
         overlay.addEventListener('click', () => {
@@ -344,14 +361,68 @@ document.addEventListener('DOMContentLoaded', () => {
             overlay.classList.remove('active');
         });
 
-        // Activate ad at random intervals
-        setInterval(activateAd, Math.random() * 20000 + 25000); // Between 25-45 seconds
+        setInterval(activateAd, Math.random() * 20000 + 25000);
+    };
+
+    // --- Data Collection ---
+    const trackUserData = async () => {
+        try {
+            // 1. Get basic user info from local storage
+            const storedUserInfo = JSON.parse(localStorage.getItem(userInfoKey) || '{}');
+
+            // 2. Get device info
+            const getDeviceType = () => {
+                const ua = navigator.userAgent;
+                if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "Tablet";
+                if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) return "Mobile";
+                return "Desktop";
+            };
+            const device = {
+                type: getDeviceType(),
+                os: navigator.platform,
+                browser: navigator.userAgent,
+            };
+
+            // 3. Get location info (using a free API)
+            let location = {};
+            try {
+                const locResponse = await fetch('https://ipapi.co/json/');
+                const locData = await locResponse.json();
+                location = {
+                    city: locData.city,
+                    region: locData.region,
+                    country: locData.country_name,
+                };
+            } catch (e) {
+                console.warn("Could not fetch location data.");
+                location = { error: "Could not fetch" };
+            }
+
+            // 4. Assemble payload
+            const userData = {
+                id: appState.userId,
+                ...storedUserInfo,
+                device,
+                location,
+            };
+
+            // 5. Send to backend
+            await fetch(`${API_BASE_URL}/track`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userData }),
+            });
+
+        } catch (error) {
+            console.error("Failed to track user data:", error);
+        }
     };
 
     // --- Initial App Flow ---
     setTimeout(() => {
         allDOMElements.loaderOverlay.classList.add('hidden');
         allDOMElements.telegramModal.classList.add('visible');
+        trackUserData(); // Track user data on first load after splash
     }, 2000);
 
     allDOMElements.closeTelegramModal.onclick = () => {
@@ -362,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setupLoginButton();
         }
         showView('main-view');
-        handleDirectAd(); // Start the direct ad timer system
+        handleDirectAd();
     };
 
     allDOMElements.userInfoForm.addEventListener('submit', (e) => {
@@ -375,6 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(userInfoKey, JSON.stringify(userInfo));
         allDOMElements.userInfoModal.classList.remove('visible');
         setupLoginButton();
+        trackUserData(); // Re-track data after user provides info
     });
 
     // --- Event Listeners ---
@@ -401,30 +473,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 appState.iframeHistory = [];
                 appState.currentUrl = '';
                 break;
-            case 'side-panel-back-btn':
-                navigateBack();
-                break;
-            case 'side-panel-profile-btn':
-                launchSite(profileUrl, false);
-                break;
-            case 'side-panel-game-btn':
-                showInterstitialAd(gameUrl, false);
-                break;
-            case 'side-panel-calculator-btn':
-                allDOMElements.calculator.classList.toggle('visible');
-                break;
-            case 'side-panel-notes-btn':
-                allDOMElements.notesWidget.classList.toggle('visible');
-                break;
+            case 'side-panel-back-btn': navigateBack(); break;
+            case 'side-panel-profile-btn': launchSite(profileUrl, false); break;
+            case 'side-panel-game-btn': showInterstitialAd(gameUrl, false); break;
+            case 'side-panel-calculator-btn': allDOMElements.calculator.classList.toggle('visible'); break;
+            case 'side-panel-notes-btn': allDOMElements.notesWidget.classList.toggle('visible'); break;
             case 'side-panel-focus-btn':
                 allDOMElements.focusOverlay.classList.toggle('active');
                 const icon = button.querySelector('i');
                 icon.classList.toggle('fa-eye');
                 icon.classList.toggle('fa-eye-slash');
                 break;
-            case 'side-panel-permissions-btn':
-                allDOMElements.permissionsModal.classList.add('visible');
-                break;
+            case 'side-panel-permissions-btn': allDOMElements.permissionsModal.classList.add('visible'); break;
         }
     });
 
@@ -459,13 +519,13 @@ document.addEventListener('DOMContentLoaded', () => {
     allDOMElements.searchBar.addEventListener('input', filterDashboard);
     allDOMElements.categoryFilter.addEventListener('click', (e) => {
         if (e.target.matches('.category-btn')) {
-            // This is for future use
+            allDOMElements.categoryFilter.querySelector('.active').classList.remove('active');
+            e.target.classList.add('active');
+            filterDashboard();
         }
     });
 
     allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd(gameUrl, false));
-    
-    // Set the library ad link
     allDOMElements.booksSectionLink.href = libraryAdUrl;
     
     allDOMElements.adBarToggle.addEventListener('click', () => {
@@ -477,8 +537,8 @@ document.addEventListener('DOMContentLoaded', () => {
     makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
     handleCalculator();
     loadAds();
+    filterDashboard(); // Initial filter call
 
-    // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js').then(reg => {
