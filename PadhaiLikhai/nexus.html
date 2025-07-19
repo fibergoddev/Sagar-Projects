@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Hub | PadhaiLikhai by Sagar Raj</title>
-    <!-- ** THE FIX **: This page uses a new, dedicated stylesheet -->
     <link rel="stylesheet" href="nexus.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="icon-512.png">
-    <!-- Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -77,7 +75,6 @@
                         <h2>Leaderboards</h2>
                         <div class="leaderboard-tabs"><button class="leaderboard-tab-btn active" data-target="leaderboard-global">Global</button><button class="leaderboard-tab-btn" data-target="leaderboard-local">Local</button><button class="leaderboard-tab-btn" data-target="leaderboard-squads">Squads</button></div>
                         <div id="leaderboard-global" class="leaderboard-content active"></div><div id="leaderboard-local" class="leaderboard-content"></div><div id="leaderboard-squads" class="leaderboard-content"></div>
-                        <!-- Ad slot for revenue maximization -->
                         <div id="leaderboard-ad-slot" class="ad-slot-native"></div>
                     </div>
                 </div>
@@ -85,23 +82,14 @@
         </div>
     </div>
     
-    <!-- ** NEW **: Reward Claim Animation Overlay -->
-    <div id="reward-overlay" class="hidden">
-        <div class="reward-content">
-            <div class="reward-title">Mission Complete!</div>
-            <div class="reward-points">+50 NP</div>
-            <div class="reward-particles"></div>
-        </div>
-    </div>
-
+    <div id="reward-overlay" class="hidden"><div class="reward-content"><div class="reward-title">Mission Complete!</div><div class="reward-points">+50 NP</div><div class="reward-particles"></div></div></div>
     <div id="notification-container"></div>
     
-    <!-- Self-contained script for this page -->
-    <script type="module">
-        // The entire logic for the Nexus Hub will go here.
-        // This keeps it separate and optimized.
-        console.log("Nexus Hub script placeholder. Awaiting logic.");
-    </script>
+    <!-- ** THE FIX **: New, Unbreakable Loading Sequence for the Nexus Hub -->
+    <!-- Step 1: Load the dedicated Nexus initialization script first. -->
+    <script src="nexus-init.js" type="module"></script>
+    <!-- Step 2: Load the main Nexus application script, which will wait for the signal. -->
+    <script src="nexus.js" type="module"></script>
 
 </body>
 </html>
