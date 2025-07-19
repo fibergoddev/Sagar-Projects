@@ -14,7 +14,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
     authDomain: "padhailikhai-app.firebaseapp.com",
     projectId: "padhailikhai-app",
-    storageBucket: "padhailikhai-app.appspot.com", // This was the critical error. It is now fixed.
+    storageBucket: "padhailikhai-app.firebasestorage.app", // This was the critical error. It is now fixed.
     messagingSenderId: "205786528118",
     appId: "1:205786528118:web:2f09f0a2073144f3846257",
     measurementId: "G-4MGMPE2DYV"
