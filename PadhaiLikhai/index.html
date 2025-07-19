@@ -21,7 +21,7 @@
             </svg>
         </div>
 
-        <!-- Main Hub View -->
+        <!-- Main Hub View: Redesigned with a dashboard layout -->
         <div id="main-view" class="view hidden">
             <div class="main-view-container">
                 <header class="main-header">
@@ -50,7 +50,50 @@
                         </div>
                     </div>
                     <div id="dashboard-grid">
-                        <!-- Cards will be injected by JS -->
+                        <!-- Card for Next Toppers Batch -->
+                        <div class="content-card" data-category="course" data-keywords="next toppers batch course study login">
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/00f2fe?text=Toppers');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Next Toppers Batch</h3>
+                                <p class="card-description">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
+                                <div class="card-tags">
+                                    <span class="tag">Course</span>
+                                    <span class="tag">Study</span>
+                                </div>
+                                <div id="login-button-area" class="button-group">
+                                    <button class="styled-button">Loading...</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card for Neuro-Link Game -->
+                        <div class="content-card" data-category="game" data-keywords="neuro-link game memory focus">
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/f04747?text=Neuro-Link');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Neuro-Link Game</h3>
+                                <p class="card-description">Engage your mind with our futuristic memory game. Sharpen your focus and climb the leaderboard!</p>
+                                <div class="card-tags">
+                                    <span class="tag">Game</span>
+                                    <span class="tag">Focus</span>
+                                </div>
+                                <button id="play-game-btn" class="styled-button">Play Now</button>
+                            </div>
+                        </div>
+
+                        <!-- Card for Books Library (Ad Link) -->
+                        <div class="content-card" data-category="book" data-keywords="books library resources reading">
+                             <a id="books-ad-link" href="#" target="_blank" class="card-ad-link">
+                                <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/2ecc71?text=Library');"></div>
+                                <div class="card-content">
+                                    <h3 class="card-title">Books Library</h3>
+                                    <p class="card-description">A vast collection of knowledge is being curated for you. Click to explore our resources.</p>
+                                     <div class="card-tags">
+                                        <span class="tag">Book</span>
+                                        <span class="tag">Resources</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </main>
             </div>
