@@ -45,14 +45,15 @@
                             <tr>
                                 <th>User ID</th>
                                 <th>Name</th>
-                                <th>Class</th>
-                                <th>Age</th>
-                                <th>Device</th>
+                                <th>IP Address</th>
                                 <th>Location</th>
+                                <th>Device</th>
                                 <th>Last Visited</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <!-- Real-time user data will be populated here -->
                             <tr><td colspan="7" style="text-align:center;">Loading user data...</td></tr>
                         </tbody>
                     </table>
@@ -61,16 +62,28 @@
         </div>
     </div>
 
+    <!-- ** NEW **: Secure Deletion Confirmation Modal -->
+    <div id="delete-confirm-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px;">
+            <h2 class="title" style="color: var(--danger-color);">Confirm Deletion</h2>
+            <p class="subtitle">Are you sure you want to permanently delete this user's data? This action cannot be undone.</p>
+            <p id="user-to-delete-info" style="margin-bottom: 25px; font-weight: 600;"></p>
+            <div class="button-group">
+                <button id="cancel-delete-btn" class="styled-button support-button">Cancel</button>
+                <button id="confirm-delete-btn" class="styled-button">Confirm Delete</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom Notification System -->
     <div id="notification-container"></div>
 
-    <!-- ** FIX **: Self-Contained Firebase Initialization and Logic -->
-    <!-- This single script tag contains all necessary logic, eliminating all external file loading errors. -->
+    <!-- Self-Contained Firebase Initialization and Logic -->
     <script type="module">
         // Import Firebase modules directly from the CDN
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Firebase Configuration ---
         const firebaseConfig = {
@@ -90,11 +103,16 @@
         const userTableBody = document.querySelector('#user-data-table tbody');
         const logoutBtn = document.getElementById('logout-btn');
         const notificationContainer = document.getElementById('notification-container');
+        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        const userToDeleteInfo = document.getElementById('user-to-delete-info');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 
         // --- App State ---
         let db;
         let auth;
         let usersUnsubscribe = null;
+        let userIdToDelete = null;
 
         // --- Core Functions ---
         const showNotification = (message, type = 'info') => {
@@ -108,13 +126,13 @@
         const showLogin = () => {
             loginView.classList.add('visible');
             dashboardView.classList.add('hidden');
-            if (usersUnsubscribe) usersUnsubscribe(); // Stop listening for data if logged out
+            if (usersUnsubscribe) usersUnsubscribe();
         };
 
         const showDashboard = () => {
             loginView.classList.remove('visible');
             dashboardView.classList.remove('hidden');
-            listenForUsers(); // Start listening for user data
+            listenForUsers();
         };
 
         const listenForUsers = () => {
@@ -135,11 +153,13 @@
                     row.innerHTML = `
                         <td data-label="User ID">${user.id || 'N/A'}</td>
                         <td data-label="Name">${user.name || 'N/A'}</td>
-                        <td data-label="Class">${user.class || 'N/A'}</td>
-                        <td data-label="Age">${user.age || 'N/A'}</td>
-                        <td data-label="Device">${user.device?.type || 'N/A'} (${user.device?.os || 'N/A'})</td>
+                        <td data-label="IP Address">${user.location?.ip || 'N/A'}</td>
                         <td data-label="Location">${user.location?.city || 'N/A'}, ${user.location?.country || 'N/A'}</td>
+                        <td data-label="Device">${user.device?.type || 'N/A'} (${user.device?.os || 'N/A'})</td>
                         <td data-label="Last Visited">${lastVisited}</td>
+                        <td data-label="Actions">
+                            <button class="delete-btn" data-userid="${user.id}" data-username="${user.name || 'Unknown'}">Delete</button>
+                        </td>
                     `;
                     userTableBody.appendChild(row);
                 });
@@ -153,6 +173,19 @@
             });
         };
 
+        // --- ** NEW **: User Deletion Logic ---
+        const deleteUser = async (userId) => {
+            if (!db || !userId) return;
+            try {
+                const userDocRef = doc(db, "users", userId);
+                await deleteDoc(userDocRef);
+                showNotification("User data deleted successfully.", "success");
+            } catch (error) {
+                console.error("Error deleting user:", error);
+                showNotification("Failed to delete user data.", "error");
+            }
+        };
+
         // --- App Initialization ---
         function initializeAdminApp() {
             try {
@@ -160,7 +193,6 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                // This is the official, reliable way to handle login state
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         showDashboard();
@@ -184,13 +216,37 @@
 
                 logoutBtn.addEventListener('click', () => signOut(auth));
 
+                // Event listener for delete buttons (using event delegation)
+                userTableBody.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-btn')) {
+                        userIdToDelete = e.target.dataset.userid;
+                        const username = e.target.dataset.username;
+                        userToDeleteInfo.textContent = `User: ${username} (${userIdToDelete})`;
+                        deleteConfirmModal.classList.add('visible');
+                    }
+                });
+
+                // Event listeners for confirmation modal
+                cancelDeleteBtn.addEventListener('click', () => {
+                    deleteConfirmModal.classList.remove('visible');
+                    userIdToDelete = null;
+                });
+
+                confirmDeleteBtn.addEventListener('click', () => {
+                    if (userIdToDelete) {
+                        deleteUser(userIdToDelete);
+                    }
+                    deleteConfirmModal.classList.remove('visible');
+                    userIdToDelete = null;
+                });
+
             } catch (error) {
                 showNotification("Could not initialize admin services.", "error");
                 console.error("Admin Init Error:", error);
             }
         }
 
-        // Run the initialization function when the DOM is ready
+        // Run the initialization when the DOM is ready
         document.addEventListener('DOMContentLoaded', initializeAdminApp);
     </script>
 </body>
