@@ -71,6 +71,16 @@
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // --- Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
+            authDomain: "padhailikhai-app.firebaseapp.com",
+            projectId: "padhailikhai-app",
+            storageBucket: "padhailikhai-app.appspot.com",
+            messagingSenderId: "205786528118",
+            appId: "1:205786528118:web:2f09f0a2073144f3846257"
+        };
+
         // --- DOM Element Cache ---
         const loginView = document.getElementById('admin-login-view');
         const dashboardView = document.getElementById('admin-dashboard-view');
@@ -83,52 +93,44 @@
         // --- App State ---
         let db;
         let auth;
-        let usersUnsubscribe = null; // To store the listener unsubscribe function
+        let usersUnsubscribe = null;
 
-        // --- Notification System ---
+        // --- Core Functions ---
         const showNotification = (message, type = 'info') => {
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
-            let iconClass = 'fas fa-info-circle';
-            if (type === 'success') iconClass = 'fas fa-check-circle';
-            if (type === 'error') iconClass = 'fas fa-times-circle';
-            notification.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
+            notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-times-circle'}"></i><span>${message}</span>`;
             notificationContainer.appendChild(notification);
             setTimeout(() => notification.remove(), 5000);
         };
 
-        // --- UI Management ---
         const showLogin = () => {
             loginView.classList.add('visible');
-            loginView.classList.remove('hidden');
             dashboardView.classList.add('hidden');
-            if (usersUnsubscribe) usersUnsubscribe(); // Stop listening for data if logged out
+            if (usersUnsubscribe) usersUnsubscribe();
         };
 
         const showDashboard = () => {
             loginView.classList.remove('visible');
-            loginView.classList.add('hidden');
             dashboardView.classList.remove('hidden');
-            listenForUsers(); // Start listening for user data
+            listenForUsers();
         };
 
-        // --- Firebase Logic ---
         const listenForUsers = () => {
             if (!db) return;
             const usersCollection = collection(db, 'users');
             const q = query(usersCollection, orderBy('lastVisited', 'desc'));
 
             usersUnsubscribe = onSnapshot(q, (snapshot) => {
-                userTableBody.innerHTML = ''; // Clear table
+                userTableBody.innerHTML = '';
                 if (snapshot.empty) {
-                    userTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No user data yet. Waiting for visitors...</td></tr>';
+                    userTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No user data yet.</td></tr>';
                     return;
                 }
                 snapshot.forEach(doc => {
                     const user = doc.data();
                     const row = document.createElement('tr');
                     const lastVisited = user.lastVisited ? new Date(user.lastVisited.seconds * 1000).toLocaleString() : 'N/A';
-                    
                     row.innerHTML = `
                         <td data-label="User ID">${user.id || 'N/A'}</td>
                         <td data-label="Name">${user.name || 'N/A'}</td>
@@ -143,72 +145,49 @@
             }, (error) => {
                 console.error("Error listening to user data:", error);
                 if (error.code === 'failed-precondition') {
-                     showNotification("Firestore index required. Check console for link to create it.", "error");
+                     showNotification("Firestore index required. Check console for link.", "error");
                 } else {
                      showNotification("Error fetching real-time data.", "error");
                 }
             });
         };
 
-        // --- Event Listeners ---
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            errorMsg.style.display = 'none';
-            const email = document.getElementById('admin-email').value;
-            const password = document.getElementById('admin-password').value;
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                // Auth state change will handle showing the dashboard
-            } catch (err) {
-                console.error('Admin login error:', err);
-                errorMsg.textContent = "Invalid email or password.";
-                errorMsg.style.display = 'block';
-            }
-        });
-
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                // Auth state change will handle showing the login page
-                showNotification("Logged out successfully.", "info");
-            } catch (error) {
-                console.error("Logout error:", error);
-            }
-        });
-
         // --- App Initialization ---
         function initializeAdminApp() {
-            const firebaseConfig = {
-                apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
-                authDomain: "padhailikhai-app.firebaseapp.com",
-                projectId: "padhailikhai-app",
-                storageBucket: "padhailikhai-app.appspot.com",
-                messagingSenderId: "205786528118",
-                appId: "1:205786528118:web:2f09f0a2073144f3846257"
-            };
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
 
-            if (!firebaseConfig || !firebaseConfig.apiKey) {
-                showNotification("Firebase configuration is missing or invalid.", "error");
-                return;
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        showDashboard();
+                    } else {
+                        showLogin();
+                    }
+                });
+
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    errorMsg.style.display = 'none';
+                    try {
+                        await signInWithEmailAndPassword(auth, admin-email.value, admin-password.value);
+                    } catch (err) {
+                        errorMsg.textContent = "Invalid email or password.";
+                        errorMsg.style.display = 'block';
+                    }
+                });
+
+                logoutBtn.addEventListener('click', () => signOut(auth));
+
+            } catch (error) {
+                showNotification("Could not initialize admin services.", "error");
+                console.error("Admin Init Error:", error);
             }
-            
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    showDashboard();
-                } else {
-                    showLogin();
-                }
-            });
         }
 
-        // Run the initialization function
-        initializeAdminApp();
+        // Run the initialization when the DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeAdminApp);
     </script>
-    
 </body>
 </html>
