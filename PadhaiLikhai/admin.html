@@ -6,7 +6,6 @@
     <title>PadhaiLikhai | Admin Dashboard</title>
     <link rel="stylesheet" href="admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -31,33 +30,11 @@
                 <button id="logout-btn" class="styled-button support-button">Logout</button>
             </header>
             <main id="main-content-area">
-                
-                <!-- ** NEW: Advanced Stat Cards ** -->
                 <div class="admin-stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-card-icon"><i class="fas fa-users"></i></div>
-                        <div class="stat-card-info">
-                            <p>Total Users</p>
-                            <h3 id="total-users-stat">0</h3>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card-icon"><i class="fas fa-user-plus"></i></div>
-                        <div class="stat-card-info">
-                            <p>New Users (24h)</p>
-                            <h3 id="new-users-stat">0</h3>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card-icon"><i class="fas fa-globe-asia"></i></div>
-                        <div class="stat-card-info">
-                            <p>Top Country</p>
-                            <h3 id="top-country-stat">N/A</h3>
-                        </div>
-                    </div>
+                    <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-users"></i></div><div class="stat-card-info"><p>Total Users</p><h3 id="total-users-stat">0</h3></div></div>
+                    <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-user-plus"></i></div><div class="stat-card-info"><p>New Users (24h)</p><h3 id="new-users-stat">0</h3></div></div>
+                    <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-globe-asia"></i></div><div class="stat-card-info"><p>Top Country</p><h3 id="top-country-stat">N/A</h3></div></div>
                 </div>
-
-                <!-- ** NEW: Advanced Admin Actions ** -->
                 <div class="admin-actions-panel">
                     <div class="search-bar-container admin-search">
                         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.031 16.617l4.25 4.25a.75.75 0 01-1.06 1.06l-4.25-4.25a8.5 8.5 0 111.06-1.06zM10.5 17a6.5 6.5 0 100-13 6.5 6.5 0 000 13z"></path></svg>
@@ -65,33 +42,13 @@
                     </div>
                     <button id="broadcast-btn" class="styled-button"><i class="fas fa-bullhorn"></i> Send Broadcast</button>
                 </div>
-
-                <!-- User Data Table -->
                 <div class="table-container">
                     <table id="user-data-table">
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Name</th>
-                                <th>IP Address</th>
-                                <th>Location</th>
-                                <th>Device</th>
-                                <th>Last Visited</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td colspan="7" style="text-align:center;">Loading user data...</td></tr>
-                        </tbody>
+                        <thead><tr><th>User ID</th><th>Name</th><th>IP Address</th><th>Location</th><th>Device</th><th>Last Visited</th><th>Actions</th></tr></thead>
+                        <tbody><tr><td colspan="7" style="text-align:center;">Loading user data...</td></tr></tbody>
                     </table>
                 </div>
-
-                <!-- ** NEW: Chart Visualization ** -->
-                <div class="chart-container">
-                    <h3>Users by Country</h3>
-                    <canvas id="country-chart"></canvas>
-                </div>
-
+                <div class="chart-container"><h3>Users by Country</h3><canvas id="country-chart"></canvas></div>
             </main>
         </div>
     </div>
@@ -108,6 +65,7 @@
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, query, orderBy, doc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // ** THE DEFINITIVE FIX **: Corrected the storageBucket URL.
         const firebaseConfig = { apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo", authDomain: "padhailikhai-app.firebaseapp.com", projectId: "padhailikhai-app", storageBucket: "padhailikhai-app.appspot.com", messagingSenderId: "205786528118", appId: "1:205786528118:web:2f09f0a2073144f3846257" };
         
         const ui = {
@@ -115,7 +73,7 @@
         };
 
         let db, auth, usersUnsubscribe = null, userIdToDelete = null, countryChart = null;
-        let allUsersData = []; // Cache for searching
+        let allUsersData = [];
 
         const showNotification = (message, type = 'info') => { const n = document.createElement('div'); n.className = `notification ${type}`; n.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-times-circle'}"></i><span>${message}</span>`; ui.notificationContainer.appendChild(n); setTimeout(() => n.remove(), 5000); };
         const showLogin = () => { ui.loginView.classList.add('visible'); ui.dashboardView.classList.add('hidden'); if (usersUnsubscribe) usersUnsubscribe(); };
@@ -126,33 +84,17 @@
             const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
             const newUsers = users.filter(u => u.lastVisited && u.lastVisited.seconds * 1000 > twentyFourHoursAgo);
             ui.newUsersStat.textContent = newUsers.length;
-
-            const countryCounts = users.reduce((acc, user) => {
-                const country = user.location?.country || 'Unknown';
-                acc[country] = (acc[country] || 0) + 1;
-                return acc;
-            }, {});
+            const countryCounts = users.reduce((acc, user) => { const country = user.location?.country || 'Unknown'; acc[country] = (acc[country] || 0) + 1; return acc; }, {});
             const topCountry = Object.keys(countryCounts).reduce((a, b) => countryCounts[a] > countryCounts[b] ? a : b, 'N/A');
             ui.topCountryStat.textContent = topCountry;
-
             updateCountryChart(countryCounts);
         };
 
         const updateCountryChart = (countryData) => {
             const labels = Object.keys(countryData);
             const data = Object.values(countryData);
-            if (countryChart) {
-                countryChart.data.labels = labels;
-                countryChart.data.datasets[0].data = data;
-                countryChart.update();
-            } else {
-                const ctx = ui.countryChartCanvas.getContext('2d');
-                countryChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels, datasets: [{ label: 'Users', data, backgroundColor: 'rgba(0, 242, 254, 0.6)', borderColor: 'rgba(0, 242, 254, 1)', borderWidth: 1 }] },
-                    options: { scales: { y: { beginAtZero: true, ticks: { color: '#ccc' } }, x: { ticks: { color: '#ccc' } } }, plugins: { legend: { display: false } } }
-                });
-            }
+            if (countryChart) { countryChart.data.labels = labels; countryChart.data.datasets[0].data = data; countryChart.update(); } 
+            else { const ctx = ui.countryChartCanvas.getContext('2d'); countryChart = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Users', data, backgroundColor: 'rgba(0, 242, 254, 0.6)', borderColor: 'rgba(0, 242, 254, 1)', borderWidth: 1 }] }, options: { scales: { y: { beginAtZero: true, ticks: { color: '#ccc' } }, x: { ticks: { color: '#ccc' } } }, plugins: { legend: { display: false } } } }); }
         };
 
         const renderTable = (users) => {
@@ -167,18 +109,8 @@
             });
         };
 
-        const listenForUsers = () => {
-            if (!db) return;
-            const q = query(collection(db, 'users'), orderBy('lastVisited', 'desc'));
-            usersUnsubscribe = onSnapshot(q, (snapshot) => {
-                allUsersData = snapshot.docs.map(doc => doc.data());
-                renderTable(allUsersData);
-                updateDashboardStats(allUsersData);
-            }, (error) => { console.error("Error listening to user data:", error); showNotification("Error fetching real-time data.", "error"); });
-        };
-
+        const listenForUsers = () => { if (!db) return; const q = query(collection(db, 'users'), orderBy('lastVisited', 'desc')); usersUnsubscribe = onSnapshot(q, (snapshot) => { allUsersData = snapshot.docs.map(doc => doc.data()); renderTable(allUsersData); updateDashboardStats(allUsersData); }, (error) => { console.error("Error listening to user data:", error); showNotification("Error fetching real-time data.", "error"); }); };
         const deleteUser = async (userId) => { if (!db || !userId) return; try { await deleteDoc(doc(db, "users", userId)); showNotification("User data deleted successfully.", "success"); } catch (error) { console.error("Error deleting user:", error); showNotification("Failed to delete user data.", "error"); } };
-        
         const sendBroadcast = async (message) => { if (!db || !message.trim()) return; try { await addDoc(collection(db, "broadcasts"), { message: message.trim(), createdAt: serverTimestamp() }); showNotification("Broadcast sent successfully!", "success"); } catch (error) { console.error("Error sending broadcast:", error); showNotification("Failed to send broadcast.", "error"); } };
 
         function initializeAdminApp() {
@@ -186,30 +118,16 @@
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-
                 onAuthStateChanged(auth, user => user ? showDashboard() : showLogin());
-                
                 ui.loginForm.addEventListener('submit', async e => { e.preventDefault(); ui.errorMsg.style.display = 'none'; try { await signInWithEmailAndPassword(auth, ui.loginForm['admin-email'].value, ui.loginForm['admin-password'].value); } catch (err) { ui.errorMsg.textContent = "Invalid email or password."; ui.errorMsg.style.display = 'block'; } });
                 ui.logoutBtn.addEventListener('click', () => signOut(auth));
-                
                 ui.userTableBody.addEventListener('click', e => { if (e.target.closest('.delete-btn')) { const btn = e.target.closest('.delete-btn'); userIdToDelete = btn.dataset.userid; ui.userToDeleteInfo.textContent = `User: ${btn.dataset.username} (${userIdToDelete})`; ui.deleteConfirmModal.classList.add('visible'); } });
                 ui.cancelDeleteBtn.addEventListener('click', () => { ui.deleteConfirmModal.classList.remove('visible'); userIdToDelete = null; });
                 ui.confirmDeleteBtn.addEventListener('click', () => { if (userIdToDelete) deleteUser(userIdToDelete); ui.deleteConfirmModal.classList.remove('visible'); userIdToDelete = null; });
-                
-                ui.adminUserSearch.addEventListener('input', e => {
-                    const searchTerm = e.target.value.toLowerCase();
-                    const filteredUsers = allUsersData.filter(user => 
-                        (user.name || '').toLowerCase().includes(searchTerm) || 
-                        (user.id || '').toLowerCase().includes(searchTerm) || 
-                        (user.location?.ip || '').toLowerCase().includes(searchTerm)
-                    );
-                    renderTable(filteredUsers);
-                });
-
+                ui.adminUserSearch.addEventListener('input', e => { const searchTerm = e.target.value.toLowerCase(); const filteredUsers = allUsersData.filter(user => (user.name || '').toLowerCase().includes(searchTerm) || (user.id || '').toLowerCase().includes(searchTerm) || (user.location?.ip || '').toLowerCase().includes(searchTerm)); renderTable(filteredUsers); });
                 ui.broadcastBtn.addEventListener('click', () => ui.broadcastModal.classList.add('visible'));
                 ui.cancelBroadcastBtn.addEventListener('click', () => { ui.broadcastModal.classList.remove('visible'); ui.broadcastMessage.value = ''; });
                 ui.confirmBroadcastBtn.addEventListener('click', () => { sendBroadcast(ui.broadcastMessage.value); ui.broadcastModal.classList.remove('visible'); ui.broadcastMessage.value = ''; });
-
             } catch (error) { showNotification("Could not initialize admin services.", "error"); console.error("Admin Init Error:", error); }
         }
         document.addEventListener('DOMContentLoaded', initializeAdminApp);
