@@ -170,8 +170,10 @@
                 loginForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     errorMsg.style.display = 'none';
+                    const email = document.getElementById('admin-email').value;
+                    const password = document.getElementById('admin-password').value;
                     try {
-                        await signInWithEmailAndPassword(auth, admin-email.value, admin-password.value);
+                        await signInWithEmailAndPassword(auth, email, password);
                     } catch (err) {
                         errorMsg.textContent = "Invalid email or password.";
                         errorMsg.style.display = 'block';
