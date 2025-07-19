@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 35: Definitive Admin Dashboard Stylesheet
+ * Version 36: Definitive Admin Dashboard Stylesheet
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -48,7 +48,7 @@ html, body {
 .styled-button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 242, 254, 0.4); }
 .support-button { background: transparent; border: 1px solid var(--border-color); }
 .button-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 5000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
 .modal-overlay.visible { opacity: 1; pointer-events: all; }
 .modal-content { background: var(--background-start); padding: 30px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 10px 40px var(--shadow-color); transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid var(--border-color); width: 90%; max-width: 450px; position: relative; }
 .modal-overlay.visible .modal-content { transform: scale(1); }
@@ -57,7 +57,9 @@ html, body {
 .form-group { margin-bottom: 20px; text-align: left; }
 .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
 .form-group input, .form-group textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #555; background: #333; color: white; font-size: 1rem; font-family: 'Poppins', sans-serif; resize: vertical; }
-.notification-container { position: fixed; top: 20px; right: 20px; z-index: 1001; display: flex; flex-direction: column; gap: 10px; }
+
+/* --- ** THE FIX **: Notification System z-index --- */
+#notification-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
 .notification { padding: 15px 20px; border-radius: 10px; color: white; font-weight: 600; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); backdrop-filter: blur(10px); border: 1px solid; animation: slideIn 0.5s forwards, slideOut 0.5s forwards 4.5s; }
 .notification.success { background: rgba(46, 204, 113, 0.8); border-color: var(--success-color); }
 .notification.error { background: rgba(240, 71, 71, 0.8); border-color: var(--danger-color); }
@@ -65,7 +67,7 @@ html, body {
 @keyframes slideIn { from { transform: translateX(120%); } to { transform: translateX(0); } }
 @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 
-/* --- ** NEW **: Advanced Admin Dashboard Styles --- */
+/* --- Advanced Admin Dashboard Styles --- */
 #admin-view { justify-content: flex-start; }
 #admin-dashboard-view.hidden { display: none; }
 
@@ -97,6 +99,9 @@ html, body {
 
 /* Responsive Admin Table Transformation */
 @media (max-width: 768px) {
+    .main-header { flex-direction: column; gap: 15px; }
+    #main-content-area { padding: 15px; }
+
     #user-data-table thead { display: none; }
     #user-data-table, #user-data-table tbody, #user-data-table tr, #user-data-table td { display: block; width: 100%; }
     #user-data-table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; }
