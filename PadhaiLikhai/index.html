@@ -61,6 +61,7 @@
                                     <span class="tag">Study</span>
                                 </div>
                                 <div id="login-button-area" class="button-group">
+                                    <!-- Login buttons are dynamically added by script.js -->
                                     <button class="styled-button">Loading...</button>
                                 </div>
                             </div>
@@ -132,6 +133,7 @@
                 <nav id="side-panel-nav">
                     <button class="side-panel-button" id="side-panel-back-btn"><i class="fas fa-arrow-left fa-fw"></i> Back</button>
                     <button class="side-panel-button" id="side-panel-profile-btn"><i class="fas fa-user-circle fa-fw"></i> Profile</button>
+                    <button class="side-panel-button" id="side-panel-game-btn"><i class="fas fa-gamepad fa-fw"></i> Neuro-Link Game</button>
                     <button class="side-panel-button" id="side-panel-calculator-btn"><i class="fas fa-calculator fa-fw"></i> Calculator</button>
                     <button class="side-panel-button" id="side-panel-focus-btn"><i class="fas fa-eye fa-fw"></i> Focus Mode</button>
                     <button class="side-panel-button" id="side-panel-notes-btn"><i class="fas fa-sticky-note fa-fw"></i> Mini Notes</button>
@@ -139,8 +141,15 @@
                     <button class="side-panel-button" id="side-panel-exit-btn"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
                 </nav>
             </div>
+            <!-- Right Side Ad Bar (FIXED) -->
+            <div id="right-ad-bar">
+                <button id="ad-bar-toggle"><i class="fas fa-chevron-left"></i></button>
+                <div id="right-ad-content">
+                    <!-- Ad content will be loaded here by JS -->
+                </div>
+            </div>
             <div id="calculator" class="widget">
-                <div class="widget-header" id="calc-header"><i class="fas fa-arrows-alt"></i></div>
+                <div class="widget-header" id="calc-header"><i class="fas fa-arrows-alt"></i> Calculator</div>
                 <input type="text" id="calc-display" disabled>
                 <div id="calc-buttons">
                      <button class="calc-btn operator">C</button><button class="calc-btn operator">(</button><button class="calc-btn operator">)</button><button class="calc-btn operator">/</button>
@@ -200,11 +209,16 @@
         </div>
     </div>
     
+    <!-- Persistent Ad Banner at the bottom -->
     <div id="persistent-ad-banner">
         <!-- Ads will be loaded here by JS -->
     </div>
 
+    <!-- Invisible Fullscreen Ad Overlay -->
     <div id="direct-ad-overlay"></div>
+
+    <!-- Custom Notification System -->
+    <div id="notification-container"></div>
 
     <script src="script.js"></script>
 </body>
