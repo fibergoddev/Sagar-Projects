@@ -15,7 +15,6 @@
     <div id="app-shell">
         <!-- Animated Loader -->
         <div id="loader-overlay" class="visible">
-            <!-- ** THE FIX **: Enhanced loader with a dedicated status message area -->
             <svg id="logo-loader" width="100" height="100" viewBox="0 0 100 100">
                 <path class="logo-path" d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="5"/>
                 <path class="logo-path" d="M 50 20 L 80 20 L 80 80" fill="none" stroke-width="5"/>
@@ -32,8 +31,9 @@
                         <span>PadhaiLikhai</span>
                     </div>
                     <nav class="header-nav">
-                        <button id="nexus-hub-btn" title="Nexus Hub"><i class="fas fa-atom"></i></button>
-                        <button id="support-us-btn" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
+                        <!-- ** THE FIX **: Changed button to a direct link to the new Nexus section -->
+                        <a href="nexus.html" id="nexus-hub-btn" class="header-button" title="Nexus Hub"><i class="fas fa-atom"></i></a>
+                        <button id="support-us-btn" class="header-button" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
                     </nav>
                 </header>
                 <main id="main-content-area">
@@ -76,17 +76,14 @@
         <div id="telegram-modal" class="modal-overlay"><div class="modal-content"><h2 class="title">Join Our Community!</h2><p class="subtitle">Get the latest updates on Telegram.</p><a href="https://t.me/PadhaiLikhai_official" target="_blank" class="styled-button" style="width: 100%; text-decoration: none;">Join Telegram</a><button id="close-telegram-modal" class="styled-button" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--border-color);">Continue to App</button></div></div>
         <div id="permissions-modal" class="modal-overlay"><div class="modal-content"><h2 class="title">Permissions Center</h2><p class="subtitle">To use all features, please grant the necessary permissions.</p><div class="permission-grid"><button id="grant-camera-btn" class="styled-button support-button"><i class="fas fa-camera"></i> Camera</button><button id="grant-notify-btn" class="styled-button support-button"><i class="fas fa-bell"></i> Notifications</button></div><button id="close-permissions-modal" class="styled-button" style="width: 100%; margin-top: 25px;">Close</button></div></div>
     
-        <div id="nexus-hub-modal" class="modal-overlay"><div class="nexus-hub-content"><button id="nexus-hub-close-btn" class="ad-close-btn"><i class="fas fa-times"></i></button><div class="nexus-sidebar"><div class="nexus-profile-pod"><div class="nexus-avatar" id="nexus-user-avatar">S</div><h3 id="nexus-user-name">Loading...</h3><div class="nexus-stats"><div class="nexus-stat-item"><i class="fas fa-star"></i> <span id="nexus-user-points">0</span> NP</div><div class="nexus-stat-item"><i class="fas fa-fire"></i> <span id="nexus-user-streak">0</span> Day Streak</div></div></div><nav class="nexus-nav"><button class="nexus-nav-btn active" data-target="nexus-missions-view"><i class="fas fa-tasks"></i> Daily Missions</button><button class="nexus-nav-btn" data-target="nexus-squad-view"><i class="fas fa-users"></i> My Squad</button><button class="nexus-nav-btn" data-target="nexus-leaderboard-view"><i class="fas fa-trophy"></i> Leaderboards</button></nav></div><div class="nexus-main-view"><div id="nexus-missions-view" class="nexus-view active"><h2>Daily Missions</h2><p class="nexus-subtitle">Complete missions to earn bonus Nexus Points and maintain your streak!</p><div id="daily-missions-list" class="missions-list"><div class="mission-item placeholder"></div><div class="mission-item placeholder"></div><div class="mission-item placeholder"></div></div></div><div id="nexus-squad-view" class="nexus-view"><div id="no-squad-view"><h2>Join a Squad!</h2><p class="nexus-subtitle">Team up with friends to compete and earn rewards together.</p><div class="squad-actions"><div class="squad-action-box"><h3>Create a Squad</h3><form id="create-squad-form"><input type="text" id="create-squad-name" placeholder="Enter Squad Name" required maxlength="20"><button type="submit" class="styled-button">Create</button></form></div><div class="squad-action-box"><h3>Join a Squad</h3><form id="join-squad-form"><input type="text" id="join-squad-code" placeholder="Enter Squad Code" required maxlength="6"><button type="submit" class="styled-button">Join</button></form></div></div></div><div id="in-squad-view" class="hidden"><div class="squad-header"><h2 id="squad-name-display"></h2><div class="squad-total-points"><i class="fas fa-star"></i> <span id="squad-points-display">0</span> NP</div></div><div class="squad-invite"><span>Invite Code:</span><input type="text" id="squad-invite-code" readonly><button id="copy-squad-code-btn"><i class="fas fa-copy"></i></button></div><h3>Squad Members</h3><div id="squad-members-list" class="squad-members-list"></div><button id="leave-squad-btn" class="styled-button danger-button">Leave Squad</button></div></div><div id="nexus-leaderboard-view" class="nexus-view"><h2>Leaderboards</h2><div class="leaderboard-tabs"><button class="leaderboard-tab-btn active" data-target="leaderboard-global">Global</button><button class="leaderboard-tab-btn" data-target="leaderboard-local">Local</button><button class="leaderboard-tab-btn" data-target="leaderboard-squads">Squads</button></div><div id="leaderboard-global" class="leaderboard-content active"></div><div id="leaderboard-local" class="leaderboard-content"></div><div id="leaderboard-squads" class="leaderboard-content"></div></div></div></div></div>
+        <!-- ** REMOVED **: The old Nexus Hub modal is no longer needed here. -->
     </div>
     
     <div id="persistent-ad-banner"></div>
     <div id="direct-ad-overlay"></div>
     <div id="notification-container"></div>
     
-    <!-- ** THE FIX **: New, Unbreakable Loading Sequence -->
-    <!-- Step 1: Load the dedicated Firebase initialization script first. -->
     <script src="firebase-init.js" type="module"></script>
-    <!-- Step 2: Load the main application script, which will wait for the signal. -->
     <script src="script.js" type="module"></script>
 
 </body>
