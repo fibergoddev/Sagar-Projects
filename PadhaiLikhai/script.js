@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 35: Definitive Ad System & Revenue Maximization
+ * Version 36: Definitive Ad Injection & Revenue Maximization
  */
 
 // Import Firebase modules
@@ -75,6 +75,7 @@ const appState = {
     db: null,
     auth: null,
     userId: null,
+    inactivityTimer: null,
 };
 
 // --- Core Functions ---
@@ -118,76 +119,94 @@ const trackUserData = async () => {
     }
 };
 
-const checkLoginStatus = () => {
-    const lastLogin = localStorage.getItem('sagarRajLoginTimestamp');
-    if (!lastLogin) return false;
-    return (Date.now() - parseInt(lastLogin, 10)) < (36 * 60 * 60 * 1000);
-};
-
-const showView = (viewId) => {
-    ['main-view', 'app-view', 'support-view'].forEach(id => {
-        document.getElementById(id)?.classList.toggle('hidden', id !== viewId);
-    });
-    allDOMElements.commandCenterBtn?.classList.toggle('visible', viewId === 'app-view');
-    allDOMElements.rightAdBar?.classList.toggle('visible-view', viewId === 'app-view');
-};
-
-const launchSite = (url, setLoginTimestamp) => {
-    if (setLoginTimestamp) localStorage.setItem('sagarRajLoginTimestamp', Date.now().toString());
-    if (url !== appState.currentUrl && appState.currentUrl) appState.iframeHistory.push(appState.currentUrl);
-    appState.currentUrl = url;
-    allDOMElements.websiteFrame.src = 'about:blank';
-    setTimeout(() => {
-        allDOMElements.websiteFrame.src = url;
-        showView('app-view');
-        allDOMElements.iframeLoader.classList.add('visible');
-    }, 50);
-};
-
-const navigateBack = () => {
-    if (appState.iframeHistory.length > 0) {
-        const prevUrl = appState.iframeHistory.pop();
-        appState.currentUrl = prevUrl;
-        allDOMElements.websiteFrame.src = prevUrl;
-        allDOMElements.iframeLoader.classList.add('visible');
-    } else {
-        showView('main-view');
-        allDOMElements.websiteFrame.src = 'about:blank';
-        appState.currentUrl = '';
-    }
-};
-
-// ** THE FIX **: Centralized function to load all ads strategically.
+// ** THE FIX **: A centralized function to load ads using proper script injection.
 const loadAds = () => {
-    // Layer 1: Always-On Ads
+    // --- Helper function for clean ad injection ---
+    const injectAd = (container, optionsScriptContent, srcUrl) => {
+        container.innerHTML = ''; // Clear previous content
+        
+        const optionsScript = document.createElement('script');
+        optionsScript.type = 'text/javascript';
+        optionsScript.innerHTML = optionsScriptContent;
+
+        const sourceScript = document.createElement('script');
+        sourceScript.type = 'text/javascript';
+        sourceScript.src = srcUrl;
+
+        container.appendChild(optionsScript);
+        container.appendChild(sourceScript);
+    };
+
+    // --- Layer 1: Always-On Ads ---
     // Ad 1: Bottom Bar (320x50)
-    allDOMElements.persistentAdBanner.innerHTML = `<script type="text/javascript">atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js"><\/script>`;
+    injectAd(
+        allDOMElements.persistentAdBanner,
+        `atOptions = {'key' : '7f09cc75a479e1c1557ae48261980b12','format' : 'iframe','height' : 50,'width' : 320,'params' : {}};`,
+        '//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js'
+    );
     
-    // Ad 3: Social Bar (Aggressive pop-under/redirect) - Loaded into the body
+    // Ad 3: Social Bar (Aggressive pop-under/redirect)
     const socialBarScript = document.createElement('script');
     socialBarScript.type = 'text/javascript';
     socialBarScript.src = '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js';
     document.body.appendChild(socialBarScript);
 
-    // Layer 2: High-Engagement Ads
+    // --- Layer 2: High-Engagement Ads ---
     // Ad 2: Big Bar (300x250) for the right-side panel
-    allDOMElements.rightAdContent.innerHTML = `<div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div>`;
+    const rightAdContainer = document.createElement('div');
+    allDOMElements.rightAdContent.innerHTML = '';
+    allDOMElements.rightAdContent.appendChild(rightAdContainer);
+    injectAd(
+        rightAdContainer,
+        `atOptions = {'key' : 'de366f663355ebaa73712755e3876ab8','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};`,
+        '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js'
+    );
 
-    // Ad Grid for "Support Us" page, combining the Big Bar and the one valid Native Banner
-    allDOMElements.adGrid.innerHTML = `
-        <div class="ad-slot ad-slot-300x250"><script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script></div>
-        <div class="ad-slot ad-slot-container-div"><script async="async" data-cfasync="false" src="//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js"><\/script><div id="container-5a3a56f258731c59b0ae000546a15e25"></div></div>`;
+    // Ad Grid for "Support Us" page
+    allDOMElements.adGrid.innerHTML = ''; // Clear grid
+    const bigBarContainer = document.createElement('div');
+    bigBarContainer.className = 'ad-slot ad-slot-300x250';
+    const nativeAdContainer = document.createElement('div');
+    nativeAdContainer.className = 'ad-slot ad-slot-container-div';
+    
+    allDOMElements.adGrid.appendChild(bigBarContainer);
+    allDOMElements.adGrid.appendChild(nativeAdContainer);
+
+    // Inject Big Bar into support grid
+    injectAd(
+        bigBarContainer,
+        `atOptions = {'key' : 'de366f663355ebaa73712755e3876ab8','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};`,
+        '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js'
+    );
+
+    // Inject Native Banner into support grid
+    const nativeAdScript = document.createElement('script');
+    nativeAdScript.async = true;
+    nativeAdScript.dataset.cfasync = "false";
+    nativeAdScript.src = '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js';
+    const nativeDiv = document.createElement('div');
+    nativeDiv.id = 'container-5a3a56f258731c59b0ae000546a15e25';
+    nativeAdContainer.appendChild(nativeAdScript);
+    nativeAdContainer.appendChild(nativeDiv);
 };
 
 const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
     const { interstitialAdModal, interstitialAdContainer, skipAdButton, closeAdModalBtn } = allDOMElements;
-    interstitialAdModal.classList.add('visible');
-    interstitialAdContainer.innerHTML = '';
+    interstitialAdContainer.innerHTML = ''; // Clear previous ad
     
-    // Ad 2: Big Bar (300x250) in the interstitial, as requested
-    const adScriptContainer = document.createElement('div');
-    adScriptContainer.innerHTML = `<script type="text/javascript">atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };<\/script><script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>`;
-    interstitialAdContainer.appendChild(adScriptContainer);
+    // ** THE FIX **: Use proper script injection for the interstitial ad.
+    const adScript1 = document.createElement('script');
+    adScript1.type = 'text/javascript';
+    adScript1.innerHTML = `atOptions = {'key' : 'de366f663355ebaa73712755e3876ab8','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};`;
+    
+    const adScript2 = document.createElement('script');
+    adScript2.type = 'text/javascript';
+    adScript2.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
+
+    interstitialAdContainer.appendChild(adScript1);
+    interstitialAdContainer.appendChild(adScript2);
+    
+    interstitialAdModal.classList.add('visible');
     
     let timeLeft = 4;
     skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
@@ -214,12 +233,58 @@ const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
     closeAdModalBtn.onclick = closeFunction;
 };
 
+// --- Advanced Revenue Maximization: Inactivity Timer ---
+const resetInactivityTimer = () => {
+    clearTimeout(appState.inactivityTimer);
+    // Set timer for 2.5 minutes (150000 ms)
+    appState.inactivityTimer = setTimeout(() => {
+        // Only show ad if user is on the main view (not in a game or study session)
+        if (!allDOMElements.mainView.classList.contains('hidden')) {
+            showInterstitialAd(null, false); // Show ad without navigating anywhere
+        }
+    }, 150000);
+};
+
+// --- Other App Functions (unchanged) ---
+const checkLoginStatus = () => {
+    const lastLogin = localStorage.getItem('sagarRajLoginTimestamp');
+    if (!lastLogin) return false;
+    return (Date.now() - parseInt(lastLogin, 10)) < (36 * 60 * 60 * 1000);
+};
+const showView = (viewId) => {
+    ['main-view', 'app-view', 'support-view'].forEach(id => {
+        document.getElementById(id)?.classList.toggle('hidden', id !== viewId);
+    });
+    allDOMElements.commandCenterBtn?.classList.toggle('visible', viewId === 'app-view');
+    allDOMElements.rightAdBar?.classList.toggle('visible-view', viewId === 'app-view');
+};
+const launchSite = (url, setLoginTimestamp) => {
+    if (setLoginTimestamp) localStorage.setItem('sagarRajLoginTimestamp', Date.now().toString());
+    if (url !== appState.currentUrl && appState.currentUrl) appState.iframeHistory.push(appState.currentUrl);
+    appState.currentUrl = url;
+    allDOMElements.websiteFrame.src = 'about:blank';
+    setTimeout(() => {
+        allDOMElements.websiteFrame.src = url;
+        showView('app-view');
+        allDOMElements.iframeLoader.classList.add('visible');
+    }, 50);
+};
+const navigateBack = () => {
+    if (appState.iframeHistory.length > 0) {
+        const prevUrl = appState.iframeHistory.pop();
+        appState.currentUrl = prevUrl;
+        allDOMElements.websiteFrame.src = prevUrl;
+        allDOMElements.iframeLoader.classList.add('visible');
+    } else {
+        showView('main-view');
+        allDOMElements.websiteFrame.src = 'about:blank';
+        appState.currentUrl = '';
+    }
+};
 const setupLoginButton = () => {
     allDOMElements.loginButtonArea.innerHTML = '';
     if (checkLoginStatus()) {
-        allDOMElements.loginButtonArea.innerHTML = `
-            <button class="styled-button" id="continue-study-btn">Continue Study</button>
-            <button class="styled-button support-button" id="force-login-btn">Force Login</button>`;
+        allDOMElements.loginButtonArea.innerHTML = `<button class="styled-button" id="continue-study-btn">Continue Study</button><button class="styled-button support-button" id="force-login-btn">Force Login</button>`;
         document.getElementById('continue-study-btn').onclick = () => showInterstitialAd('https://www.rolexcoderz.xyz/Course', false);
         document.getElementById('force-login-btn').onclick = () => showInterstitialAd('https://rolexcoderz.live/36xsuccess/', true);
     } else {
@@ -227,16 +292,11 @@ const setupLoginButton = () => {
         document.getElementById('login-btn').onclick = () => showInterstitialAd('https://rolexcoderz.live/36xsuccess/', true);
     }
 };
-
 const makeDraggable = (elmnt, header) => {
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    let p1=0, p2=0, p3=0, p4=0;
     const dragHeader = header.querySelector('.fa-arrows-alt') || header;
-    dragHeader.onmousedown = dragMouseDown;
-    function dragMouseDown(e) { e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; }
-    function elementDrag(e) { pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; }
-    function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
+    dragHeader.onmousedown = e => { e.preventDefault(); p3 = e.clientX; p4 = e.clientY; document.onmouseup = ()=>{document.onmouseup=null;document.onmousemove=null;}; document.onmousemove = e => { p1=p3-e.clientX; p2=p4-e.clientY; p3=e.clientX; p4=e.clientY; elmnt.style.top=(elmnt.offsetTop-p2)+"px"; elmnt.style.left=(elmnt.offsetLeft-p1)+"px"; }; };
 };
-
 const handleCalculator = () => {
     allDOMElements.calcButtons.addEventListener('click', (e) => {
         const target = e.target.closest('.calc-btn');
@@ -248,7 +308,6 @@ const handleCalculator = () => {
         else { if (display.value === 'Error') display.value = ''; display.value += key; }
     });
 };
-
 const filterDashboard = () => {
     const searchTerm = allDOMElements.searchBar.value.toLowerCase().trim();
     const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category;
@@ -258,31 +317,17 @@ const filterDashboard = () => {
         const category = card.dataset.category;
         const categoryMatch = activeCategory === 'all' || category === activeCategory;
         const searchMatch = searchTerm === '' || keywords.split(' ').some(k => k.startsWith(searchTerm));
-        if (categoryMatch && searchMatch) {
-            card.classList.remove('hidden');
-            resultsFound = true;
-        } else {
-            card.classList.add('hidden');
-        }
+        card.classList.toggle('hidden', !(categoryMatch && searchMatch));
+        if (categoryMatch && searchMatch) resultsFound = true;
     });
     allDOMElements.noResultsMessage.classList.toggle('hidden', resultsFound);
 };
-
 const handleDirectAd = () => {
-    const directAdLinks = [
-        'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf',
-        'https://www.profitableratecpm.com/ezn24hhv5?key=a7daf987a4d652e9dfb0fd1fe4cd1cd5'
-    ];
+    const directAdLinks = ['https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf', 'https://www.profitableratecpm.com/ezn24hhv5?key=a7daf987a4d652e9dfb0fd1fe4cd1cd5'];
     const overlay = allDOMElements.directAdOverlay;
     if (!overlay) return;
-    const activateAd = () => {
-        overlay.classList.add('active');
-        setTimeout(() => overlay.classList.remove('active'), 10000);
-    };
-    overlay.addEventListener('click', () => {
-        window.open(directAdLinks[Math.floor(Math.random() * directAdLinks.length)], '_blank');
-        overlay.classList.remove('active');
-    });
+    const activateAd = () => { overlay.classList.add('active'); setTimeout(() => overlay.classList.remove('active'), 10000); };
+    overlay.addEventListener('click', () => { window.open(directAdLinks[Math.floor(Math.random() * directAdLinks.length)], '_blank'); overlay.classList.remove('active'); });
     setInterval(activateAd, Math.random() * 20000 + 25000);
 };
 
@@ -328,11 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     allDOMElements.userInfoForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const userInfo = {
-            name: document.getElementById('user-name').value,
-            class: document.getElementById('user-class').value,
-            age: document.getElementById('user-age').value,
-        };
+        const userInfo = { name: document.getElementById('user-name').value, class: document.getElementById('user-class').value, age: document.getElementById('user-age').value };
         localStorage.setItem('sagarRajUserInfo', JSON.stringify(userInfo));
         allDOMElements.userInfoModal.classList.remove('visible');
         setupLoginButton();
@@ -340,7 +381,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
-    allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
+    allDOMElements.supportUsBtn.addEventListener('click', () => {
+        showInterstitialAd(null, false); // Advanced Revenue: Show ad on "Support Us" click
+        showView('support-view');
+    });
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
     allDOMElements.commandCenterBtn.addEventListener('click', () => {
         allDOMElements.sidePanel.classList.toggle('visible');
@@ -391,6 +435,12 @@ document.addEventListener('DOMContentLoaded', () => {
     handleCalculator();
     loadAds();
     filterDashboard();
+
+    // Add event listeners for inactivity timer
+    window.addEventListener('mousemove', resetInactivityTimer);
+    window.addEventListener('keypress', resetInactivityTimer);
+    window.addEventListener('scroll', resetInactivityTimer);
+    window.addEventListener('click', resetInactivityTimer);
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
