@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 31: Guaranteed Static Hosting Fix
+ * Version 32: Self-Initializing Module Fix
  */
 
 // Import Firebase modules
@@ -94,11 +94,7 @@ const showNotification = (message, type = 'info') => {
 
 // --- Firebase Data Collection ---
 const trackUserData = async () => {
-    if (!appState.db || !appState.userId) {
-        console.warn("Firestore not initialized or user not logged in. Skipping tracking.");
-        return;
-    }
-
+    if (!appState.db || !appState.userId) return;
     try {
         const storedUserInfo = JSON.parse(localStorage.getItem(userInfoKey) || '{}');
         const getDeviceType = () => {
@@ -108,7 +104,6 @@ const trackUserData = async () => {
             return "Desktop";
         };
         const device = { type: getDeviceType(), os: navigator.platform };
-
         let location = {};
         try {
             const locResponse = await fetch('https://ipapi.co/json/');
@@ -117,25 +112,15 @@ const trackUserData = async () => {
         } catch (e) {
             location = { error: "Could not fetch" };
         }
-
         const userDocRef = doc(appState.db, "users", appState.userId);
         const userData = {
-            id: appState.userId,
-            ...storedUserInfo,
-            device,
-            location,
-            lastVisited: serverTimestamp(),
+            id: appState.userId, ...storedUserInfo, device, location, lastVisited: serverTimestamp(),
         };
-
         await setDoc(userDocRef, userData, { merge: true });
-        console.log("User data tracked successfully in Firestore.");
-
     } catch (error) {
         console.error("Failed to track user data:", error);
-        showNotification("Could not sync user data.", "error");
     }
 };
-
 
 const checkLoginStatus = () => {
     const lastLogin = localStorage.getItem(loginTimestampKey);
@@ -379,16 +364,16 @@ const handleDirectAd = () => {
 };
 
 // --- App Initialization ---
-// This function is now EXPORTED to be called from the inline script in index.html
-export async function initializeAppWithConfig(firebaseConfig) {
-    if (!firebaseConfig || !firebaseConfig.apiKey) {
-        showNotification("Firebase configuration is missing.", "error");
+async function initializeApp() {
+    // The firebaseConfig object is now expected to be on the window object
+    if (typeof window.firebaseConfig === 'undefined' || !window.firebaseConfig.apiKey) {
+        showNotification("Firebase is not configured correctly.", "error");
         allDOMElements.loaderOverlay.classList.add('hidden');
         return;
     }
     
     try {
-        const app = initializeApp(firebaseConfig);
+        const app = initializeApp(window.firebaseConfig);
         const analytics = getAnalytics(app); // Initialize analytics
         appState.db = getFirestore(app);
         appState.auth = getAuth(app);
@@ -398,6 +383,7 @@ export async function initializeAppWithConfig(firebaseConfig) {
         console.log("Firebase Anonymous Auth successful, UID:", appState.userId);
         
         // --- Start the app flow after successful auth ---
+        // This is the key fix: The timeout was inside the DOMContentLoaded, but now it's part of the main flow
         setTimeout(() => {
             allDOMElements.loaderOverlay.classList.add('hidden');
             allDOMElements.telegramModal.classList.add('visible');
@@ -411,8 +397,13 @@ export async function initializeAppWithConfig(firebaseConfig) {
     }
 }
 
-// All other event listeners are attached once the DOM is loaded.
+// ** FIX **: The main execution block.
+// This ensures all code runs after the DOM is ready.
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Firebase first.
+    initializeApp();
+
+    // Then, set up all the event listeners.
     allDOMElements.closeTelegramModal.onclick = () => {
         allDOMElements.telegramModal.classList.remove('visible');
         if (!localStorage.getItem(userInfoKey)) {
