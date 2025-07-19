@@ -80,9 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const showView = (viewId) => {
         ['main-view', 'app-view', 'support-view'].forEach(id => {
-            document.getElementById(id).classList.toggle('hidden', id !== viewId);
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden', id !== viewId);
         });
         allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
+        allDOMElements.rightAdBar.classList.toggle('visible', viewId === 'app-view');
     };
 
     const launchSite = (url, setLoginTimestamp) => {
