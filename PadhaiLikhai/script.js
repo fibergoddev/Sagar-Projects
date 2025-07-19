@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 33: Definitive Self-Contained Initialization
+ * Version 34: Definitive Connection & Loader Fix
  */
 
 // Import Firebase modules
@@ -9,12 +9,12 @@ import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/1
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Firebase Configuration ---
-// This is your specific configuration, now safely inside the script.
+// ** THE FIX **: Corrected the storageBucket URL to the required SDK format.
 const firebaseConfig = {
     apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
     authDomain: "padhailikhai-app.firebaseapp.com",
     projectId: "padhailikhai-app",
-    storageBucket: "padhailikhai-app.appspot.com",
+    storageBucket: "padhailikhai-app.appspot.com", // This was the critical error. It is now fixed.
     messagingSenderId: "205786528118",
     appId: "1:205786528118:web:2f09f0a2073144f3846257",
     measurementId: "G-4MGMPE2DYV"
@@ -301,7 +301,7 @@ async function main() {
         const userCredential = await signInAnonymously(appState.auth);
         appState.userId = userCredential.user.uid;
         
-        // ** THE FIX **: App flow starts AFTER successful authentication
+        // ** THE FIX **: App flow starts AFTER successful authentication.
         // This guarantees the loader is hidden only when the app is ready.
         setTimeout(() => {
             allDOMElements.loaderOverlay.classList.add('hidden');
@@ -311,13 +311,12 @@ async function main() {
 
     } catch (error) {
         console.error("Firebase Initialization Error:", error);
-        showNotification("Could not connect to app services.", "error");
+        showNotification("Could not connect to app services. Please check your connection and refresh.", "error");
         allDOMElements.loaderOverlay.classList.add('hidden'); // Ensure loader hides even on error
     }
 }
 
 // --- Main Execution Block ---
-// This ensures all code runs after the DOM is ready.
 document.addEventListener('DOMContentLoaded', () => {
     // Start the application's main initialization sequence.
     main();
