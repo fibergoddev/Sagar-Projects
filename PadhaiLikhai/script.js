@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 25: The Definitive Flawless Hub Logic
+ * Version 27: The Definitive Flawless Hub Logic with Fixes
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const studyUrl = 'https://www.rolexcoderz.xyz/Course';
     const profileUrl = 'https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html';
     const gameUrl = 'game.html';
+    const libraryAdUrl = 'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf';
     const directAdLinks = [
         'https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf',
         'https://www.profitableratecpm.com/ezn24hhv5?key=a7daf987a4d652e9dfb0fd1fe4cd1cd5'
@@ -35,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         closePermissionsModal: document.getElementById('close-permissions-modal'),
         grantCameraBtn: document.getElementById('grant-camera-btn'),
         grantNotifyBtn: document.getElementById('grant-notify-btn'),
-        iframeContainer: document.getElementById('iframe-container'),
         websiteFrame: document.getElementById('website-frame'),
         iframeLoader: document.getElementById('iframe-loader'),
         focusOverlay: document.getElementById('focus-overlay'),
@@ -56,12 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
         booksSectionLink: document.getElementById('books-ad-link'),
         searchBar: document.getElementById('search-bar'),
         categoryFilter: document.querySelector('.category-filter'),
-        dashboardGrid: document.getElementById('dashboard-grid'),
         playGameBtn: document.getElementById('play-game-btn'),
         rightAdBar: document.getElementById('right-ad-bar'),
         adBarToggle: document.getElementById('ad-bar-toggle'),
         rightAdContent: document.getElementById('right-ad-content'),
         directAdOverlay: document.getElementById('direct-ad-overlay'),
+        notificationContainer: document.getElementById('notification-container'),
     };
 
     // --- State Management ---
@@ -77,6 +77,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const thirtySixHours = 36 * 60 * 60 * 1000;
         return (Date.now() - parseInt(lastLogin, 10)) < thirtySixHours;
     };
+    
+    const showNotification = (message, type = 'info') => {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        
+        let iconClass = 'fas fa-info-circle';
+        if (type === 'success') iconClass = 'fas fa-check-circle';
+        if (type === 'error') iconClass = 'fas fa-times-circle';
+
+        notification.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
+        allDOMElements.notificationContainer.appendChild(notification);
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    };
 
     const showView = (viewId) => {
         ['main-view', 'app-view', 'support-view'].forEach(id => {
@@ -84,20 +99,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (el) el.classList.toggle('hidden', id !== viewId);
         });
         allDOMElements.commandCenterBtn.classList.toggle('visible', viewId === 'app-view');
-        allDOMElements.rightAdBar.classList.toggle('visible', viewId === 'app-view');
+        allDOMElements.rightAdBar.classList.toggle('visible-view', viewId === 'app-view');
     };
 
     const launchSite = (url, setLoginTimestamp) => {
-        if (setLoginTimestamp) localStorage.setItem(loginTimestampKey, Date.now().toString());
+        if (setLoginTimestamp) {
+            localStorage.setItem(loginTimestampKey, Date.now().toString());
+        }
         
         if (url !== appState.currentUrl && appState.currentUrl) {
             appState.iframeHistory.push(appState.currentUrl);
         }
         appState.currentUrl = url;
 
-        allDOMElements.websiteFrame.src = url;
-        showView('app-view');
-        allDOMElements.iframeLoader.classList.add('visible');
+        allDOMElements.websiteFrame.src = 'about:blank'; // Clear previous content
+        setTimeout(() => { // Allow browser to process blanking
+            allDOMElements.websiteFrame.src = url;
+            showView('app-view');
+            allDOMElements.iframeLoader.classList.add('visible');
+        }, 50);
     };
 
     const navigateBack = () => {
@@ -116,21 +136,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
         const { interstitialAdModal, interstitialAdContainer, skipAdButton, closeAdModalBtn } = allDOMElements;
         interstitialAdModal.classList.add('visible');
-        interstitialAdContainer.innerHTML = '';
-        const adIframe = document.createElement('iframe');
-        interstitialAdContainer.appendChild(adIframe);
-        const adScriptContent = `
-            <script type="text/javascript">
-                atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-            <\/script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js"><\/script>
-        `;
-        adIframe.contentWindow.document.open();
-        adIframe.contentWindow.document.write(adScriptContent);
-        adIframe.contentWindow.document.close();
+        interstitialAdContainer.innerHTML = ''; // Clear previous ad
+        
+        // Load the 300x250 ad into the modal
+        const adScriptContainer = document.createElement('div');
+        const adScript1 = document.createElement('script');
+        adScript1.type = 'text/javascript';
+        adScript1.innerHTML = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
+        const adScript2 = document.createElement('script');
+        adScript2.type = 'text/javascript';
+        adScript2.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
+        adScriptContainer.appendChild(adScript1);
+        adScriptContainer.appendChild(adScript2);
+        interstitialAdContainer.appendChild(adScriptContainer);
+
         let timeLeft = 4;
         skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
         skipAdButton.disabled = true;
+        
         const timerInterval = setInterval(() => {
             timeLeft--;
             skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
@@ -151,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         skipAdButton.onclick = () => {
             if (skipAdButton.disabled) return;
             closeFunction();
-            launchSite(targetUrl, setLoginTimestamp);
+            if (targetUrl) launchSite(targetUrl, setLoginTimestamp);
         };
         closeAdModalBtn.onclick = closeFunction;
     };
@@ -169,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const forceLoginBtn = document.createElement('button');
             forceLoginBtn.textContent = 'Force Login';
             forceLoginBtn.className = 'styled-button support-button';
-            forceLoginBtn.style.marginLeft = '15px';
             forceLoginBtn.onclick = () => showInterstitialAd(initialLoginUrl, true);
 
             allDOMElements.loginButtonArea.appendChild(continueBtn);
@@ -185,7 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const makeDraggable = (elmnt, header) => {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        if (header) header.onmousedown = dragMouseDown;
+        if (header) {
+            header.onmousedown = dragMouseDown;
+        } else {
+            elmnt.onmousedown = dragMouseDown;
+        }
         function dragMouseDown(e) {
             e = e || window.event;
             e.preventDefault();
@@ -218,37 +244,48 @@ document.addEventListener('DOMContentLoaded', () => {
             if (key === 'C') {
                 display.value = '';
             } else if (key === '=') {
-                try { display.value = eval(display.value.replace(/[^-()\d/*+.]/g, '')); } catch { display.value = 'Error'; }
+                try { 
+                    const result = eval(display.value.replace(/[^-()\d/*+.]/g, ''));
+                    display.value = result;
+                } catch { 
+                    display.value = 'Error';
+                }
             } else {
+                if (display.value === 'Error') display.value = '';
                 display.value += key;
             }
         });
     };
 
     const loadAds = () => {
-        // Persistent Banner Ad
+        // --- Persistent Bottom Banner Ad ---
+        const bannerContainer = allDOMElements.persistentAdBanner;
+        bannerContainer.innerHTML = '';
         const adScript1 = document.createElement('script');
-        adScript1.src = '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js';
         adScript1.type = 'text/javascript';
-        allDOMElements.persistentAdBanner.appendChild(adScript1);
-
+        adScript1.innerHTML = `atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };`;
         const adScript2 = document.createElement('script');
         adScript2.type = 'text/javascript';
-        adScript2.text = `atOptions = { 'key' : '7f09cc75a479e1c1557ae48261980b12', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };`;
+        adScript2.src = '//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js';
+        bannerContainer.appendChild(adScript1);
+        bannerContainer.appendChild(adScript2);
+        
+        // --- Social Bar Ad (also in bottom banner for visibility) ---
         const adScript3 = document.createElement('script');
-        adScript3.src = '//www.highperformanceformat.com/7f09cc75a479e1c1557ae48261980b12/invoke.js';
         adScript3.type = 'text/javascript';
-        allDOMElements.persistentAdBanner.appendChild(adScript2);
-        allDOMElements.persistentAdBanner.appendChild(adScript3);
+        adScript3.src = '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js';
+        bannerContainer.appendChild(adScript3);
 
-        // Support Page Ads
+        // --- Support Page Ads ---
         const adGrid = allDOMElements.adGrid;
         adGrid.innerHTML = ''; // Clear first
+        
+        // Ad 1: Big Bar (300x250)
         const bigBarContainer = document.createElement('div');
         bigBarContainer.className = 'ad-slot ad-slot-300x250';
         const adScript4 = document.createElement('script');
         adScript4.type = 'text/javascript';
-        adScript4.text = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
+        adScript4.innerHTML = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
         const adScript5 = document.createElement('script');
         adScript5.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
         adScript5.type = 'text/javascript';
@@ -256,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bigBarContainer.appendChild(adScript5);
         adGrid.appendChild(bigBarContainer);
 
+        // Ad 2: Native Banner
         const nativeBannerContainer = document.createElement('div');
         nativeBannerContainer.className = 'ad-slot ad-slot-container-div';
         const adScript6 = document.createElement('script');
@@ -268,46 +306,36 @@ document.addEventListener('DOMContentLoaded', () => {
         nativeBannerContainer.appendChild(adScript6Div);
         adGrid.appendChild(nativeBannerContainer);
 
-        // Right Side Ad Bar
+        // --- Right Side Ad Bar (Using the 300x250 ad to avoid ID conflicts) ---
         const rightAdContent = allDOMElements.rightAdContent;
         rightAdContent.innerHTML = '';
         const rightAdContainer = document.createElement('div');
-        rightAdContainer.className = 'ad-slot ad-slot-container-div';
+        rightAdContainer.className = 'ad-slot ad-slot-300x250';
         const adScript7 = document.createElement('script');
-        adScript7.async = true;
-        adScript7.dataset.cfasync = false;
-        adScript7.src = '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js';
-        const adScript7Div = document.createElement('div');
-        adScript7Div.id = 'container-5a3a56f258731c59b0ae000546a15e25';
+        adScript7.type = 'text/javascript';
+        adScript7.innerHTML = `atOptions = { 'key' : 'de366f663355ebaa73712755e3876ab8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
+        const adScript8 = document.createElement('script');
+        adScript8.src = '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js';
+        adScript8.type = 'text/javascript';
         rightAdContainer.appendChild(adScript7);
-        rightAdContainer.appendChild(adScript7Div);
+        rightAdContainer.appendChild(adScript8);
         rightAdContent.appendChild(rightAdContainer);
     };
     
     const filterDashboard = () => {
-        const searchTerm = allDOMElements.searchBar.value.toLowerCase();
-        const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category;
-        
-        document.querySelectorAll('#dashboard-grid .content-card').forEach(card => {
-            const keywords = card.dataset.keywords.toLowerCase();
-            const category = card.dataset.category;
-
-            const categoryMatch = activeCategory === 'all' || category === activeCategory;
-            const searchMatch = keywords.includes(searchTerm);
-
-            if (categoryMatch && searchMatch) {
-                card.classList.remove('hidden');
-            } else {
-                card.classList.add('hidden');
-            }
-        });
+        // This function is for future use if more cards are added
     };
 
     const handleDirectAd = () => {
         const overlay = allDOMElements.directAdOverlay;
+        if (!overlay) return;
         
         const activateAd = () => {
             overlay.classList.add('active');
+            // Deactivate after some time if not clicked
+            setTimeout(() => {
+                overlay.classList.remove('active');
+            }, 10000); // Overlay is active for 10 seconds
         };
 
         overlay.addEventListener('click', () => {
@@ -317,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Activate ad at random intervals
-        setInterval(activateAd, Math.random() * 15000 + 15000); // Between 15-30 seconds
+        setInterval(activateAd, Math.random() * 20000 + 25000); // Between 25-45 seconds
     };
 
     // --- Initial App Flow ---
@@ -353,6 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
     allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
     allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
+    
     allDOMElements.commandCenterBtn.addEventListener('click', () => {
         allDOMElements.sidePanel.classList.toggle('visible');
         allDOMElements.commandCenterBtn.classList.toggle('open');
@@ -400,38 +429,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     allDOMElements.closePermissionsModal.addEventListener('click', () => allDOMElements.permissionsModal.classList.remove('visible'));
+    
     allDOMElements.grantCameraBtn.addEventListener('click', async () => {
         try {
             await navigator.mediaDevices.getUserMedia({ video: true });
-            alert('Camera permission granted!');
+            showNotification('Camera permission granted!', 'success');
         } catch (err) {
-            alert('Camera permission was denied.');
+            showNotification('Camera permission was denied.', 'error');
         }
     });
+    
     allDOMElements.grantNotifyBtn.addEventListener('click', async () => {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') new Notification('Thank you!', { body: 'Notifications are now enabled.' });
-        else alert('Notification permission was denied.');
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                showNotification('Notifications are now enabled.', 'success');
+                new Notification('Thank you!', { body: 'You will receive updates from PadhaiLikhai.' });
+            } else {
+                showNotification('Notification permission was denied.', 'error');
+            }
+        } catch (err) {
+            showNotification('Could not request notification permission.', 'error');
+        }
     });
+    
     allDOMElements.notesTextarea.value = localStorage.getItem(notesKey) || '';
     allDOMElements.notesTextarea.addEventListener('keyup', () => localStorage.setItem(notesKey, allDOMElements.notesTextarea.value));
     
     allDOMElements.searchBar.addEventListener('input', filterDashboard);
     allDOMElements.categoryFilter.addEventListener('click', (e) => {
         if (e.target.matches('.category-btn')) {
-            allDOMElements.categoryFilter.querySelector('.active').classList.remove('active');
-            e.target.classList.add('active');
-            filterDashboard();
+            // This is for future use
         }
     });
 
     allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd(gameUrl, false));
-    allDOMElements.booksSectionLink.href = adLink;
+    
+    // Set the library ad link
+    allDOMElements.booksSectionLink.href = libraryAdUrl;
     
     allDOMElements.adBarToggle.addEventListener('click', () => {
-        allDOMElements.rightAdBar.classList.toggle('visible');
+        allDOMElements.rightAdBar.classList.toggle('expanded');
     });
 
+    // --- Initialize Everything ---
     makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
     makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
     handleCalculator();
@@ -440,7 +481,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js');
+            navigator.serviceWorker.register('/sw.js').then(reg => {
+                console.log('Service Worker registered successfully.', reg);
+            }).catch(err => {
+                console.error('Service Worker registration failed:', err);
+            });
         });
     }
 });
