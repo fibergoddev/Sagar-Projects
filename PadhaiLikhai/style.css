@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 28: Advanced Features Stylesheet
+ * Version 29: Firebase & Responsive Admin Styles
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -76,7 +76,7 @@ html, body {
 .category-btn.active, .category-btn:hover { color: white; background: var(--accent-color-start); border-color: var(--accent-color-end); box-shadow: 0 0 10px var(--glow-color); }
 #dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
 .content-card { background: var(--glass-bg); border: 1px solid var(--border-color); border-radius: 15px; backdrop-filter: blur(10px); overflow: hidden; box-shadow: 0 10px 30px var(--shadow-color); transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease; }
-.content-card.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; position: absolute; }
+.content-card.hidden { display: none; }
 .content-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px var(--shadow-color); }
 .card-image { height: 200px; background-size: cover; background-position: center; }
 .card-content { padding: 25px; }
@@ -185,8 +185,47 @@ html, body {
 
 /* --- Admin Dashboard Styles --- */
 #admin-view { justify-content: center; }
+#admin-dashboard-view.hidden { display: none; }
 .table-container { width: 100%; max-width: 1200px; margin: 0 auto; overflow-x: auto; background: var(--glass-bg); border: 1px solid var(--border-color); border-radius: 15px; padding: 20px; }
 #user-data-table { width: 100%; border-collapse: collapse; }
-#user-data-table th, #user-data-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
-#user-data-table thead th { color: var(--accent-color-start); font-weight: 700; }
+#user-data-table th, #user-data-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+#user-data-table th { color: var(--accent-color-start); font-weight: 700; }
 #user-data-table tbody tr:hover { background: rgba(255,255,255,0.05); }
+#user-data-table td:first-child { max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Responsive Admin Table */
+@media (max-width: 768px) {
+    #user-data-table thead {
+        display: none;
+    }
+    #user-data-table, #user-data-table tbody, #user-data-table tr, #user-data-table td {
+        display: block;
+        width: 100%;
+    }
+    #user-data-table tr {
+        margin-bottom: 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    #user-data-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border-bottom: 1px solid var(--border-color);
+        white-space: normal;
+    }
+    #user-data-table td:last-child {
+        border-bottom: none;
+    }
+    #user-data-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        padding-right: 10px;
+        font-weight: bold;
+        text-align: left;
+        color: var(--accent-color-start);
+    }
+}
