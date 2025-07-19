@@ -39,7 +39,8 @@
                 <main id="main-content-area">
                     <div class="dashboard-header">
                         <div class="search-bar-container">
-                            <i class="fas fa-search"></i>
+                            <!-- High-quality SVG search icon -->
+                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M18.031 16.617l4.25 4.25a.75.75 0 01-1.06 1.06l-4.25-4.25a8.5 8.5 0 111.06-1.06zM10.5 17a6.5 6.5 0 100-13 6.5 6.5 0 000 13z"></path></svg>
                             <input type="text" id="search-bar" placeholder="Search courses, games, books...">
                         </div>
                         <div class="category-filter">
@@ -51,7 +52,7 @@
                     </div>
                     <div id="dashboard-grid">
                         <!-- Card for Next Toppers Batch -->
-                        <div class="content-card" data-category="course" data-keywords="next toppers batch course study login">
+                        <div class="content-card" data-category="course" data-keywords="next toppers batch course study login learn online education">
                             <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/00f2fe?text=Toppers');"></div>
                             <div class="card-content">
                                 <h3 class="card-title">Next Toppers Batch</h3>
@@ -61,14 +62,13 @@
                                     <span class="tag">Study</span>
                                 </div>
                                 <div id="login-button-area" class="button-group">
-                                    <!-- Login buttons are dynamically added by script.js -->
                                     <button class="styled-button">Loading...</button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card for Neuro-Link Game -->
-                        <div class="content-card" data-category="game" data-keywords="neuro-link game memory focus quantum drift">
+                        <div class="content-card" data-category="game" data-keywords="neuro-link game memory focus play fun brain training">
                             <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/f04747?text=Neuro-Link');"></div>
                             <div class="card-content">
                                 <h3 class="card-title">Neuro-Link Game</h3>
@@ -82,7 +82,7 @@
                         </div>
 
                         <!-- Card for Books Library (Ad Link) -->
-                        <div class="content-card" data-category="book" data-keywords="books library resources reading">
+                        <div class="content-card" data-category="book" data-keywords="books library resources reading knowledge pdf download">
                              <a id="books-ad-link" href="#" target="_blank" class="card-ad-link">
                                 <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/2ecc71?text=Library');"></div>
                                 <div class="card-content">
@@ -95,6 +95,10 @@
                                 </div>
                             </a>
                         </div>
+                    </div>
+                    <div id="no-results-message" class="hidden">
+                        <h3>No Results Found</h3>
+                        <p>Try adjusting your search or category filter.</p>
                     </div>
                 </main>
             </div>
@@ -141,26 +145,34 @@
                     <button class="side-panel-button" id="side-panel-exit-btn"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
                 </nav>
             </div>
-            <!-- Right Side Ad Bar (FIXED) -->
+            <!-- Right Side Ad Bar -->
             <div id="right-ad-bar">
                 <button id="ad-bar-toggle"><i class="fas fa-chevron-left"></i></button>
                 <div id="right-ad-content">
                     <!-- Ad content will be loaded here by JS -->
                 </div>
             </div>
+            <!-- ADVANCED MOVABLE CALCULATOR -->
             <div id="calculator" class="widget">
-                <div class="widget-header" id="calc-header"><i class="fas fa-arrows-alt"></i> Calculator</div>
-                <input type="text" id="calc-display" disabled>
-                <div id="calc-buttons">
-                     <button class="calc-btn operator">C</button><button class="calc-btn operator">(</button><button class="calc-btn operator">)</button><button class="calc-btn operator">/</button>
-                     <button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button><button class="calc-btn operator">*</button>
-                     <button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button><button class="calc-btn operator">-</button>
-                     <button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button><button class="calc-btn operator">+</button>
-                     <button class="calc-btn">0</button><button class="calc-btn">.</button><button class="calc-btn" style="grid-column: span 2;">=</button>
+                <div class="widget-header" id="calc-header">
+                    <i class="fas fa-calculator"></i> Calculator <i class="fas fa-arrows-alt"></i>
+                </div>
+                <div id="calc-body">
+                    <input type="text" id="calc-display" disabled>
+                    <div id="calc-buttons">
+                        <button class="calc-btn operator">C</button><button class="calc-btn operator">(</button><button class="calc-btn operator">)</button><button class="calc-btn operator">/</button>
+                        <button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button><button class="calc-btn operator">*</button>
+                        <button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button><button class="calc-btn operator">-</button>
+                        <button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button><button class="calc-btn operator">+</button>
+                        <button class="calc-btn">0</button><button class="calc-btn">.</button><button class="calc-btn" id="calc-equals" style="grid-column: span 2;">=</button>
+                    </div>
                 </div>
             </div>
+            <!-- MOVABLE NOTES WIDGET -->
             <div id="mini-notes" class="widget">
-                <div class="widget-header" id="notes-header"><i class="fas fa-arrows-alt"></i> Mini Notes</div>
+                <div class="widget-header" id="notes-header">
+                    <i class="fas fa-sticky-note"></i> Mini Notes <i class="fas fa-arrows-alt"></i>
+                </div>
                 <textarea id="notes-textarea" placeholder="Your thoughts..."></textarea>
             </div>
         </div>
@@ -168,11 +180,11 @@
         <!-- All Modals -->
         <div id="interstitial-ad-modal" class="modal-overlay">
             <div class="modal-content">
+                <button id="close-ad-modal-btn" class="ad-close-btn"><i class="fas fa-times"></i></button>
                 <p class="subtitle">Please support us by watching this ad</p>
                 <div id="interstitial-ad-container"></div>
                 <div class="modal-ad-controls">
                     <button id="skip-ad-button" class="styled-button">Skip Ad in 4s</button>
-                    <button id="close-ad-modal-btn" class="ad-close-btn"><i class="fas fa-times"></i></button>
                 </div>
             </div>
         </div>
