@@ -1,3 +1,7 @@
+/* * Designed & Developed by Sagar Raj
+ * Version 30: Static Hosting Firebase Fix
+ */
+
 // Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -48,8 +52,6 @@ const showDashboard = () => {
 const listenForUsers = () => {
     if (!db) return;
     const usersCollection = collection(db, 'users');
-    // Order by last visited time, newest first. Note: This requires a composite index in Firestore.
-    // Firestore will provide a link in the console error to create it automatically.
     const q = query(usersCollection, orderBy('lastVisited', 'desc'));
 
     usersUnsubscribe = onSnapshot(q, (snapshot) => {
@@ -76,7 +78,11 @@ const listenForUsers = () => {
         });
     }, (error) => {
         console.error("Error listening to user data:", error);
-        showNotification("Error fetching real-time data.", "error");
+        if (error.code === 'failed-precondition') {
+             showNotification("Firestore index required. Check console for link to create it.", "error");
+        } else {
+             showNotification("Error fetching real-time data.", "error");
+        }
     });
 };
 
@@ -109,13 +115,12 @@ logoutBtn.addEventListener('click', async () => {
 
 // --- App Initialization ---
 async function initializeAdminApp() {
-    if (typeof __firebase_config === 'undefined') {
-        showNotification("Firebase is not configured.", "error");
-        console.error("Firebase config is missing.");
+    if (typeof window.firebaseConfig === 'undefined' || !window.firebaseConfig.apiKey) {
+        showNotification("Firebase is not configured correctly.", "error");
+        console.error("Firebase config is missing. Please add it to admin.html");
         return;
     }
-    const firebaseConfig = JSON.parse(__firebase_config);
-    const app = initializeApp(firebaseConfig);
+    const app = initializeApp(window.firebaseConfig);
     db = getFirestore(app);
     auth = getAuth(app);
 
