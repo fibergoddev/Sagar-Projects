@@ -1,9 +1,10 @@
 /* * Designed & Developed by Sagar Raj
- * Version 30: Static Hosting Firebase Fix
+ * Version 31: Guaranteed Static Hosting Fix
  */
 
 // Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
@@ -378,17 +379,17 @@ const handleDirectAd = () => {
 };
 
 // --- App Initialization ---
-async function initializeAppWithFirebase() {
-    // The firebaseConfig object is now expected to be on the window object
-    if (typeof window.firebaseConfig === 'undefined' || !window.firebaseConfig.apiKey) {
-        showNotification("Firebase is not configured correctly.", "error");
-        console.error("Firebase config is missing or invalid. Please add it to index.html");
-        allDOMElements.loaderOverlay.classList.add('hidden'); // Hide loader to show error
+// This function is now EXPORTED to be called from the inline script in index.html
+export async function initializeAppWithConfig(firebaseConfig) {
+    if (!firebaseConfig || !firebaseConfig.apiKey) {
+        showNotification("Firebase configuration is missing.", "error");
+        allDOMElements.loaderOverlay.classList.add('hidden');
         return;
     }
     
     try {
-        const app = initializeApp(window.firebaseConfig);
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app); // Initialize analytics
         appState.db = getFirestore(app);
         appState.auth = getAuth(app);
         
@@ -410,9 +411,8 @@ async function initializeAppWithFirebase() {
     }
 }
 
+// All other event listeners are attached once the DOM is loaded.
 document.addEventListener('DOMContentLoaded', () => {
-    initializeAppWithFirebase();
-
     allDOMElements.closeTelegramModal.onclick = () => {
         allDOMElements.telegramModal.classList.remove('visible');
         if (!localStorage.getItem(userInfoKey)) {
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(userInfoKey, JSON.stringify(userInfo));
         allDOMElements.userInfoModal.classList.remove('visible');
         setupLoginButton();
-        trackUserData(); // Re-track data after user provides info
+        trackUserData();
     });
 
     allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
