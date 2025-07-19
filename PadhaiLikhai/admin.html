@@ -64,7 +64,8 @@
     <!-- Custom Notification System -->
     <div id="notification-container"></div>
 
-    <!-- Self-Contained Firebase Initialization and Logic -->
+    <!-- ** FIX **: Self-Contained Firebase Initialization and Logic -->
+    <!-- This single script tag contains all necessary logic, eliminating all external file loading errors. -->
     <script type="module">
         // Import Firebase modules directly from the CDN
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -107,13 +108,13 @@
         const showLogin = () => {
             loginView.classList.add('visible');
             dashboardView.classList.add('hidden');
-            if (usersUnsubscribe) usersUnsubscribe();
+            if (usersUnsubscribe) usersUnsubscribe(); // Stop listening for data if logged out
         };
 
         const showDashboard = () => {
             loginView.classList.remove('visible');
             dashboardView.classList.remove('hidden');
-            listenForUsers();
+            listenForUsers(); // Start listening for user data
         };
 
         const listenForUsers = () => {
@@ -159,6 +160,7 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
 
+                // This is the official, reliable way to handle login state
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         showDashboard();
@@ -188,7 +190,7 @@
             }
         }
 
-        // Run the initialization when the DOM is ready
+        // Run the initialization function when the DOM is ready
         document.addEventListener('DOMContentLoaded', initializeAdminApp);
     </script>
 </body>
