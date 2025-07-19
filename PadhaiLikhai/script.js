@@ -1,34 +1,19 @@
 /* * Designed & Developed by Sagar Raj
- * Version 38: Definitive Connection & UI Fix
+ * Version 39: Definitive Event-Driven Application Core
  */
 
-// Import Firebase modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, serverTimestamp, collection, query, orderBy, limit, onSnapshot, writeBatch, getDoc, getDocs, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-// --- Firebase Configuration ---
-// ** THE DEFINITIVE FIX **: Corrected the storageBucket URL to the required SDK format.
-const firebaseConfig = {
-    apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
-    authDomain: "padhailikhai-app.firebaseapp.com",
-    projectId: "padhailikhai-app",
-    storageBucket: "padhailikhai-app.appspot.com", // This was the critical error. It is now fixed.
-    messagingSenderId: "205786528118",
-    appId: "1:205786528118:web:2f09f0a2073144f3846257",
-    measurementId: "G-4MGMPE2DYV"
-};
+// Import necessary Firebase functions for type hinting and clarity
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp, collection, query, where, getDocs, writeBatch, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- DOM Element Cache ---
 const allDOMElements = {
-    loaderOverlay: document.getElementById('loader-overlay'), mainView: document.getElementById('main-view'), appView: document.getElementById('app-view'), supportView: document.getElementById('support-view'), loginButtonArea: document.getElementById('login-button-area'), interstitialAdModal: document.getElementById('interstitial-ad-modal'), interstitialAdContainer: document.getElementById('interstitial-ad-container'), skipAdButton: document.getElementById('skip-ad-button'), closeAdModalBtn: document.getElementById('close-ad-modal-btn'), userInfoModal: document.getElementById('user-info-modal'), userInfoForm: document.getElementById('user-info-form'), telegramModal: document.getElementById('telegram-modal'), closeTelegramModal: document.getElementById('close-telegram-modal'), permissionsModal: document.getElementById('permissions-modal'), closePermissionsModal: document.getElementById('close-permissions-modal'), grantCameraBtn: document.getElementById('grant-camera-btn'), grantNotifyBtn: document.getElementById('grant-notify-btn'), websiteFrame: document.getElementById('website-frame'), iframeLoader: document.getElementById('iframe-loader'), focusOverlay: document.getElementById('focus-overlay'), notesWidget: document.getElementById('mini-notes'), notesHeader: document.getElementById('notes-header'), notesTextarea: document.getElementById('notes-textarea'), calculator: document.getElementById('calculator'), calcHeader: document.getElementById('calc-header'), calcDisplay: document.getElementById('calc-display'), calcButtons: document.getElementById('calc-buttons'), commandCenterBtn: document.getElementById('command-center-btn'), sidePanel: document.getElementById('side-panel'), sidePanelNav: document.getElementById('side-panel-nav'), supportUsBtn: document.getElementById('support-us-btn'), backToMainBtn: document.getElementById('back-to-main-btn'), persistentAdBanner: document.getElementById('persistent-ad-banner'), adGrid: document.getElementById('ad-grid'), booksSectionLink: document.getElementById('books-ad-link'), searchBar: document.getElementById('search-bar'), categoryFilter: document.querySelector('.category-filter'), dashboardGrid: document.getElementById('dashboard-grid'), noResultsMessage: document.getElementById('no-results-message'), playGameBtn: document.getElementById('play-game-btn'), rightAdBar: document.getElementById('right-ad-bar'), adBarToggle: document.getElementById('ad-bar-toggle'), rightAdContent: document.getElementById('right-ad-content'), directAdOverlay: document.getElementById('direct-ad-overlay'), notificationContainer: document.getElementById('notification-container'),
+    loaderOverlay: document.getElementById('loader-overlay'), loaderStatus: document.getElementById('loader-status'), mainView: document.getElementById('main-view'), appView: document.getElementById('app-view'), supportView: document.getElementById('support-view'), loginButtonArea: document.getElementById('login-button-area'), interstitialAdModal: document.getElementById('interstitial-ad-modal'), interstitialAdContainer: document.getElementById('interstitial-ad-container'), skipAdButton: document.getElementById('skip-ad-button'), closeAdModalBtn: document.getElementById('close-ad-modal-btn'), userInfoModal: document.getElementById('user-info-modal'), userInfoForm: document.getElementById('user-info-form'), telegramModal: document.getElementById('telegram-modal'), closeTelegramModal: document.getElementById('close-telegram-modal'), permissionsModal: document.getElementById('permissions-modal'), closePermissionsModal: document.getElementById('close-permissions-modal'), grantCameraBtn: document.getElementById('grant-camera-btn'), grantNotifyBtn: document.getElementById('grant-notify-btn'), websiteFrame: document.getElementById('website-frame'), iframeLoader: document.getElementById('iframe-loader'), focusOverlay: document.getElementById('focus-overlay'), notesWidget: document.getElementById('mini-notes'), notesHeader: document.getElementById('notes-header'), notesTextarea: document.getElementById('notes-textarea'), calculator: document.getElementById('calculator'), calcHeader: document.getElementById('calc-header'), calcDisplay: document.getElementById('calc-display'), calcButtons: document.getElementById('calc-buttons'), commandCenterBtn: document.getElementById('command-center-btn'), sidePanel: document.getElementById('side-panel'), sidePanelNav: document.getElementById('side-panel-nav'), supportUsBtn: document.getElementById('support-us-btn'), backToMainBtn: document.getElementById('back-to-main-btn'), persistentAdBanner: document.getElementById('persistent-ad-banner'), adGrid: document.getElementById('ad-grid'), booksSectionLink: document.getElementById('books-ad-link'), searchBar: document.getElementById('search-bar'), categoryFilter: document.querySelector('.category-filter'), dashboardGrid: document.getElementById('dashboard-grid'), noResultsMessage: document.getElementById('no-results-message'), playGameBtn: document.getElementById('play-game-btn'), rightAdBar: document.getElementById('right-ad-bar'), adBarToggle: document.getElementById('ad-bar-toggle'), rightAdContent: document.getElementById('right-ad-content'), directAdOverlay: document.getElementById('direct-ad-overlay'), notificationContainer: document.getElementById('notification-container'),
     nexusHubBtn: document.getElementById('nexus-hub-btn'), nexusHubModal: document.getElementById('nexus-hub-modal'), nexusHubCloseBtn: document.getElementById('nexus-hub-close-btn'), nexusUserAvatar: document.getElementById('nexus-user-avatar'), nexusUserName: document.getElementById('nexus-user-name'), nexusUserPoints: document.getElementById('nexus-user-points'), nexusUserStreak: document.getElementById('nexus-user-streak'), nexusNavBtns: document.querySelectorAll('.nexus-nav-btn'), nexusViews: document.querySelectorAll('.nexus-view'), dailyMissionsList: document.getElementById('daily-missions-list'), noSquadView: document.getElementById('no-squad-view'), inSquadView: document.getElementById('in-squad-view'), createSquadForm: document.getElementById('create-squad-form'), joinSquadForm: document.getElementById('join-squad-form'), createSquadName: document.getElementById('create-squad-name'), joinSquadCode: document.getElementById('join-squad-code'), squadNameDisplay: document.getElementById('squad-name-display'), squadPointsDisplay: document.getElementById('squad-points-display'), squadInviteCode: document.getElementById('squad-invite-code'), copySquadCodeBtn: document.getElementById('copy-squad-code-btn'), squadMembersList: document.getElementById('squad-members-list'), leaveSquadBtn: document.getElementById('leave-squad-btn'), leaderboardTabs: document.querySelectorAll('.leaderboard-tab-btn'), leaderboardContents: document.querySelectorAll('.leaderboard-content'),
 };
 
 // --- App State ---
 const appState = {
-    iframeHistory: [], currentUrl: '', db: null, auth: null, userId: null, inactivityTimer: null, messaging: null, userData: null, squadData: null,
+    iframeHistory: [], currentUrl: '', db: null, auth: null, userId: null, inactivityTimer: null, userData: null, squadData: null,
 };
 
 // --- Core Functions ---
@@ -48,33 +33,20 @@ const filterDashboard = () => { const searchTerm = allDOMElements.searchBar.valu
 const handleDirectAd = () => { const directAdLinks = ['https://www.profitableratecpm.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf', 'https://www.profitableratecpm.com/ezn24hhv5?key=a7daf987a4d652e9dfb0fd1fe4cd1cd5']; const overlay = allDOMElements.directAdOverlay; if (!overlay) return; const activateAd = () => { overlay.classList.add('active'); setTimeout(() => overlay.classList.remove('active'), 10000); }; overlay.addEventListener('click', () => { window.open(directAdLinks[Math.floor(Math.random() * directAdLinks.length)], '_blank'); overlay.classList.remove('active'); }); setInterval(activateAd, Math.random() * 20000 + 25000); };
 const Nexus = { async init() { onSnapshot(doc(appState.db, "users", appState.userId), async (doc) => { appState.userData = doc.data(); if (!appState.userData) return; this.updateProfilePod(); this.generateDailyMissions(); if (appState.userData.squadId) { this.showSquadView(); this.listenForSquadUpdates(appState.userData.squadId); } else { this.showNoSquadView(); } }); }, updateProfilePod() { const user = appState.userData; allDOMElements.nexusUserName.textContent = user.name || 'Anonymous'; allDOMElements.nexusUserAvatar.textContent = (user.name || 'A').charAt(0).toUpperCase(); allDOMElements.nexusUserPoints.textContent = user.nexusPoints || 0; allDOMElements.nexusUserStreak.textContent = user.streak || 0; }, async awardPoints(points, actionId) { const newPoints = (appState.userData.nexusPoints || 0) + points; await trackUserData({ nexusPoints: newPoints }); showNotification(`+${points} Nexus Points!`, 'success'); }, async checkStreak() { const today = new Date().toISOString().slice(0, 10); const lastLogin = appState.userData.lastLoginDate; if (today === lastLogin) return; const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10); const currentStreak = appState.userData.streak || 0; const newStreak = (lastLogin === yesterday) ? currentStreak + 1 : 1; await trackUserData({ streak: newStreak, lastLoginDate: today }); if (newStreak > currentStreak && newStreak > 1) { showNotification(`${newStreak} Day Streak! Keep it up!`, 'info'); } }, generateDailyMissions() { const todayStr = new Date().toISOString().slice(0, 10); const missions = [ { id: 'play_game', text: 'Play Neuro-Link 2 times', reward: 50, goal: 2 }, { id: 'visit_library', text: 'Visit the Books Library', reward: 25, goal: 1 }, { id: 'use_calculator', text: 'Use the Calculator', reward: 10, goal: 1 }, { id: 'support_us', text: 'Visit the Support Us page', reward: 40, goal: 1 }, { id: 'force_login', text: 'Use the Force Login button', reward: 75, goal: 1 }, ]; let seed = todayStr.split('-').reduce((acc, val) => acc + parseInt(val), 0); const random = () => { var x = Math.sin(seed++) * 10000; return x - Math.floor(x); }; const dailyMissions = [...missions].sort(() => random() - 0.5).slice(0, 3); const progress = appState.userData.missionProgress || {}; if (progress.date !== todayStr) { progress.date = todayStr; progress.missions = {}; } allDOMElements.dailyMissionsList.innerHTML = dailyMissions.map(mission => { const currentCount = progress.missions[mission.id] || 0; const isCompleted = currentCount >= mission.goal; return ` <div class="mission-item ${isCompleted ? 'completed' : ''}"> <div class="mission-info"> <p>${mission.text}</p> <span>Progress: ${currentCount} / ${mission.goal}</span> </div> <div class="mission-reward"> ${isCompleted ? '<i class="fas fa-check-circle"></i>' : `+${mission.reward} NP`} </div> </div> `; }).join(''); }, async logMissionProgress(missionId) { const todayStr = new Date().toISOString().slice(0, 10); const progress = appState.userData.missionProgress || { date: todayStr, missions: {} }; if (progress.date !== todayStr) return; const currentCount = (progress.missions[missionId] || 0) + 1; progress.missions[missionId] = currentCount; const missions = [ { id: 'play_game', goal: 2, reward: 50 }, { id: 'visit_library', goal: 1, reward: 25 }, { id: 'use_calculator', goal: 1, reward: 10 }, { id: 'support_us', goal: 1, reward: 40 }, { id: 'force_login', goal: 1, reward: 75 }]; const missionInfo = missions.find(m => m.id === missionId); if (missionInfo && currentCount === missionInfo.goal) { this.awardPoints(missionInfo.reward, `mission_${missionId}`); } await trackUserData({ missionProgress: progress }); }, showNoSquadView() { allDOMElements.noSquadView.classList.remove('hidden'); allDOMElements.inSquadView.classList.add('hidden'); }, showSquadView() { allDOMElements.noSquadView.classList.add('hidden'); allDOMElements.inSquadView.classList.remove('hidden'); }, async createSquad(squadName) { const squadCode = Math.random().toString(36).substring(2, 8).toUpperCase(); const squadRef = doc(appState.db, "squads", squadCode); const batch = writeBatch(appState.db); batch.set(squadRef, { name: squadName, code: squadCode, members: [appState.userId], totalPoints: appState.userData.nexusPoints || 0, createdAt: serverTimestamp() }); const userRef = doc(appState.db, "users", appState.userId); batch.update(userRef, { squadId: squadCode }); await batch.commit(); showNotification(`Squad "${squadName}" created!`, 'success'); }, async joinSquad(squadCode) { const squadRef = doc(appState.db, "squads", squadCode); const squadSnap = await getDoc(squadRef); if (!squadSnap.exists()) { showNotification("Squad code not found.", "error"); return; } const squad = squadSnap.data(); if (squad.members.length >= 4) { showNotification("This squad is full.", "error"); return; } if (squad.members.includes(appState.userId)) { showNotification("You are already in this squad.", "info"); return; } const batch = writeBatch(appState.db); const newMembers = [...squad.members, appState.userId]; batch.update(squadRef, { members: newMembers }); const userRef = doc(appState.db, "users", appState.userId); batch.update(userRef, { squadId: squadCode }); await batch.commit(); showNotification(`Joined squad "${squad.name}"!`, 'success'); }, async leaveSquad() { if (!appState.userData.squadId) return; const squadRef = doc(appState.db, "squads", appState.userData.squadId); const squadSnap = await getDoc(squadRef); if (!squadSnap.exists()) { await trackUserData({ squadId: null }); return; } const squad = squadSnap.data(); const batch = writeBatch(appState.db); const newMembers = squad.members.filter(id => id !== appState.userId); if (newMembers.length === 0) { batch.delete(squadRef); } else { batch.update(squadRef, { members: newMembers }); } const userRef = doc(appState.db, "users", appState.userId); batch.update(userRef, { squadId: null }); await batch.commit(); showNotification(`You have left the squad.`, 'info'); }, listenForSquadUpdates(squadId) { const squadRef = doc(appState.db, "squads", squadId); onSnapshot(squadRef, async (docSnap) => { if (!docSnap.exists()) { this.showNoSquadView(); return; } appState.squadData = docSnap.data(); allDOMElements.squadNameDisplay.textContent = appState.squadData.name; allDOMElements.squadInviteCode.value = appState.squadData.code; const memberDocs = await Promise.all(appState.squadData.members.map(id => getDoc(doc(appState.db, "users", id)))); const membersData = memberDocs.map(doc => doc.data()); const totalPoints = membersData.reduce((sum, user) => sum + (user.nexusPoints || 0), 0); allDOMElements.squadPointsDisplay.textContent = totalPoints; allDOMElements.squadMembersList.innerHTML = membersData.map(member => ` <div class="squad-member"> <div class="squad-member-info"> <div class="nexus-avatar" style="width:40px; height:40px; font-size:1.2rem;">${(member.name || 'A').charAt(0)}</div> <span>${member.name || 'Anonymous'}</span> </div> <span>${member.nexusPoints || 0} NP</span> </div> `).join(''); }); }, async renderLeaderboard(type) { const targetEl = document.getElementById(`leaderboard-${type}`); targetEl.innerHTML = '<div class="mission-item placeholder" style="height: 60px;"></div>'.repeat(5); let q; if (type === 'global') { q = query(collection(appState.db, "users"), orderBy("nexusPoints", "desc"), limit(50)); } else if (type === 'local') { const country = appState.userData.location?.country || 'Unknown'; q = query(collection(appState.db, "users"), where("location.country", "==", country), orderBy("nexusPoints", "desc"), limit(50)); } else { q = query(collection(appState.db, "squads"), orderBy("totalPoints", "desc"), limit(50)); } const querySnapshot = await getDocs(q); const data = querySnapshot.docs.map(doc => doc.data()); targetEl.innerHTML = `<ol class="leaderboard-list">${data.map((item, index) => ` <li class="leaderboard-item ${item.id === appState.userId ? 'current-user' : ''}"> <span class="leaderboard-rank">${index + 1}</span> <span class="leaderboard-name">${item.name || 'Anonymous Squad'}</span> <span class="leaderboard-points">${item.nexusPoints || item.totalPoints || 0} NP</span> </li> `).join('')}</ol>`; } };
 
-// --- App Initialization Sequence ---
-async function main() {
-    try {
-        const app = initializeApp(firebaseConfig);
-        getAnalytics(app);
-        appState.db = getFirestore(app);
-        appState.auth = getAuth(app);
-        const userCredential = await signInAnonymously(appState.auth);
-        appState.userId = userCredential.user.uid;
-        await Nexus.init();
-        await Nexus.checkStreak();
-        setTimeout(() => {
-            allDOMElements.loaderOverlay.classList.add('hidden');
-            allDOMElements.telegramModal.classList.add('visible');
-            trackUserData();
-        }, 1500);
-    } catch (error) {
-        console.error("Firebase Initialization Error:", error);
-        showNotification("Could not connect to app services. Please check your connection and refresh.", "error");
-        allDOMElements.loaderOverlay.innerHTML = `<div style="text-align: center; color: white;"><p>Connection Failed</p><button id="retry-btn" class="styled-button support-button" style="margin-top: 20px;">Retry</button></div>`;
-        document.getElementById('retry-btn').onclick = () => window.location.reload();
-    }
-}
+// --- Main App Initialization Function ---
+function initializeMainApp(firebase) {
+    // This function runs ONLY after firebaseReady event is fired.
+    appState.auth = firebase.auth;
+    appState.db = firebase.db;
+    appState.userId = firebase.userId;
 
-// --- Main Execution Block ---
-document.addEventListener('DOMContentLoaded', () => {
-    main();
+    // Start all application logic
+    Nexus.init();
+    Nexus.checkStreak();
+    loadAds();
+    trackUserData();
+
+    // Attach all event listeners
     allDOMElements.closeTelegramModal.onclick = () => { allDOMElements.telegramModal.classList.remove('visible'); if (!localStorage.getItem('sagarRajUserInfo')) { allDOMElements.userInfoModal.classList.add('visible'); } else { setupLoginButton(); } showView('main-view'); handleDirectAd(); };
     allDOMElements.userInfoForm.addEventListener('submit', (e) => { e.preventDefault(); const userInfo = { name: document.getElementById('user-name').value, class: document.getElementById('user-class').value, age: document.getElementById('user-age').value }; localStorage.setItem('sagarRajUserInfo', JSON.stringify(userInfo)); allDOMElements.userInfoModal.classList.remove('visible'); setupLoginButton(); trackUserData(); });
     allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
@@ -95,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
     makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
     makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
     handleCalculator();
-    loadAds();
     filterDashboard();
     ['mousemove', 'keypress', 'scroll', 'click'].forEach(evt => window.addEventListener(evt, resetInactivityTimer));
     if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(err => console.error('SW registration failed:', err)); }); }
@@ -107,4 +78,28 @@ document.addEventListener('DOMContentLoaded', () => {
     allDOMElements.joinSquadForm.addEventListener('submit', e => { e.preventDefault(); Nexus.joinSquad(allDOMElements.joinSquadCode.value.toUpperCase()); });
     allDOMElements.copySquadCodeBtn.addEventListener('click', () => { navigator.clipboard.writeText(allDOMElements.squadInviteCode.value); showNotification('Invite code copied!', 'success'); });
     allDOMElements.leaveSquadBtn.addEventListener('click', () => Nexus.leaveSquad());
+
+    // --- Final Step: Hide loader and show the app ---
+    setTimeout(() => {
+        allDOMElements.loaderOverlay.classList.add('hidden');
+        allDOMElements.telegramModal.classList.add('visible');
+    }, 500); // A brief delay for smooth transition
+}
+
+// --- Event-Driven Application Start ---
+document.addEventListener('firebaseReady', (e) => {
+    console.log("Firebase is ready. Initializing main application.");
+    initializeMainApp(e.detail);
+});
+
+document.addEventListener('firebaseFailed', (e) => {
+    console.error("Firebase failed to initialize. App cannot start.", e.detail.error);
+    const loaderStatus = document.getElementById('loader-status');
+    loaderStatus.innerHTML = `
+        <div style="text-align: center; color: var(--danger-color);">
+            <p>Connection Failed</p>
+            <button id="retry-btn" class="styled-button support-button" style="margin-top: 20px;">Retry</button>
+        </div>
+    `;
+    document.getElementById('retry-btn').onclick = () => window.location.reload();
 });
