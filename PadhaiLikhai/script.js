@@ -1,10 +1,10 @@
 /* * Designed & Developed by Sagar Raj
- * Version 29: Firebase Serverless Logic
+ * Version 30: Static Hosting Firebase Fix
  */
 
 // Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- DOM Element Cache ---
@@ -379,25 +379,20 @@ const handleDirectAd = () => {
 
 // --- App Initialization ---
 async function initializeAppWithFirebase() {
-    // These variables are expected to be provided by the environment.
-    if (typeof __firebase_config === 'undefined') {
-        showNotification("Firebase is not configured.", "error");
-        console.error("Firebase config is missing.");
+    // The firebaseConfig object is now expected to be on the window object
+    if (typeof window.firebaseConfig === 'undefined' || !window.firebaseConfig.apiKey) {
+        showNotification("Firebase is not configured correctly.", "error");
+        console.error("Firebase config is missing or invalid. Please add it to index.html");
+        allDOMElements.loaderOverlay.classList.add('hidden'); // Hide loader to show error
         return;
     }
     
-    const firebaseConfig = JSON.parse(__firebase_config);
-    const app = initializeApp(firebaseConfig);
-    appState.db = getFirestore(app);
-    appState.auth = getAuth(app);
-
     try {
-        let userCredential;
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            userCredential = await signInWithCustomToken(appState.auth, __initial_auth_token);
-        } else {
-            userCredential = await signInAnonymously(appState.auth);
-        }
+        const app = initializeApp(window.firebaseConfig);
+        appState.db = getFirestore(app);
+        appState.auth = getAuth(app);
+        
+        const userCredential = await signInAnonymously(appState.auth);
         appState.userId = userCredential.user.uid;
         console.log("Firebase Anonymous Auth successful, UID:", appState.userId);
         
@@ -409,8 +404,9 @@ async function initializeAppWithFirebase() {
         }, 1500);
 
     } catch (error) {
-        console.error("Firebase Auth Error:", error);
-        showNotification("Could not connect to the app services.", "error");
+        console.error("Firebase Initialization Error:", error);
+        showNotification("Could not connect to app services.", "error");
+        allDOMElements.loaderOverlay.classList.add('hidden');
     }
 }
 
