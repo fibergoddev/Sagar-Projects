@@ -6,6 +6,22 @@
     <title>PadhaiLikhai | Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- STEP 2.2: PASTE YOUR FIREBASE CONFIG HERE -->
+    <script>
+      // Paste the same firebaseConfig object you copied from the Firebase console here.
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+      };
+      // Make it globally accessible for the next script
+      window.firebaseConfig = firebaseConfig;
+    </script>
+
 </head>
 <body>
     <div id="admin-view" class="view">
