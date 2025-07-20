@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 43: Definitive Ultimate UI & Ad Stabilization
+ * Version 44: Advanced UI & Ad Integration Upgrade
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -71,29 +71,32 @@ html, body {
 .category-btn { padding: 8px 20px; background: transparent; border: 1px solid var(--border-color); color: var(--secondary-color); border-radius: 50px; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; }
 .category-btn.active, .category-btn:hover { color: white; background: var(--accent-color-start); border-color: var(--accent-color-end); box-shadow: 0 0 10px var(--glow-color); }
 #dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-.content-card { position: relative; background: var(--glass-bg); border: 1px solid var(--border-color); border-radius: 15px; backdrop-filter: blur(10px); overflow: hidden; box-shadow: 0 10px 30px var(--shadow-color); transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease; text-decoration: none; color: var(--primary-color); }
+.content-card { position: relative; background: var(--glass-bg); border: 1px solid var(--border-color); border-radius: 15px; backdrop-filter: blur(10px); overflow: hidden; box-shadow: 0 10px 30px var(--shadow-color); transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease; text-decoration: none; color: var(--primary-color); display: flex; flex-direction: column; }
+/* ** NEW **: Added cursor pointer for better UX */
+.content-card.nav-button { cursor: pointer; }
 .content-card.hidden { display: none; }
 .content-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px var(--shadow-color); }
 .card-image { height: 200px; background-size: cover; background-position: center; }
-.card-content { padding: 25px; }
+.card-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
 .card-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
-.card-description { color: var(--secondary-color); margin-bottom: 20px; line-height: 1.6; }
+.card-description { color: var(--secondary-color); margin-bottom: 20px; line-height: 1.6; flex-grow: 1; }
 .card-tags { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
 .tag { background: rgba(255,255,255,0.1); color: var(--accent-color-start); padding: 5px 10px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
-.button-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+.button-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: auto; }
 .styled-button { padding: 12px 30px; font-size: 1rem; font-weight: 600; color: var(--primary-color); background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.2); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
 .styled-button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 242, 254, 0.4); }
 .support-button { background: transparent; border: 1px solid var(--border-color); }
 #no-results-message { text-align: center; padding: 50px; color: var(--secondary-color); }
 
 /* --- ** NEW **: Advanced Card Badges & Overlays --- */
-.card-badge { position: absolute; top: 15px; right: 15px; padding: 6px 12px; font-size: 0.9rem; font-weight: 700; border-radius: 50px; text-transform: uppercase; }
+.card-badge { position: absolute; top: 15px; right: 15px; padding: 6px 12px; font-size: 0.9rem; font-weight: 700; border-radius: 50px; text-transform: uppercase; z-index: 2; }
 .card-badge.new { background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end)); color: var(--background-start); box-shadow: 0 0 15px var(--glow-color); }
 .card-badge.trending { background: linear-gradient(90deg, var(--warning-color), #ff7e5f); color: var(--primary-color); box-shadow: 0 0 15px rgba(243, 156, 18, 0.6); animation: pulseBadge 2s infinite ease-in-out; }
 @keyframes pulseBadge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-.live-user-count { position: absolute; bottom: 15px; left: 15px; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); color: var(--primary-color); padding: 5px 10px; border-radius: 50px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+/* ** NEW **: Enhanced live user count styling */
+.live-user-count { position: absolute; bottom: 15px; left: 15px; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); color: var(--primary-color); padding: 5px 12px; border-radius: 50px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; z-index: 2; border: 1px solid rgba(255, 255, 255, 0.1); }
 .live-user-count i { color: var(--success-color); animation: pulseLive 1.5s infinite; }
-@keyframes pulseLive { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes pulseLive { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
 
 /* --- Unified View Styles (for SPA navigation) --- */
 .solver-view, .nexus-hub-view, .subscription-view { justify-content: flex-start; }
@@ -118,6 +121,18 @@ html, body {
 .notification.info { background: rgba(79, 172, 254, 0.8); border-color: var(--accent-color-end); }
 @keyframes slideIn { from { transform: translateX(120%); } to { transform: translateX(0); } }
 @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+
+/* ** NEW **: Popunder Ad Container Styling */
+.popunder-container {
+    display: none;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
 
 /* Include all other specific view styles (Nexus, Solver, Subscription) below */
 /* These styles are copied from nexus.css, doubtsolver.css, etc. to create a single master file */
