@@ -103,7 +103,7 @@ const askAI = async (prompt, base64ImageData = null) => {
 
     const payload = { contents: chatHistory };
     const apiKey = ""; // This will be provided by the execution environment.
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${AIzaSyBhePX5IDdCVBRwaM9u0KAHF58mb3T3GjU}`;
 
     try {
         const response = await fetch(apiUrl, {
