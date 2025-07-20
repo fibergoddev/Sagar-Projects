@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Doubt-Solver | PadhaiLikhai by Sagar Raj</title>
+    <!-- ** This page will use a new, dedicated stylesheet ** -->
+    <link rel="stylesheet" href="doubtsolver.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-512.png">
+    <!-- KaTeX for rendering beautiful math formulas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body>
+    <!-- Designed & Developed by Sagar Raj -->
+
+    <div id="solver-view" class="view">
+        <header class="solver-header">
+            <div class="logo">
+                <svg id="header-logo" width="30" height="30" viewBox="0 0 100 100"><path d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke="#00f2fe" stroke-width="10"/><path d="M 50 20 L 80 20 L 80 80" fill="none" stroke="#00f2fe" stroke-width="10"/></svg>
+                <span>AI Doubt-Solver</span>
+            </div>
+            <a href="index.html" class="back-to-hub-btn"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+        </header>
+
+        <main id="conversation-container">
+            <!-- Initial Welcome Message from AI -->
+            <div class="chat-message ai">
+                <div class="chat-avatar ai-avatar"><i class="fas fa-robot"></i></div>
+                <div class="chat-bubble">
+                    <p>Welcome to the PadhaiLikhai AI Doubt-Solver. I am your personal AI tutor, developed by Sagar Raj. Ask me any question, or upload a picture of a problem from your textbook.</p>
+                </div>
+            </div>
+            <!-- Conversation will be dynamically added here -->
+        </main>
+
+        <!-- Advanced Input Area -->
+        <footer id="input-area">
+            <div class="input-wrapper">
+                <textarea id="text-input" placeholder="Type your question here..." rows="1"></textarea>
+                <button id="camera-btn" class="input-action-btn" title="Scan a Problem"><i class="fas fa-camera"></i></button>
+                <button id="mic-btn" class="input-action-btn" title="Ask with Voice"><i class="fas fa-microphone"></i></button>
+            </div>
+            <button id="send-btn" class="send-button"><i class="fas fa-paper-plane"></i></button>
+        </footer>
+    </div>
+
+    <!-- Camera Modal for Photo Upload -->
+    <div id="camera-modal" class="modal-overlay hidden">
+        <div class="camera-modal-content">
+            <button id="close-camera-btn" class="ad-close-btn"><i class="fas fa-times"></i></button>
+            <video id="camera-feed" autoplay></video>
+            <canvas id="photo-canvas" class="hidden"></canvas>
+            <div class="camera-controls">
+                <button id="capture-btn" class="capture-button"><i class="fas fa-camera"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <!-- Self-contained script for this page -->
+    <script type="module">
+        // The entire logic for the AI Doubt-Solver will go here.
+        // This keeps it separate and optimized.
+        console.log("AI Doubt-Solver script placeholder. Awaiting logic.");
+    </script>
+</body>
+</html>
