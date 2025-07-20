@@ -8,11 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="icon-512.png">
-    <!-- KaTeX for rendering math formulas in the AI Solver -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <!-- Chart.js for Nexus Hub -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Designed & Developed by Sagar Raj -->
@@ -32,7 +27,7 @@
         </div>
 
         <!-- =============================================================================== -->
-        <!-- == MAIN HUB VIEW == -->
+        <!-- == MAIN HUB VIEW (Standalone) == -->
         <!-- =============================================================================== -->
         <div id="main-view" class="view">
             <div class="main-view-container">
@@ -41,9 +36,10 @@
                         <svg id="header-logo" width="30" height="30" viewBox="0 0 100 100"><path d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke="#00f2fe" stroke-width="10"/><path d="M 50 20 L 80 20 L 80 80" fill="none" stroke="#00f2fe" stroke-width="10"/></svg>
                         <span>PadhaiLikhai</span>
                     </div>
+                    <!-- ** UPDATED **: Navigation now uses direct links -->
                     <nav class="header-nav">
-                        <button class="header-button nav-button" data-target="subscription-view" title="Upgrade Plan"><i class="fas fa-gem"></i></button>
-                        <button class="header-button nav-button" data-target="nexus-view" title="Nexus Hub"><i class="fas fa-atom"></i></button>
+                        <a href="subscription.html" class="header-button" title="Upgrade Plan"><i class="fas fa-gem"></i></a>
+                        <a href="nexus.html" class="header-button" title="Nexus Hub"><i class="fas fa-atom"></i></a>
                         <button id="support-us-btn" class="header-button" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
                     </nav>
                 </header>
@@ -62,7 +58,7 @@
                         </div>
                     </div>
                     <div id="dashboard-grid">
-                        <!-- ** NEW **: Next Toppers Batch Card (First Position) -->
+                        <!-- Next Toppers Batch Card -->
                         <div class="content-card" data-category="course" data-keywords="next toppers batch course study login learn online education">
                             <div class="card-badge trending">Trending</div>
                             <div class="live-user-count"><i class="fas fa-eye"></i> <span>...</span></div>
@@ -74,8 +70,9 @@
                                 <div id="login-button-area" class="button-group"><button class="styled-button">Loading...</button></div>
                             </div>
                         </div>
-                        <!-- ** NEW **: AI Doubt Solver Card (Second Position) -->
-                        <div class="content-card nav-button" data-target="doubtsolver-view" data-category="ai" data-keywords="ai doubt solver artificial intelligence homework help math physics chemistry">
+                        
+                        <!-- ** UPDATED **: AI Doubt Solver Card is now a direct link -->
+                        <a href="doubtsolver.html" class="content-card" data-category="ai" data-keywords="ai doubt solver artificial intelligence homework help math physics chemistry">
                             <div class="card-badge new">New</div>
                             <div class="live-user-count"><i class="fas fa-eye"></i> <span>...</span></div>
                             <div class="card-image" style="background-image: url('https://placehold.co/600x400/4facfe/ffffff?text=AI+Solver');"></div>
@@ -83,8 +80,12 @@
                                 <h3 class="card-title">AI Doubt-Solver</h3>
                                 <p class="card-description">Your personal AI tutor. Scan any problem from your textbook and get instant, step-by-step solutions.</p>
                                 <div class="card-tags"><span class="tag">AI</span><span class="tag">Premium</span></div>
+                                <div class="button-group">
+                                    <button class="styled-button">Solve Now</button>
+                                </div>
                             </div>
-                        </div>
+                        </a>
+
                         <!-- Neuro-Link Game Card -->
                         <div class="content-card" data-category="game" data-keywords="neuro-link game memory focus play fun brain training">
                             <div class="live-user-count"><i class="fas fa-eye"></i> <span>...</span></div>
@@ -93,94 +94,79 @@
                                 <h3 class="card-title">Neuro-Link Game</h3>
                                 <p class="card-description">Engage your mind with our futuristic memory game. Sharpen your focus and climb the leaderboard!</p>
                                 <div class="card-tags"><span class="tag">Game</span><span class="tag">Focus</span></div>
-                                <button id="play-game-btn" class="styled-button">Play Now</button>
+                                <div class="button-group">
+                                    <button id="play-game-btn" class="styled-button">Play Now</button>
+                                </div>
                             </div>
                         </div>
+
                         <!-- Books Library Card -->
-                        <div class="content-card" data-category="book" data-keywords="books library resources reading knowledge pdf download">
-                            <a id="books-ad-link" href="#" target="_blank" class="card-ad-link">
-                                <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/2ecc71?text=Library');"></div>
-                                <div class="card-content">
-                                    <h3 class="card-title">Books Library</h3>
-                                    <p class="card-description">A vast collection of knowledge is being curated for you. Click to explore our resources.</p>
-                                    <div class="card-tags"><span class="tag">Book</span><span class="tag">Resources</span></div>
-                                </div>
-                            </a>
-                        </div>
+                        <a href="https://medievalkin.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf" target="_blank" class="content-card" data-category="book" data-keywords="books library resources reading knowledge pdf download">
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/2ecc71?text=Library');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Books Library</h3>
+                                <p class="card-description">A vast collection of knowledge is being curated for you. Click to explore our resources.</p>
+                                <div class="card-tags"><span class="tag">Book</span><span class="tag">Resources</span></div>
+                            </div>
+                        </a>
                     </div>
                     <div id="no-results-message" class="hidden"><h3>No Results Found</h3><p>Try adjusting your search or category filter.</p></div>
                 </main>
             </div>
         </div>
         
-        <!-- =============================================================================== -->
-        <!-- == NEXUS HUB VIEW == -->
-        <!-- =============================================================================== -->
-        <div id="nexus-view" class="view hidden nexus-hub-view">
-            <div class="nexus-hub-content">
-                <div class="nexus-sidebar">
-                    <button class="back-to-main-view-btn"><i class="fas fa-arrow-left"></i> Back to Hub</button>
-                    <div class="nexus-profile-pod"><div class="nexus-avatar" id="nexus-user-avatar">S</div><h3 id="nexus-user-name">Loading...</h3><div class="nexus-stats"><div class="nexus-stat-item" title="Nexus Points"><i class="fas fa-star"></i><span id="nexus-user-points">0</span> NP</div><div class="nexus-stat-item" title="Daily Streak"><i class="fas fa-fire"></i><span id="nexus-user-streak">0</span> Days</div></div></div>
-                    <div id="user-badges-container" class="badges-container"></div>
-                    <nav class="nexus-nav"><button class="nexus-nav-btn active" data-target="nexus-missions-view"><i class="fas fa-tasks"></i> Daily Missions</button><button class="nexus-nav-btn" data-target="nexus-squad-view"><i class="fas fa-users"></i> My Squad</button><button class="nexus-nav-btn" data-target="nexus-leaderboard-view"><i class="fas fa-trophy"></i> Leaderboards</button></nav>
-                </div>
-                <div class="nexus-main-view">
-                    <div id="nexus-missions-view" class="nexus-view active"><h2>Daily Missions</h2><p class="nexus-subtitle">Complete missions to earn bonus Nexus Points!</p><div id="daily-missions-list" class="missions-list"></div></div>
-                    <div id="nexus-squad-view" class="nexus-view"><div id="no-squad-view"><h2>Join a Squad!</h2><p class="nexus-subtitle">Team up with friends to compete together.</p><div class="squad-actions"><div class="squad-action-box"><h3>Create a Squad</h3><form id="create-squad-form"><input type="text" id="create-squad-name" placeholder="Enter Squad Name" required maxlength="20"><button type="submit" class="styled-button">Create</button></form></div><div class="squad-action-box"><h3>Join a Squad</h3><form id="join-squad-form"><input type="text" id="join-squad-code" placeholder="Enter Squad Code" required maxlength="6"><button type="submit" class="styled-button">Join</button></form></div></div></div><div id="in-squad-view" class="hidden"><div class="squad-header"><h2 id="squad-name-display"></h2><div class="squad-total-points"><i class="fas fa-star"></i> <span id="squad-points-display">0</span> NP</div></div><div class="squad-invite"><span>Invite Code:</span><input type="text" id="squad-invite-code" readonly><button id="copy-squad-code-btn"><i class="fas fa-copy"></i></button></div><h3>Squad Members (<span id="squad-member-count">0</span>/4)</h3><div id="squad-members-list" class="squad-members-list"></div><div id="squad-management-panel" class="hidden"><h3>Admin Controls</h3><button id="delete-squad-btn" class="styled-button danger-button">Delete Squad</button></div><button id="leave-squad-btn" class="styled-button danger-button">Leave Squad</button></div></div>
-                    <div id="nexus-leaderboard-view" class="nexus-view"><h2>Leaderboards</h2><div class="leaderboard-tabs"><button class="leaderboard-tab-btn active" data-target="leaderboard-global">Global</button><button class="leaderboard-tab-btn" data-target="leaderboard-local">Local</button><button class="leaderboard-tab-btn" data-target="leaderboard-squads">Squads</button></div><div id="leaderboard-global" class="leaderboard-content active"></div><div id="leaderboard-local" class="leaderboard-content"></div><div id="leaderboard-squads" class="leaderboard-content"></div><div id="leaderboard-ad-slot" class="ad-slot-native"></div></div>
-                </div>
+        <!-- Other UI elements (modals, widgets, etc.) that remain on the main page -->
+        <div id="support-view" class="view hidden">
+            <div class="support-content">
+                <h1 class="section-title">Support the Developer</h1>
+                <p class="section-subtitle">Your support by viewing these ads helps keep this application running and free for everyone. Thank you!</p>
+                <div id="ad-grid"></div>
+                <button id="back-to-main-btn" class="styled-button">Back to Hub</button>
             </div>
         </div>
 
-        <!-- =============================================================================== -->
-        <!-- == AI DOUBT-SOLVER VIEW == -->
-        <!-- =============================================================================== -->
-        <div id="doubtsolver-view" class="view hidden solver-view">
-            <header class="solver-header">
-                <div class="logo"><svg id="header-logo" width="30" height="30" viewBox="0 0 100 100"><path d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke="#00f2fe" stroke-width="10"/><path d="M 50 20 L 80 20 L 80 80" fill="none" stroke="#00f2fe" stroke-width="10"/></svg><span>AI Doubt-Solver</span></div>
-                <button class="back-to-main-view-btn"><i class="fas fa-arrow-left"></i> Back to Hub</button>
-            </header>
-            <main id="conversation-container">
-                <div class="chat-message ai"><div class="chat-avatar ai-avatar"><i class="fas fa-robot"></i></div><div class="chat-bubble"><p>Welcome to the PadhaiLikhai AI Doubt-Solver. I am your personal AI tutor, developed by Sagar Raj. Ask me any question, or upload a picture of a problem.</p></div></div>
-            </main>
-            <footer id="input-area">
-                <div class="input-wrapper"><textarea id="text-input" placeholder="Type your question here..." rows="1"></textarea><button id="camera-btn" class="input-action-btn" title="Scan a Problem"><i class="fas fa-camera"></i></button><button id="mic-btn" class="input-action-btn" title="Ask with Voice"><i class="fas fa-microphone"></i></button></div>
-                <button id="send-btn" class="send-button" disabled><i class="fas fa-paper-plane"></i></button>
-            </footer>
-        </div>
-
-        <!-- =============================================================================== -->
-        <!-- == SUBSCRIPTION VIEW == -->
-        <!-- =============================================================================== -->
-        <div id="subscription-view" class="view hidden subscription-view">
-             <header class="solver-header"><div class="logo"><svg id="header-logo" width="30" height="30" viewBox="0 0 100 100"><path d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke="#00f2fe" stroke-width="10"/><path d="M 50 20 L 80 20 L 80 80" fill="none" stroke="#00f2fe" stroke-width="10"/></svg><span>PadhaiLikhai</span></div><button class="back-to-main-view-btn"><i class="fas fa-arrow-left"></i> Back to Hub</button></header>
-             <div class="subscription-container">
-                <h1 class="main-title">Unlock Your Full Potential</h1><p class="subtitle">The PadhaiLikhai app is free forever. Upgrade to a Pro plan to unlock powerful new features and support the developer.</p>
-                <div class="pricing-grid">
-                    <div class="pricing-card" data-tilt><h2 class="plan-name">Free</h2><h3 class="plan-price">₹0</h3><p class="plan-description">The core PadhaiLikhai experience, free for everyone, always.</p><ul class="plan-features"><li><i class="fas fa-check-circle"></i> Access to All Core Features</li><li><i class="fas fa-check-circle"></i> Nexus Hub Access (Streaks, Points)</li><li><i class="fas fa-check-circle"></i> Standard Ad Support</li><li class="disabled"><i class="fas fa-times-circle"></i> Ad-Free Experience</li><li class="disabled"><i class="fas fa-times-circle"></i> AI Doubt-Solver</li><li class="disabled"><i class="fas fa-times-circle"></i> Exclusive "Pro" Badge</li></ul><button class="cta-button current-plan-btn" disabled>Your Current Plan</button></div>
-                    <div class="pricing-card recommended" data-tilt><h2 class="plan-name">Pro</h2><h3 class="plan-price">₹45 <span>/ month</span></h3><p class="plan-description">Supercharge your studies and get an ad-free experience.</p><ul class="plan-features"><li><i class="fas fa-check-circle"></i> Everything in Free, plus:</li><li><i class="fas fa-check-circle"></i> **Ad-Free Experience**</li><li><i class="fas fa-check-circle"></i> Advanced Nexus Stats</li><li><i class="fas fa-check-circle"></i> Exclusive "Pro" Profile Badge</li><li><i class="fas fa-check-circle"></i> Priority Access to New Features</li><li class="disabled"><i class="fas fa-times-circle"></i> AI Doubt-Solver</li></ul><button class="cta-button coming-soon-btn"><div>Get Pro<span>(Coming Soon)</span></div></button></div>
-                    <div class="pricing-card" data-tilt><h2 class="plan-name">Ultimate</h2><h3 class="plan-price">₹60 <span>/ month</span></h3><p class="plan-description">The ultimate unfair advantage for the most dedicated students.</p><ul class="plan-features"><li><i class="fas fa-check-circle"></i> Everything in Pro, plus:</li><li><i class="fas fa-check-circle"></i> **AI Doubt-Solver** (Photo Scan)</li><li><i class="fas fa-check-circle"></i> Unlimited Mock Tests</li><li><i class="fas fa-check-circle"></i> Exclusive Animated "Ultimate" Badge</li><li><i class="fas fa-check-circle"></i> 10% Squad Nexus Point Boost</li></ul><button class="cta-button coming-soon-btn"><div>Get Ultimate<span>(Coming Soon)</span></div></button></div>
-                </div>
+        <div id="app-view" class="view hidden">
+            <div id="iframe-container">
+                <div id="iframe-loader" class="fas fa-spinner fa-spin"></div>
+                <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
             </div>
+            <div id="focus-overlay"></div>
+            <button id="command-center-btn"><div class="icon-menu"><span></span><span></span><span></span></div></button>
+            <div id="side-panel">
+                <div class="side-panel-header"><span class="side-panel-title">Command Center</span></div>
+                <nav id="side-panel-nav">
+                    <button class="side-panel-button" id="side-panel-back-btn"><i class="fas fa-arrow-left fa-fw"></i> Back</button>
+                    <button class="side-panel-button" id="side-panel-profile-btn"><i class="fas fa-user-circle fa-fw"></i> Profile</button>
+                    <a href="game.html" class="side-panel-button"><i class="fas fa-gamepad fa-fw"></i> Neuro-Link Game</a>
+                    <button class="side-panel-button" id="side-panel-calculator-btn"><i class="fas fa-calculator fa-fw"></i> Calculator</button>
+                    <button class="side-panel-button" id="side-panel-focus-btn"><i class="fas fa-eye fa-fw"></i> Focus Mode</button>
+                    <button class="side-panel-button" id="side-panel-notes-btn"><i class="fas fa-sticky-note fa-fw"></i> Mini Notes</button>
+                    <button class="side-panel-button" id="side-panel-permissions-btn"><i class="fas fa-shield-alt fa-fw"></i> Permissions</button>
+                    <button class="side-panel-button" id="side-panel-exit-btn"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
+                </nav>
+            </div>
+            <div id="right-ad-bar"><button id="ad-bar-toggle"><i class="fas fa-chevron-left"></i></button><div id="right-ad-content"></div></div>
+            <div id="calculator" class="widget"><div class="widget-header" id="calc-header"><i class="fas fa-calculator"></i> Calculator <i class="fas fa-arrows-alt"></i></div><div id="calc-body"><input type="text" id="calc-display" disabled><div id="calc-buttons"><button class="calc-btn operator">C</button><button class="calc-btn operator">(</button><button class="calc-btn operator">)</button><button class="calc-btn operator">/</button><button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button><button class="calc-btn operator">*</button><button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button><button class="calc-btn operator">-</button><button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button><button class="calc-btn operator">+</button><button class="calc-btn">0</button><button class="calc-btn">.</button><button class="calc-btn" id="calc-equals" style="grid-column: span 2;">=</button></div></div></div>
+            <div id="mini-notes" class="widget"><div class="widget-header" id="notes-header"><i class="fas fa-sticky-note"></i> Mini Notes <i class="fas fa-arrows-alt"></i></div><textarea id="notes-textarea" placeholder="Your thoughts..."></textarea></div>
         </div>
 
-        <!-- Other UI elements (modals, etc.) -->
-        <div id="support-view" class="view hidden"><div class="support-content"><h1 class="section-title">Support the Developer</h1><p class="section-subtitle">Your support by viewing these ads helps keep this application running and free for everyone. Thank you!</p><div id="ad-grid"></div><button id="back-to-main-btn" class="styled-button">Back to Hub</button></div></div>
-        <div id="app-view" class="view hidden"><div id="iframe-container"><div id="iframe-loader" class="fas fa-spinner fa-spin"></div><iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe></div><div id="focus-overlay"></div><button id="command-center-btn"><div class="icon-menu"><span></span><span></span><span></span></div></button><div id="side-panel"><div class="side-panel-header"><span class="side-panel-title">Command Center</span></div><nav id="side-panel-nav"><button class="side-panel-button" id="side-panel-back-btn"><i class="fas fa-arrow-left fa-fw"></i> Back</button><button class="side-panel-button" id="side-panel-profile-btn"><i class="fas fa-user-circle fa-fw"></i> Profile</button><button class="side-panel-button" id="side-panel-game-btn"><i class="fas fa-gamepad fa-fw"></i> Neuro-Link Game</button><button class="side-panel-button" id="side-panel-calculator-btn"><i class="fas fa-calculator fa-fw"></i> Calculator</button><button class="side-panel-button" id="side-panel-focus-btn"><i class="fas fa-eye fa-fw"></i> Focus Mode</button><button class="side-panel-button" id="side-panel-notes-btn"><i class="fas fa-sticky-note fa-fw"></i> Mini Notes</button><button class="side-panel-button" id="side-panel-permissions-btn"><i class="fas fa-shield-alt fa-fw"></i> Permissions</button><button class="side-panel-button" id="side-panel-exit-btn"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button></nav></div><div id="right-ad-bar"><button id="ad-bar-toggle"><i class="fas fa-chevron-left"></i></button><div id="right-ad-content"></div></div><div id="calculator" class="widget"><div class="widget-header" id="calc-header"><i class="fas fa-calculator"></i> Calculator <i class="fas fa-arrows-alt"></i></div><div id="calc-body"><input type="text" id="calc-display" disabled><div id="calc-buttons"><button class="calc-btn operator">C</button><button class="calc-btn operator">(</button><button class="calc-btn operator">)</button><button class="calc-btn operator">/</button><button class="calc-btn">7</button><button class="calc-btn">8</button><button class="calc-btn">9</button><button class="calc-btn operator">*</button><button class="calc-btn">4</button><button class="calc-btn">5</button><button class="calc-btn">6</button><button class="calc-btn operator">-</button><button class="calc-btn">1</button><button class="calc-btn">2</button><button class="calc-btn">3</button><button class="calc-btn operator">+</button><button class="calc-btn">0</button><button class="calc-btn">.</button><button class="calc-btn" id="calc-equals" style="grid-column: span 2;">=</button></div></div></div><div id="mini-notes" class="widget"><div class="widget-header" id="notes-header"><i class="fas fa-sticky-note"></i> Mini Notes <i class="fas fa-arrows-alt"></i></div><textarea id="notes-textarea" placeholder="Your thoughts..."></textarea></div></div>
         <div id="interstitial-ad-modal" class="modal-overlay"><div class="modal-content"><button id="close-ad-modal-btn" class="ad-close-btn"><i class="fas fa-times"></i></button><p class="subtitle">Please support us by watching this ad</p><div id="interstitial-ad-container"></div><div class="modal-ad-controls"><button id="skip-ad-button" class="styled-button">Skip Ad in 4s</button></div></div></div>
         <div id="user-info-modal" class="modal-overlay"><div class="modal-content"><h2 class="title">Welcome!</h2><p class="subtitle">Please tell us a bit about yourself.</p><form id="user-info-form"><div class="form-group"><label for="user-name">Name</label><input type="text" id="user-name" required></div><div class="form-group"><label for="user-class">Class</label><input type="text" id="user-class" required></div><div class="form-group"><label for="user-age">Age</label><input type="number" id="user-age" required></div><button type="submit" class="styled-button" style="width: 100%;">Save & Continue</button></form></div></div>
         <div id="telegram-modal" class="modal-overlay"><div class="modal-content"><h2 class="title">Join Our Community!</h2><p class="subtitle">Get the latest updates on Telegram.</p><a href="https://t.me/PadhaiLikhai_official" target="_blank" class="styled-button" style="width: 100%; text-decoration: none;">Join Telegram</a><button id="close-telegram-modal" class="styled-button" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--border-color);">Continue to App</button></div></div>
         <div id="permissions-modal" class="modal-overlay"><div class="modal-content"><h2 class="title">Permissions Center</h2><p class="subtitle">To use all features, please grant the necessary permissions.</p><div class="permission-grid"><button id="grant-camera-btn" class="styled-button support-button"><i class="fas fa-camera"></i> Camera</button><button id="grant-notify-btn" class="styled-button support-button"><i class="fas fa-bell"></i> Notifications</button></div><button id="close-permissions-modal" class="styled-button" style="width: 100%; margin-top: 25px;">Close</button></div></div>
-        <div id="reward-overlay" class="hidden"><div class="reward-content"><div class="reward-title">Mission Complete!</div><div class="reward-points">+50 NP</div><div class="reward-particles"></div></div></div>
-        <div id="camera-modal" class="modal-overlay hidden"><div class="camera-modal-content"><button id="close-camera-btn" class="ad-close-btn"><i class="fas fa-times"></i></button><video id="camera-feed" autoplay playsinline></video><canvas id="photo-canvas" class="hidden"></canvas><div class="camera-controls"><button id="capture-btn" class="capture-button"></button></div></div></div>
     </div>
     
+    <!-- ** UPDATED **: Persistent Bottom Bar Ad Container -->
     <div id="persistent-ad-banner"></div>
-    <div id="direct-ad-overlay"></div>
+    <!-- ** NEW **: Popunder Ad Container -->
+    <div id="popunder-container" class="popunder-container"></div>
     <div id="notification-container"></div>
     
+    <!-- Firebase and Main App Scripts -->
     <script src="firebase-init.js" type="module"></script>
     <script src="script.js" type="module"></script>
 
+    <!-- ** NEW **: Social Bar Ad Script -->
+    <script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'></script>
 </body>
 </html>
