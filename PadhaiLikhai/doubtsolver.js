@@ -2,22 +2,6 @@
  * Version 42: Definitive AI Doubt-Solver Core - Limit Break Edition
  */
 
-// Import all necessary Firebase modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-// --- Firebase Configuration ---
-const firebaseConfig = {
-    apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
-    authDomain: "padhailikhai-app.firebaseapp.com",
-    projectId: "padhailikhai-app",
-    storageBucket: "padhailikhai-app.appspot.com",
-    messagingSenderId: "205786528118",
-    appId: "1:205786528118:web:2f09f0a2073144f3846257",
-    measurementId: "G-4MGMPE2DYV"
-};
-
 // --- DOM Element Cache ---
 const ui = {
     view: document.getElementById('solver-view'),
@@ -118,7 +102,7 @@ const askAI = async (prompt, base64ImageData = null) => {
     chatHistory.push({ role: "user", parts });
 
     const payload = { contents: chatHistory };
-    const apiKey = ""; // Provided by the environment
+    const apiKey = ""; // This will be provided by the execution environment.
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
     try {
@@ -155,22 +139,20 @@ const askAI = async (prompt, base64ImageData = null) => {
 // --- Math Rendering ---
 const renderMathInElement = (element) => {
     if (typeof katex === 'undefined') return;
-    const mathExpressions = element.innerHTML.match(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/g);
-    if (mathExpressions) {
-        mathExpressions.forEach(expr => {
-            const isBlock = expr.startsWith('$$');
-            const cleanExpr = expr.substring(isBlock ? 2 : 1, expr.length - (isBlock ? 2 : 1));
-            try {
-                const renderedMath = katex.renderToString(cleanExpr, {
-                    throwOnError: false,
-                    displayMode: isBlock
-                });
-                element.innerHTML = element.innerHTML.replace(expr, renderedMath);
-            } catch (e) {
-                console.error("KaTeX rendering error:", e);
-            }
-        });
-    }
+    // Use a regex that is safer against HTML injection
+    element.innerHTML = element.innerHTML.replace(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/g, (match) => {
+        const isBlock = match.startsWith('$$');
+        const cleanExpr = match.substring(isBlock ? 2 : 1, match.length - (isBlock ? 2 : 1));
+        try {
+            return katex.renderToString(cleanExpr, {
+                throwOnError: false,
+                displayMode: isBlock
+            });
+        } catch (e) {
+            console.error("KaTeX rendering error:", e);
+            return match; // Return original string on error
+        }
+    });
 };
 
 // --- Input Handlers ---
@@ -213,58 +195,54 @@ const handleCamera = {
     }
 };
 
-const handleMic = { /* ... unchanged ... */ };
+const handleMic = { /* Voice recognition logic can be added here */ };
 
 // ** THE FIX **: Mobile Keyboard Handling
 const handleVirtualKeyboard = () => {
     if (!('visualViewport' in window)) return;
-    const initialHeight = window.innerHeight;
-    window.visualViewport.addEventListener('resize', () => {
-        const newHeight = window.visualViewport.height;
-        // If keyboard is open, shrink the view
-        if (newHeight < initialHeight - 100) {
-            const offset = window.visualViewport.offsetTop;
-            ui.view.style.height = `${newHeight}px`;
-            scrollToBottom();
-        } else {
-            // Keyboard is closed, restore height
-            ui.view.style.height = '100vh';
-        }
-    });
+    
+    const setViewHeight = () => {
+        const vh = window.visualViewport.height;
+        ui.view.style.height = `${vh}px`;
+        scrollToBottom();
+    };
+
+    window.visualViewport.addEventListener('resize', setViewHeight);
+    setViewHeight(); // Set initial height
 };
 
 // --- App Initialization Sequence ---
-async function initializeSolverApp() {
-    try {
-        const app = initializeApp(firebaseConfig, "doubtSolverApp");
-        state.auth = getAuth(app);
-        state.db = getFirestore(app);
-        const userCredential = await signInAnonymously(state.auth);
-        state.userId = userCredential.user.uid;
+function initializeSolverApp(firebase) {
+    state.auth = firebase.auth;
+    state.db = firebase.db;
+    state.userId = firebase.userId;
 
-        // Attach all event listeners
-        ui.sendBtn.addEventListener('click', handleSend);
-        ui.textInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSend();
-            }
-        });
-        ui.textInput.addEventListener('input', autoResizeTextarea);
-        ui.cameraBtn.addEventListener('click', () => handleCamera.open());
-        ui.closeCameraBtn.addEventListener('click', () => handleCamera.close());
-        ui.captureBtn.addEventListener('click', () => handleCamera.capture());
-        
-        // handleMic.init();
-        // ui.micBtn.addEventListener('click', () => handleMic.toggle());
-        
-        handleVirtualKeyboard();
-        
-    } catch (error) {
-        console.error("Firebase Initialization Error:", error);
-        addMessage('ai', `<p>A critical error occurred while connecting to the AI services. Please check your connection and refresh the page. (Developed by Sagar Raj)</p>`);
-    }
+    // Attach all event listeners
+    ui.sendBtn.addEventListener('click', handleSend);
+    ui.textInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
+    });
+    ui.textInput.addEventListener('input', autoResizeTextarea);
+    ui.cameraBtn.addEventListener('click', () => handleCamera.open());
+    ui.closeCameraBtn.addEventListener('click', () => handleCamera.close());
+    ui.captureBtn.addEventListener('click', () => handleCamera.capture());
+    
+    handleVirtualKeyboard();
 }
 
-// --- Main Execution Block ---
-document.addEventListener('DOMContentLoaded', initializeSolverApp);
+// --- Event-Driven Application Start ---
+document.addEventListener('solverFirebaseReady', (e) => {
+    console.log("Solver Firebase is ready. Initializing AI Doubt-Solver.");
+    initializeSolverApp(e.detail);
+});
+
+document.addEventListener('solverFirebaseFailed', (e) => {
+    console.error("Solver Firebase failed to initialize. App cannot start.", e.detail.error);
+    const conversation = document.getElementById('conversation-container');
+    conversation.innerHTML = ''; // Clear any existing messages
+    addMessage('ai', `<p>A critical error occurred while connecting to the AI services. Please check your connection and refresh the page. (Developed by Sagar Raj)</p>`);
+    document.getElementById('input-area').style.display = 'none'; // Hide input on failure
+});
