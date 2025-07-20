@@ -245,9 +245,14 @@ const Nexus = {
         const targetEl = document.getElementById(`leaderboard-${type}`);
         targetEl.innerHTML = '<div class="mission-item placeholder" style="height: 60px;"></div>'.repeat(5);
         let q;
-        if (type === 'global') { q = query(collection(state.db, "users"), orderBy("nexusPoints", "desc"), limit(50)); } 
-        else if (type === 'local') { const country = state.userData.location?.country || 'Unknown'; q = query(collection(state.db, "users"), where("location.country", "==", country), orderBy("nexusPoints", "desc"), limit(50)); } 
-        else { q = query(collection(state.db, "squads"), orderBy("totalPoints", "desc"), limit(50)); }
+        if (type === 'global') {
+            q = query(collection(state.db, "users"), orderBy("nexusPoints", "desc"), limit(50));
+        } else if (type === 'local') {
+            const country = state.userData.location?.country || 'Unknown';
+            q = query(collection(state.db, "users"), where("location.country", "==", country), orderBy("nexusPoints", "desc"), limit(50));
+        } else {
+            q = query(collection(state.db, "squads"), orderBy("totalPoints", "desc"), limit(50));
+        }
         
         const querySnapshot = await getDocs(q);
         const data = querySnapshot.docs.map(doc => doc.data());
@@ -275,7 +280,14 @@ document.addEventListener('nexusFirebaseFailed', (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     ui.nexusNavBtns.forEach(btn => btn.addEventListener('click', () => { ui.nexusNavBtns.forEach(b => b.classList.remove('active')); ui.nexusViews.forEach(v => v.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.target).classList.add('active'); }));
-    ui.leaderboardTabs.forEach(btn => btn.addEventListener('click', () => { ui.leaderboardTabs.forEach(b => b.classList.remove('active')); ui.leaderboardContents.forEach(v => v.classList.remove('active')); btn.classList.add('active'); const targetId = btn.dataset.target; document.getElementById(targetId).classList.add('active'); Nexus.renderLeaderboard(targetId.replace('leaderboard-', '')); }));
+    ui.leaderboardTabs.forEach(btn => btn.addEventListener('click', () => {
+        ui.leaderboardTabs.forEach(b => b.classList.remove('active'));
+        ui.leaderboardContents.forEach(v => v.classList.remove('active'));
+        btn.classList.add('active');
+        const targetId = btn.dataset.target;
+        document.getElementById(targetId).classList.add('active');
+        Nexus.renderLeaderboard(targetId.replace('leaderboard-', ''));
+    }));
     ui.createSquadForm.addEventListener('submit', e => { e.preventDefault(); Nexus.createSquad(ui.createSquadName.value); });
     ui.joinSquadForm.addEventListener('submit', e => { e.preventDefault(); Nexus.joinSquad(ui.joinSquadCode.value.toUpperCase()); });
     ui.copySquadCodeBtn.addEventListener('click', () => { navigator.clipboard.writeText(ui.squadInviteCode.value); showNotification('Invite code copied!', 'success'); });

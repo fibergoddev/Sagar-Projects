@@ -38,14 +38,14 @@
                 <div class="admin-actions-panel">
                     <div class="search-bar-container admin-search">
                         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.031 16.617l4.25 4.25a.75.75 0 01-1.06 1.06l-4.25-4.25a8.5 8.5 0 111.06-1.06zM10.5 17a6.5 6.5 0 100-13 6.5 6.5 0 000 13z"></path></svg>
-                        <input type="text" id="admin-user-search" placeholder="Search users by name, ID, IP...">
+                        <input type="text" id="admin-user-search" placeholder="Search users by name, ID, IP, or email...">
                     </div>
                     <button id="broadcast-btn" class="styled-button"><i class="fas fa-bullhorn"></i> Send Broadcast</button>
                 </div>
                 <div class="table-container">
                     <table id="user-data-table">
-                        <thead><tr><th>User ID</th><th>Name</th><th>IP Address</th><th>Location</th><th>Device</th><th>Last Visited</th><th>Actions</th></tr></thead>
-                        <tbody><tr><td colspan="7" style="text-align:center;">Loading user data...</td></tr></tbody>
+                        <thead><tr><th>User ID</th><th>Name</th><th>Email</th><th>IP Address</th><th>Location</th><th>Device</th><th>Last Visited</th><th>Actions</th></tr></thead>
+                        <tbody><tr><td colspan="8" style="text-align:center;">Loading user data...</td></tr></tbody>
                     </table>
                 </div>
                 <div class="chart-container"><h3>Users by Country</h3><canvas id="country-chart"></canvas></div>
@@ -99,12 +99,12 @@
 
         const renderTable = (users) => {
             ui.userTableBody.innerHTML = '';
-            if (users.length === 0) { ui.userTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No users found.</td></tr>'; return; }
+            if (users.length === 0) { ui.userTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No users found.</td></tr>'; return; }
             users.forEach(user => {
                 const row = document.createElement('tr');
                 const lastVisited = user.lastVisited ? new Date(user.lastVisited.seconds * 1000).toLocaleString() : 'N/A';
                 row.innerHTML = `
-                    <td data-label="User ID">${user.id || 'N/A'}</td><td data-label="Name">${user.name || 'N/A'}</td><td data-label="IP Address">${user.location?.ip || 'N/A'}</td><td data-label="Location">${user.location?.city || 'N/A'}, ${user.location?.country || 'N/A'}</td><td data-label="Device">${user.device?.type || 'N/A'} (${user.device?.os || 'N/A'})</td><td data-label="Last Visited">${lastVisited}</td><td data-label="Actions"><button class="delete-btn" data-userid="${user.id}" data-username="${user.name || 'Unknown'}"><i class="fas fa-trash-alt"></i></button></td>`;
+                    <td data-label="User ID">${user.id || 'N/A'}</td><td data-label="Name">${user.name || 'N/A'}</td><td data-label="Email">${user.email || 'N/A'}</td><td data-label="IP Address">${user.location?.ip || 'N/A'}</td><td data-label="Location">${user.location?.city || 'N/A'}, ${user.location?.country || 'N/A'}</td><td data-label="Device">${user.device?.type || 'N/A'} (${user.device?.os || 'N/A'})</td><td data-label="Last Visited">${lastVisited}</td><td data-label="Actions"><button class="delete-btn" data-userid="${user.id}" data-username="${user.name || 'Unknown'}"><i class="fas fa-trash-alt"></i></button></td>`;
                 ui.userTableBody.appendChild(row);
             });
         };
@@ -124,7 +124,7 @@
                 ui.userTableBody.addEventListener('click', e => { if (e.target.closest('.delete-btn')) { const btn = e.target.closest('.delete-btn'); userIdToDelete = btn.dataset.userid; ui.userToDeleteInfo.textContent = `User: ${btn.dataset.username} (${userIdToDelete})`; ui.deleteConfirmModal.classList.add('visible'); } });
                 ui.cancelDeleteBtn.addEventListener('click', () => { ui.deleteConfirmModal.classList.remove('visible'); userIdToDelete = null; });
                 ui.confirmDeleteBtn.addEventListener('click', () => { if (userIdToDelete) deleteUser(userIdToDelete); ui.deleteConfirmModal.classList.remove('visible'); userIdToDelete = null; });
-                ui.adminUserSearch.addEventListener('input', e => { const searchTerm = e.target.value.toLowerCase(); const filteredUsers = allUsersData.filter(user => (user.name || '').toLowerCase().includes(searchTerm) || (user.id || '').toLowerCase().includes(searchTerm) || (user.location?.ip || '').toLowerCase().includes(searchTerm)); renderTable(filteredUsers); });
+                ui.adminUserSearch.addEventListener('input', e => { const searchTerm = e.target.value.toLowerCase(); const filteredUsers = allUsersData.filter(user => (user.name || '').toLowerCase().includes(searchTerm) || (user.id || '').toLowerCase().includes(searchTerm) || (user.location?.ip || '').toLowerCase().includes(searchTerm) || (user.email || '').toLowerCase().includes(searchTerm)); renderTable(filteredUsers); });
                 ui.broadcastBtn.addEventListener('click', () => ui.broadcastModal.classList.add('visible'));
                 ui.cancelBroadcastBtn.addEventListener('click', () => { ui.broadcastModal.classList.remove('visible'); ui.broadcastMessage.value = ''; });
                 ui.confirmBroadcastBtn.addEventListener('click', () => { sendBroadcast(ui.broadcastMessage.value); ui.broadcastModal.classList.remove('visible'); ui.broadcastMessage.value = ''; });

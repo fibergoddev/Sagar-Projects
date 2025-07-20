@@ -102,6 +102,10 @@ html, body {
     .main-header { flex-direction: column; gap: 15px; }
     #main-content-area { padding: 15px; }
 
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
     #user-data-table thead { display: none; }
     #user-data-table, #user-data-table tbody, #user-data-table tr, #user-data-table td { display: block; width: 100%; }
     #user-data-table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; }
