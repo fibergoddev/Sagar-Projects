@@ -102,8 +102,8 @@ const askAI = async (prompt, base64ImageData = null) => {
     chatHistory.push({ role: "user", parts });
 
     const payload = { contents: chatHistory };
-    const apiKey = ""; // This will be provided by the execution environment.
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${AIzaSyBhePX5IDdCVBRwaM9u0KAHF58mb3T3GjU}`;
+    const apiKey = "AIzaSyBhePX5IDdCVBRwaM9u0KAHF58mb3T3GjU"; // Your provided API key
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
     try {
         const response = await fetch(apiUrl, {
@@ -212,11 +212,7 @@ const handleVirtualKeyboard = () => {
 };
 
 // --- App Initialization Sequence ---
-function initializeSolverApp(firebase) {
-    state.auth = firebase.auth;
-    state.db = firebase.db;
-    state.userId = firebase.userId;
-
+function initializeSolverApp() {
     // Attach all event listeners
     ui.sendBtn.addEventListener('click', handleSend);
     ui.textInput.addEventListener('keydown', (e) => {
@@ -233,16 +229,5 @@ function initializeSolverApp(firebase) {
     handleVirtualKeyboard();
 }
 
-// --- Event-Driven Application Start ---
-document.addEventListener('solverFirebaseReady', (e) => {
-    console.log("Solver Firebase is ready. Initializing AI Doubt-Solver.");
-    initializeSolverApp(e.detail);
-});
-
-document.addEventListener('solverFirebaseFailed', (e) => {
-    console.error("Solver Firebase failed to initialize. App cannot start.", e.detail.error);
-    const conversation = document.getElementById('conversation-container');
-    conversation.innerHTML = ''; // Clear any existing messages
-    addMessage('ai', `<p>A critical error occurred while connecting to the AI services. Please check your connection and refresh the page. (Developed by Sagar Raj)</p>`);
-    document.getElementById('input-area').style.display = 'none'; // Hide input on failure
-});
+// --- Main Execution Block ---
+document.addEventListener('DOMContentLoaded', initializeSolverApp);
