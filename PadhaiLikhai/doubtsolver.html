@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Doubt-Solver | PadhaiLikhai by Sagar Raj</title>
-    <!-- ** This page will use a new, dedicated stylesheet ** -->
     <link rel="stylesheet" href="doubtsolver.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="manifest" href="manifest.json">
@@ -43,7 +42,7 @@
                 <button id="camera-btn" class="input-action-btn" title="Scan a Problem"><i class="fas fa-camera"></i></button>
                 <button id="mic-btn" class="input-action-btn" title="Ask with Voice"><i class="fas fa-microphone"></i></button>
             </div>
-            <button id="send-btn" class="send-button"><i class="fas fa-paper-plane"></i></button>
+            <button id="send-btn" class="send-button" disabled><i class="fas fa-paper-plane"></i></button>
         </footer>
     </div>
 
@@ -51,21 +50,20 @@
     <div id="camera-modal" class="modal-overlay hidden">
         <div class="camera-modal-content">
             <button id="close-camera-btn" class="ad-close-btn"><i class="fas fa-times"></i></button>
-            <video id="camera-feed" autoplay></video>
+            <video id="camera-feed" autoplay playsinline></video>
             <canvas id="photo-canvas" class="hidden"></canvas>
             <div class="camera-controls">
-                <button id="capture-btn" class="capture-button"><i class="fas fa-camera"></i></button>
+                <button id="capture-btn" class="capture-button"></button>
             </div>
         </div>
     </div>
 
     <div id="notification-container"></div>
 
-    <!-- Self-contained script for this page -->
-    <script type="module">
-        // The entire logic for the AI Doubt-Solver will go here.
-        // This keeps it separate and optimized.
-        console.log("AI Doubt-Solver script placeholder. Awaiting logic.");
-    </script>
+    <!-- ** THE FIX **: New, Unbreakable Loading Sequence -->
+    <!-- Step 1: Load the dedicated Firebase initialization script first. -->
+    <script src="doubtsolver-init.js" type="module"></script>
+    <!-- Step 2: Load the main application script, which will wait for the signal. -->
+    <script src="doubtsolver.js" type="module"></script>
 </body>
 </html>
