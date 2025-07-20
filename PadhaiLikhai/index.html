@@ -70,7 +70,7 @@
                                 <h3 class="card-title">Next Toppers Batch</h3>
                                 <p class="card-description">Your exclusive portal to premium courses and study materials. Login to continue your session.</p>
                                 <div id="login-button-area" class="button-group">
-                                    <!-- Login/Continue button will be injected here by script.js -->
+                                    <!-- Login/Continue/Force Login buttons will be injected here by script.js -->
                                 </div>
                             </div>
                         </div>
@@ -120,15 +120,6 @@
              <div class="main-view-container" style="padding: 30px; text-align: center;">
                 <h1 style="font-size: 2rem; margin-bottom: 15px;">Support the Developer</h1>
                 <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px auto;">Your support helps keep this application running and free for everyone. Thank you!</p>
-                
-                <!-- ** MOVED **: Featured Content Section for Native Ad -->
-                <section class="featured-content-section">
-                    <h2>Featured Content</h2>
-                    <div id="native-ad-container">
-                        <!-- Native Ad will be injected here by script.js -->
-                    </div>
-                </section>
-
                 <div id="ad-grid"></div>
                 <button id="back-to-main-btn" class="styled-button" style="margin-top: 30px;">Back to Hub</button>
             </div>
@@ -140,6 +131,7 @@
                 <div id="iframe-loader" class="fas fa-spinner"></div>
                 <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
             </div>
+            <!-- ** FIX **: Command Center Button with spans for the icon -->
             <button id="command-center-btn">
                 <div class="icon-menu"><span></span><span></span><span></span></div>
             </button>
@@ -161,6 +153,7 @@
     <!-- Modals -->
     <div id="interstitial-ad-modal" class="modal-overlay">
         <div class="modal-content">
+            <!-- ** FIX **: Close button is now inside the modal content div -->
             <button id="close-ad-modal-btn" class="ad-close-btn"><i class="fas fa-times"></i></button>
             <p class="subtitle">Please support us by watching this ad</p>
             <div id="interstitial-ad-container"></div>
