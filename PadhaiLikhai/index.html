@@ -10,6 +10,10 @@
     <link rel="icon" type="image/png" href="icon-512.png">
 </head>
 <body>
+    <!-- Designed & Developed by Sagar Raj -->
+
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
 
     <!-- Main application shell -->
     <div id="app-shell">
@@ -27,12 +31,12 @@
             <div class="main-view-container">
                 <header class="main-header">
                     <div class="logo">
-                        <svg id="header-logo" width="30" height="30" viewBox="0 0 100 100"><path d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="10"/><path d="M 50 20 L 80 20 L 80 80" fill="none" stroke-width="10"/></svg>
+                        <svg id="header-logo" width="30" height="30" viewBox="0 0 100 100"><path d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke="#00f2fe" stroke-width="10"/><path d="M 50 20 L 80 20 L 80 80" fill="none" stroke="#00f2fe" stroke-width="10"/></svg>
                         <span>PadhaiLikhai</span>
                     </div>
                     <nav class="header-nav">
-                        <!-- ** THE FIX **: Changed button to a direct link to the new Nexus section -->
-                        <a href="nexus.html" id="nexus-hub-btn" class="header-button" title="Nexus Hub"><i class="fas fa-atom"></i></a>
+                        <a href="subscription.html" class="header-button" title="Upgrade Plan"><i class="fas fa-gem"></i></a>
+                        <a href="nexus.html" class="header-button" title="Nexus Hub"><i class="fas fa-atom"></i></a>
                         <button id="support-us-btn" class="header-button" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
                     </nav>
                 </header>
@@ -47,12 +51,50 @@
                             <button class="category-btn" data-category="course">Courses</button>
                             <button class="category-btn" data-category="game">Games</button>
                             <button class="category-btn" data-category="book">Books</button>
+                            <button class="category-btn" data-category="ai">AI Tools</button>
                         </div>
                     </div>
                     <div id="dashboard-grid">
-                        <div class="content-card" data-category="course" data-keywords="next toppers batch course study login learn online education"><div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/00f2fe?text=Toppers');"></div><div class="card-content"><h3 class="card-title">Next Toppers Batch</h3><p class="card-description">Your journey to success starts here. Login to access exclusive content or continue your study session.</p><div class="card-tags"><span class="tag">Course</span><span class="tag">Study</span></div><div id="login-button-area" class="button-group"><button class="styled-button">Loading...</button></div></div></div>
-                        <div class="content-card" data-category="game" data-keywords="neuro-link game memory focus play fun brain training"><div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/f04747?text=Neuro-Link');"></div><div class="card-content"><h3 class="card-title">Neuro-Link Game</h3><p class="card-description">Engage your mind with our futuristic memory game. Sharpen your focus and climb the leaderboard!</p><div class="card-tags"><span class="tag">Game</span><span class="tag">Focus</span></div><button id="play-game-btn" class="styled-button">Play Now</button></div></div>
-                        <div class="content-card" data-category="book" data-keywords="books library resources reading knowledge pdf download"><a id="books-ad-link" href="#" target="_blank" class="card-ad-link"><div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/2ecc71?text=Library');"></div><div class="card-content"><h3 class="card-title">Books Library</h3><p class="card-description">A vast collection of knowledge is being curated for you. Click to explore our resources.</p><div class="card-tags"><span class="tag">Book</span><span class="tag">Resources</span></div></div></a></div>
+                        <!-- AI Doubt Solver Card -->
+                        <a href="doubtsolver.html" class="content-card" data-category="ai" data-keywords="ai doubt solver artificial intelligence homework help math physics chemistry">
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/4facfe/ffffff?text=AI+Solver');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">AI Doubt-Solver</h3>
+                                <p class="card-description">Your personal AI tutor. Scan any problem from your textbook and get instant, step-by-step solutions.</p>
+                                <div class="card-tags"><span class="tag">AI</span><span class="tag">Premium</span></div>
+                            </div>
+                        </a>
+                        <!-- Next Toppers Batch Card -->
+                        <div class="content-card" data-category="course" data-keywords="next toppers batch course study login learn online education">
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/00f2fe?text=Toppers');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Next Toppers Batch</h3>
+                                <p class="card-description">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
+                                <div class="card-tags"><span class="tag">Course</span><span class="tag">Study</span></div>
+                                <div id="login-button-area" class="button-group"><button class="styled-button">Loading...</button></div>
+                            </div>
+                        </div>
+                        <!-- Neuro-Link Game Card -->
+                        <div class="content-card" data-category="game" data-keywords="neuro-link game memory focus play fun brain training">
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/f04747?text=Neuro-Link');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Neuro-Link Game</h3>
+                                <p class="card-description">Engage your mind with our futuristic memory game. Sharpen your focus and climb the leaderboard!</p>
+                                <div class="card-tags"><span class="tag">Game</span><span class="tag">Focus</span></div>
+                                <button id="play-game-btn" class="styled-button">Play Now</button>
+                            </div>
+                        </div>
+                        <!-- Books Library Card -->
+                        <div class="content-card" data-category="book" data-keywords="books library resources reading knowledge pdf download">
+                            <a id="books-ad-link" href="#" target="_blank" class="card-ad-link">
+                                <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/2ecc71?text=Library');"></div>
+                                <div class="card-content">
+                                    <h3 class="card-title">Books Library</h3>
+                                    <p class="card-description">A vast collection of knowledge is being curated for you. Click to explore our resources.</p>
+                                    <div class="card-tags"><span class="tag">Book</span><span class="tag">Resources</span></div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                     <div id="no-results-message" class="hidden"><h3>No Results Found</h3><p>Try adjusting your search or category filter.</p></div>
                 </main>
@@ -75,8 +117,6 @@
         <div id="user-info-modal" class="modal-overlay"><div class="modal-content"><h2 class="title">Welcome!</h2><p class="subtitle">Please tell us a bit about yourself.</p><form id="user-info-form"><div class="form-group"><label for="user-name">Name</label><input type="text" id="user-name" required></div><div class="form-group"><label for="user-class">Class</label><input type="text" id="user-class" required></div><div class="form-group"><label for="user-age">Age</label><input type="number" id="user-age" required></div><button type="submit" class="styled-button" style="width: 100%;">Save & Continue</button></form></div></div>
         <div id="telegram-modal" class="modal-overlay"><div class="modal-content"><h2 class="title">Join Our Community!</h2><p class="subtitle">Get the latest updates on Telegram.</p><a href="https://t.me/PadhaiLikhai_official" target="_blank" class="styled-button" style="width: 100%; text-decoration: none;">Join Telegram</a><button id="close-telegram-modal" class="styled-button" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--border-color);">Continue to App</button></div></div>
         <div id="permissions-modal" class="modal-overlay"><div class="modal-content"><h2 class="title">Permissions Center</h2><p class="subtitle">To use all features, please grant the necessary permissions.</p><div class="permission-grid"><button id="grant-camera-btn" class="styled-button support-button"><i class="fas fa-camera"></i> Camera</button><button id="grant-notify-btn" class="styled-button support-button"><i class="fas fa-bell"></i> Notifications</button></div><button id="close-permissions-modal" class="styled-button" style="width: 100%; margin-top: 25px;">Close</button></div></div>
-    
-        <!-- ** REMOVED **: The old Nexus Hub modal is no longer needed here. -->
     </div>
     
     <div id="persistent-ad-banner"></div>
