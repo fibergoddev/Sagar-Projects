@@ -9,6 +9,7 @@ import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/1
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Firebase Configuration ---
+// This is the corrected, definitive configuration.
 const firebaseConfig = {
     apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
     authDomain: "padhailikhai-app.firebaseapp.com",
