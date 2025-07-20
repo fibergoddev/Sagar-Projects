@@ -139,8 +139,19 @@ html, body {
 
 /* --- Responsive for Nexus Hub --- */
 @media (max-width: 900px) {
-    .nexus-hub-content { grid-template-columns: 1fr; height: 95vh; max-height: none; }
-    .nexus-sidebar { border-right: none; border-bottom: 1px solid var(--border-color); }
-    #no-squad-view .squad-actions { grid-template-columns: 1fr; }
-    .nexus-main-view h2 { font-size: 2rem; }
+    .nexus-hub-content {
+        grid-template-columns: 1fr;
+        height: 95vh;
+        max-height: none;
+    }
+    .nexus-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    #no-squad-view .squad-actions {
+        grid-template-columns: 1fr;
+    }
+    .nexus-main-view h2 {
+        font-size: 2rem;
+    }
 }

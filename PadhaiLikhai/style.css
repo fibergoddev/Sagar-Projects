@@ -41,7 +41,7 @@ html, body {
 #app-shell {
     height: 100%;
     width: 100%;
-    display: flex; /* Establishes a flex context for the views */
+    display: flex;
     flex-direction: column;
 }
 
@@ -272,3 +272,23 @@ html, body {
     animation: slideIn 0.5s forwards;
 }
 @keyframes slideIn { from { transform: translateX(120%); } to { transform: translateX(0); } }
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    .main-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    #main-content-area {
+        padding: 20px;
+    }
+    #dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .category-filter {
+        gap: 8px;
+    }
+    .category-btn {
+        padding: 8px 15px;
+    }
+}
