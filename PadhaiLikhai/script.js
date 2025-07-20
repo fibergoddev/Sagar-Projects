@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 51: Definitive Professional Upgrade & Final Fixes
+ * Version 52: Definitive Professional Upgrade & Final Fixes
  * This script orchestrates all functionality for the main application hub.
  */
 
@@ -9,9 +9,8 @@
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Ad System Resources ---
-// A centralized object for all new ad codes and links for easy management and future updates.
+// A centralized object for all ad codes and links for easy management and future updates.
 const ads = {
-    directLink: 'https://medievalkin.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf',
     popunderScript: '//medievalkin.com/5d/2c/15/5d2c15bb87424bfe641144d764893adc.js',
     bottomBar: {
         options: { key: '7f09cc75a479e1c1557ae48261980b12', format: 'iframe', height: 50, width: 320, params: {} },
@@ -42,6 +41,8 @@ const allDOMElements = {
     closeAdModalBtn: document.getElementById('close-ad-modal-btn'),
     telegramModal: document.getElementById('telegram-modal'),
     closeTelegramModal: document.getElementById('close-telegram-modal'),
+    userInfoModal: document.getElementById('user-info-modal'),
+    userInfoForm: document.getElementById('user-info-form'),
     websiteFrame: document.getElementById('website-frame'),
     iframeLoader: document.getElementById('iframe-loader'),
     commandCenterBtn: document.getElementById('command-center-btn'),
@@ -84,16 +85,35 @@ const showView = (viewId) => {
         document.getElementById(id)?.classList.toggle('hidden', id !== viewId);
     });
     allDOMElements.commandCenterBtn?.classList.toggle('visible', viewId === 'app-view');
-    allDOMElements.rightAdBar?.classList.toggle('visible-view', viewId === 'app-view');
+};
+
+/**
+ * Tracks user data and saves it to Firestore. Can be used for initial setup or updates.
+ * @param {object} dataToUpdate An object containing user data to save (e.g., { name, class, age }).
+ */
+const trackUserData = async (dataToUpdate = {}) => {
+    if (!appState.db || !appState.userId) return;
+    try {
+        const getDeviceType = () => {
+            const ua = navigator.userAgent;
+            if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "Tablet";
+            if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) return "Mobile";
+            return "Desktop";
+        };
+        const userDocRef = doc(appState.db, "users", appState.userId);
+        await setDoc(userDocRef, {
+            id: appState.userId,
+            device: { type: getDeviceType(), os: navigator.platform },
+            lastVisited: serverTimestamp(),
+            ...dataToUpdate
+        }, { merge: true });
+    } catch (error) {
+        console.error("Failed to track user data:", error);
+    }
 };
 
 // --- Ad System & Monetization ---
 
-/**
- * Dynamically injects an ad script into a container.
- * @param {HTMLElement} container The container element.
- * @param {object} adConfig The ad configuration.
- */
 const injectAdScript = (container, adConfig) => {
     if (!container) return;
     container.innerHTML = '';
@@ -107,11 +127,6 @@ const injectAdScript = (container, adConfig) => {
     container.appendChild(invokeScript);
 };
 
-/**
- * Injects the native banner ad into its dedicated container.
- * @param {HTMLElement} container The container element.
- * @param {object} adConfig The ad configuration.
- */
 const injectNativeAd = (container, adConfig) => {
     if (!container) return;
     container.innerHTML = '';
@@ -125,9 +140,6 @@ const injectNativeAd = (container, adConfig) => {
     container.appendChild(nativeDiv);
 };
 
-/**
- * Loads all primary ads for the application into their designated slots.
- */
 const loadAds = () => {
     injectAdScript(allDOMElements.persistentAdBanner, ads.bottomBar);
     injectAdScript(allDOMElements.adGrid, ads.bigBar);
@@ -135,9 +147,6 @@ const loadAds = () => {
     injectNativeAd(allDOMElements.nativeAdContainer, ads.nativeBanner);
 };
 
-/**
- * Sets up a one-time listener to trigger the popunder ad on the first user interaction.
- */
 const initializePopunder = () => {
     const triggerPopunder = () => {
         if (appState.popunderTriggered) return;
@@ -151,13 +160,12 @@ const initializePopunder = () => {
 };
 
 /**
- * ** FIXED **: Shows the interstitial ad modal and executes a callback function upon completion.
- * This is the core of the new, monetized navigation flow.
- * @param {Function} onAdCompleteCallback The function to execute after the ad is skipped or closed.
+ * ** ADVANCED & FIXED **: Shows the interstitial ad modal with strict action control.
+ * The callback ONLY executes if the user waits for the timer and clicks "Skip Ad".
+ * @param {Function} onAdCompleteCallback The function to execute after the ad is successfully skipped.
  */
 const showInterstitialAd = (onAdCompleteCallback) => {
     const { interstitialAdModal, skipAdButton, closeAdModalBtn } = allDOMElements;
-    // ** FIX **: Ensure the big bar ad is correctly injected every time.
     injectAdScript(allDOMElements.interstitialAdContainer, ads.bigBar);
     interstitialAdModal.classList.add('visible');
     let timeLeft = 4;
@@ -177,22 +185,25 @@ const showInterstitialAd = (onAdCompleteCallback) => {
     const closeFunction = () => {
         clearInterval(timerInterval);
         interstitialAdModal.classList.remove('visible');
+    };
+
+    // Action is ONLY performed if the user clicks the enabled skip button.
+    skipAdButton.onclick = () => {
+        if (skipAdButton.disabled) return;
+        closeFunction();
         if (typeof onAdCompleteCallback === 'function') {
             onAdCompleteCallback();
         }
     };
 
-    skipAdButton.onclick = () => !skipAdButton.disabled && closeFunction();
-    closeAdModalBtn.onclick = closeFunction;
+    // Clicking the 'X' button CANCELS the action.
+    closeAdModalBtn.onclick = () => {
+        closeFunction();
+    };
 };
 
 // --- Advanced Features & UI Logic ---
 
-/**
- * Loads a URL into the iFrame for the embedded course view.
- * @param {string} url The URL to load.
- * @param {boolean} setLoginTimestamp Whether to set the 36-hour login timestamp.
- */
 const launchSite = (url, setLoginTimestamp = false) => {
     if (setLoginTimestamp) localStorage.setItem('sagarRajLoginTimestamp', Date.now().toString());
     if (url !== appState.currentUrl && appState.currentUrl) {
@@ -207,9 +218,6 @@ const launchSite = (url, setLoginTimestamp = false) => {
     }, 50);
 };
 
-/**
- * Navigates back in the iFrame history or returns to the main hub.
- */
 const navigateBack = () => {
     if (appState.iframeHistory.length > 0) {
         const prevUrl = appState.iframeHistory.pop();
@@ -223,9 +231,6 @@ const navigateBack = () => {
     }
 };
 
-/**
- * Sets up the main login button based on the stored timestamp.
- */
 const setupLoginButton = () => {
     const isLoggedIn = (Date.now() - parseInt(localStorage.getItem('sagarRajLoginTimestamp') || '0', 10)) < (36 * 60 * 60 * 1000);
     allDOMElements.loginButtonArea.innerHTML = isLoggedIn
@@ -233,9 +238,6 @@ const setupLoginButton = () => {
         : `<button class="styled-button" data-action="launchLogin" data-url="https://rolexcoderz.live/36xsuccess/" data-set-timestamp="true">Login for 36 Hours</button>`;
 };
 
-/**
- * ** RESTORED **: Shows the Telegram modal if it hasn't been shown in the current session.
- */
 const handleTelegramModal = () => {
     if (sessionStorage.getItem('telegramModalShown')) return;
     allDOMElements.telegramModal.classList.add('visible');
@@ -245,9 +247,6 @@ const handleTelegramModal = () => {
     };
 };
 
-/**
- * ** RESTORED **: Initializes the dynamic live user count on the dashboard cards.
- */
 const initializeLiveUserCounts = () => {
     const countElements = document.querySelectorAll('.live-user-count span');
     if (countElements.length === 0) return;
@@ -260,12 +259,6 @@ const initializeLiveUserCounts = () => {
     setInterval(updateCounts, 3500);
 };
 
-/**
- * ** ADVANCED **: A professional debounce function to prevent excessive function calls.
- * @param {Function} func The function to debounce.
- * @param {number} delay The delay in milliseconds.
- * @returns {Function} The debounced function.
- */
 const debounce = (func, delay) => {
     let timeout;
     return (...args) => {
@@ -275,7 +268,7 @@ const debounce = (func, delay) => {
 };
 
 /**
- * Filters the dashboard cards based on search and category.
+ * ** FIXED **: Filters the dashboard cards based on search and category.
  */
 const filterDashboard = () => {
     const searchTerm = allDOMElements.searchBar.value.toLowerCase().trim();
@@ -305,10 +298,10 @@ function initializeMainApp() {
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
     allDOMElements.websiteFrame.addEventListener('load', () => { allDOMElements.iframeLoader.style.display = 'none'; });
     
-    // ** FIX **: Right Ad Slider Logic
+    // ** FIXED **: Right Ad Slider Logic
     allDOMElements.adBarToggle.addEventListener('click', () => allDOMElements.rightAdBar.classList.toggle('expanded'));
     
-    // ** ADVANCED **: Debounced search for a smoother experience
+    // ** FIXED **: Debounced search for a smoother experience
     allDOMElements.searchBar.addEventListener('input', debounce(filterDashboard, 300));
     
     allDOMElements.categoryFilter.addEventListener('click', (e) => {
@@ -324,7 +317,7 @@ function initializeMainApp() {
         const targetButton = e.target.closest('[data-action]');
         if (!targetButton) return;
 
-        e.preventDefault(); // Prevent default link behavior if any
+        e.preventDefault();
         const { action, url, setTimestamp } = targetButton.dataset;
 
         const actionCallback = () => {
@@ -340,8 +333,10 @@ function initializeMainApp() {
         }
     });
 
-    // Side Panel Logic
-    allDOMElements.commandCenterBtn.addEventListener('click', () => allDOMElements.sidePanel.classList.toggle('visible'));
+    // ** FIXED **: Command Center Logic
+    allDOMElements.commandCenterBtn.addEventListener('click', () => {
+        allDOMElements.sidePanel.classList.toggle('visible');
+    });
     allDOMElements.sidePanelNav.addEventListener('click', (e) => {
         const target = e.target.closest('.side-panel-button');
         if (!target) return;
@@ -355,11 +350,29 @@ function initializeMainApp() {
         }
     });
 
-    // Smoothly transition from loader to main view and show Telegram modal
+    // ** NEW **: First-Time User Info Logic
+    if (!localStorage.getItem('userInfoSaved')) {
+        allDOMElements.userInfoModal.classList.add('visible');
+        allDOMElements.userInfoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userInfo = {
+                name: document.getElementById('user-name').value,
+                class: document.getElementById('user-class').value,
+                age: document.getElementById('user-age').value,
+            };
+            await trackUserData(userInfo);
+            localStorage.setItem('userInfoSaved', 'true');
+            allDOMElements.userInfoModal.classList.remove('visible');
+            handleTelegramModal();
+        });
+    } else {
+        handleTelegramModal();
+    }
+
+    // Smoothly transition from loader to main view
     setTimeout(() => {
         allDOMElements.loaderOverlay.classList.add('hidden');
         allDOMElements.mainView.classList.remove('hidden');
-        handleTelegramModal();
     }, 500);
 }
 
