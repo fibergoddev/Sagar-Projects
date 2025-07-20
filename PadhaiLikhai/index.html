@@ -11,6 +11,8 @@
     <!-- KaTeX for rendering math formulas in the AI Solver -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <!-- Chart.js for Nexus Hub -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Designed & Developed by Sagar Raj -->
@@ -32,7 +34,7 @@
         <!-- =============================================================================== -->
         <!-- == MAIN HUB VIEW == -->
         <!-- =============================================================================== -->
-        <div id="main-view" class="view hidden">
+        <div id="main-view" class="view">
             <div class="main-view-container">
                 <header class="main-header">
                     <div class="logo">
@@ -60,10 +62,51 @@
                         </div>
                     </div>
                     <div id="dashboard-grid">
-                        <div class="content-card nav-button" data-target="doubtsolver-view" data-category="ai" data-keywords="ai doubt solver artificial intelligence homework help math physics chemistry"><div class="card-image" style="background-image: url('https://placehold.co/600x400/4facfe/ffffff?text=AI+Solver');"></div><div class="card-content"><h3 class="card-title">AI Doubt-Solver</h3><p class="card-description">Your personal AI tutor. Scan any problem from your textbook and get instant, step-by-step solutions.</p><div class="card-tags"><span class="tag">AI</span><span class="tag">Premium</span></div></div></div>
-                        <div class="content-card" data-category="course" data-keywords="next toppers batch course study login learn online education"><div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/00f2fe?text=Toppers');"></div><div class="card-content"><h3 class="card-title">Next Toppers Batch</h3><p class="card-description">Your journey to success starts here. Login to access exclusive content or continue your study session.</p><div class="card-tags"><span class="tag">Course</span><span class="tag">Study</span></div><div id="login-button-area" class="button-group"><button class="styled-button">Loading...</button></div></div></div>
-                        <div class="content-card" data-category="game" data-keywords="neuro-link game memory focus play fun brain training"><div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/f04747?text=Neuro-Link');"></div><div class="card-content"><h3 class="card-title">Neuro-Link Game</h3><p class="card-description">Engage your mind with our futuristic memory game. Sharpen your focus and climb the leaderboard!</p><div class="card-tags"><span class="tag">Game</span><span class="tag">Focus</span></div><button id="play-game-btn" class="styled-button">Play Now</button></div></div>
-                        <div class="content-card" data-category="book" data-keywords="books library resources reading knowledge pdf download"><a id="books-ad-link" href="#" target="_blank" class="card-ad-link"><div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/2ecc71?text=Library');"></div><div class="card-content"><h3 class="card-title">Books Library</h3><p class="card-description">A vast collection of knowledge is being curated for you. Click to explore our resources.</p><div class="card-tags"><span class="tag">Book</span><span class="tag">Resources</span></div></div></a></div>
+                        <!-- ** NEW **: Next Toppers Batch Card (First Position) -->
+                        <div class="content-card" data-category="course" data-keywords="next toppers batch course study login learn online education">
+                            <div class="card-badge trending">Trending</div>
+                            <div class="live-user-count"><i class="fas fa-eye"></i> <span>...</span></div>
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/00f2fe?text=Toppers');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Next Toppers Batch</h3>
+                                <p class="card-description">Your journey to success starts here. Login to access exclusive content or continue your study session.</p>
+                                <div class="card-tags"><span class="tag">Course</span><span class="tag">Study</span></div>
+                                <div id="login-button-area" class="button-group"><button class="styled-button">Loading...</button></div>
+                            </div>
+                        </div>
+                        <!-- ** NEW **: AI Doubt Solver Card (Second Position) -->
+                        <div class="content-card nav-button" data-target="doubtsolver-view" data-category="ai" data-keywords="ai doubt solver artificial intelligence homework help math physics chemistry">
+                            <div class="card-badge new">New</div>
+                            <div class="live-user-count"><i class="fas fa-eye"></i> <span>...</span></div>
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/4facfe/ffffff?text=AI+Solver');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">AI Doubt-Solver</h3>
+                                <p class="card-description">Your personal AI tutor. Scan any problem from your textbook and get instant, step-by-step solutions.</p>
+                                <div class="card-tags"><span class="tag">AI</span><span class="tag">Premium</span></div>
+                            </div>
+                        </div>
+                        <!-- Neuro-Link Game Card -->
+                        <div class="content-card" data-category="game" data-keywords="neuro-link game memory focus play fun brain training">
+                            <div class="live-user-count"><i class="fas fa-eye"></i> <span>...</span></div>
+                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/f04747?text=Neuro-Link');"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Neuro-Link Game</h3>
+                                <p class="card-description">Engage your mind with our futuristic memory game. Sharpen your focus and climb the leaderboard!</p>
+                                <div class="card-tags"><span class="tag">Game</span><span class="tag">Focus</span></div>
+                                <button id="play-game-btn" class="styled-button">Play Now</button>
+                            </div>
+                        </div>
+                        <!-- Books Library Card -->
+                        <div class="content-card" data-category="book" data-keywords="books library resources reading knowledge pdf download">
+                            <a id="books-ad-link" href="#" target="_blank" class="card-ad-link">
+                                <div class="card-image" style="background-image: url('https://placehold.co/600x400/1a1a2e/2ecc71?text=Library');"></div>
+                                <div class="card-content">
+                                    <h3 class="card-title">Books Library</h3>
+                                    <p class="card-description">A vast collection of knowledge is being curated for you. Click to explore our resources.</p>
+                                    <div class="card-tags"><span class="tag">Book</span><span class="tag">Resources</span></div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                     <div id="no-results-message" class="hidden"><h3>No Results Found</h3><p>Try adjusting your search or category filter.</p></div>
                 </main>
@@ -129,6 +172,7 @@
         <div id="telegram-modal" class="modal-overlay"><div class="modal-content"><h2 class="title">Join Our Community!</h2><p class="subtitle">Get the latest updates on Telegram.</p><a href="https://t.me/PadhaiLikhai_official" target="_blank" class="styled-button" style="width: 100%; text-decoration: none;">Join Telegram</a><button id="close-telegram-modal" class="styled-button" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--border-color);">Continue to App</button></div></div>
         <div id="permissions-modal" class="modal-overlay"><div class="modal-content"><h2 class="title">Permissions Center</h2><p class="subtitle">To use all features, please grant the necessary permissions.</p><div class="permission-grid"><button id="grant-camera-btn" class="styled-button support-button"><i class="fas fa-camera"></i> Camera</button><button id="grant-notify-btn" class="styled-button support-button"><i class="fas fa-bell"></i> Notifications</button></div><button id="close-permissions-modal" class="styled-button" style="width: 100%; margin-top: 25px;">Close</button></div></div>
         <div id="reward-overlay" class="hidden"><div class="reward-content"><div class="reward-title">Mission Complete!</div><div class="reward-points">+50 NP</div><div class="reward-particles"></div></div></div>
+        <div id="camera-modal" class="modal-overlay hidden"><div class="camera-modal-content"><button id="close-camera-btn" class="ad-close-btn"><i class="fas fa-times"></i></button><video id="camera-feed" autoplay playsinline></video><canvas id="photo-canvas" class="hidden"></canvas><div class="camera-controls"><button id="capture-btn" class="capture-button"></button></div></div></div>
     </div>
     
     <div id="persistent-ad-banner"></div>
