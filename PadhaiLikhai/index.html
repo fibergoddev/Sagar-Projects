@@ -60,14 +60,6 @@
                         </div>
                     </div>
 
-                    <!-- ** NEW **: Featured Content Section for Native Ad -->
-                    <section class="featured-content-section">
-                        <h2>Featured Content</h2>
-                        <div id="native-ad-container">
-                            <!-- Native Ad will be injected here by script.js -->
-                        </div>
-                    </section>
-
                     <div id="dashboard-grid">
                         <!-- Card 1: Next Toppers Batch -->
                         <div class="content-card" data-category="course" data-keywords="next toppers batch course study login learn online education">
@@ -132,12 +124,21 @@
              <div class="main-view-container" style="padding: 30px; text-align: center;">
                 <h1 style="font-size: 2rem; margin-bottom: 15px;">Support the Developer</h1>
                 <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px auto;">Your support helps keep this application running and free for everyone. Thank you!</p>
+                
+                <!-- ** MOVED **: Featured Content Section for Native Ad -->
+                <section class="featured-content-section">
+                    <h2>Featured Content</h2>
+                    <div id="native-ad-container">
+                        <!-- Native Ad will be injected here by script.js -->
+                    </div>
+                </section>
+
                 <div id="ad-grid"></div>
                 <button id="back-to-main-btn" class="styled-button" style="margin-top: 30px;">Back to Hub</button>
             </div>
         </div>
 
-        <!-- ** RESTORED **: App View for iFrame and Widgets -->
+        <!-- App View for iFrame and Widgets -->
         <div id="app-view" class="view hidden">
             <div id="iframe-container">
                 <div id="iframe-loader" class="fas fa-spinner"></div>
@@ -151,8 +152,6 @@
                 <nav id="side-panel-nav">
                     <button class="side-panel-button" id="side-panel-back-btn"><i class="fas fa-arrow-left fa-fw"></i> Back</button>
                     <button class="side-panel-button" data-action="launch" data-url="game.html"><i class="fas fa-gamepad fa-fw"></i> Neuro-Link Game</button>
-                    <button class="side-panel-button" id="side-panel-calculator-btn"><i class="fas fa-calculator fa-fw"></i> Calculator</button>
-                    <button class="side-panel-button" id="side-panel-notes-btn"><i class="fas fa-sticky-note fa-fw"></i> Mini Notes</button>
                     <button class="side-panel-button" id="side-panel-exit-btn"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
                 </nav>
             </div>
