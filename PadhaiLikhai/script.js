@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 50: Definitive Professional Upgrade (SPA & Full Feature Restoration)
+ * Version 51: Definitive Professional Upgrade & Final Fixes
  * This script orchestrates all functionality for the main application hub.
  */
 
@@ -50,8 +50,6 @@ const allDOMElements = {
     rightAdBar: document.getElementById('right-ad-bar'),
     adBarToggle: document.getElementById('ad-bar-toggle'),
     rightAdContent: document.getElementById('right-ad-content'),
-    calculator: document.getElementById('calculator'),
-    notesWidget: document.getElementById('mini-notes'),
     supportUsBtn: document.getElementById('support-us-btn'),
     backToMainBtn: document.getElementById('back-to-main-btn'),
     persistentAdBanner: document.getElementById('persistent-ad-banner'),
@@ -153,12 +151,13 @@ const initializePopunder = () => {
 };
 
 /**
- * Shows the interstitial ad modal and executes a callback function upon completion.
+ * ** FIXED **: Shows the interstitial ad modal and executes a callback function upon completion.
  * This is the core of the new, monetized navigation flow.
  * @param {Function} onAdCompleteCallback The function to execute after the ad is skipped or closed.
  */
 const showInterstitialAd = (onAdCompleteCallback) => {
     const { interstitialAdModal, skipAdButton, closeAdModalBtn } = allDOMElements;
+    // ** FIX **: Ensure the big bar ad is correctly injected every time.
     injectAdScript(allDOMElements.interstitialAdContainer, ads.bigBar);
     interstitialAdModal.classList.add('visible');
     let timeLeft = 4;
@@ -209,6 +208,22 @@ const launchSite = (url, setLoginTimestamp = false) => {
 };
 
 /**
+ * Navigates back in the iFrame history or returns to the main hub.
+ */
+const navigateBack = () => {
+    if (appState.iframeHistory.length > 0) {
+        const prevUrl = appState.iframeHistory.pop();
+        appState.currentUrl = prevUrl;
+        allDOMElements.websiteFrame.src = prevUrl;
+        allDOMElements.iframeLoader.style.display = 'block';
+    } else {
+        showView('main-view');
+        allDOMElements.websiteFrame.src = 'about:blank';
+        appState.currentUrl = '';
+    }
+};
+
+/**
  * Sets up the main login button based on the stored timestamp.
  */
 const setupLoginButton = () => {
@@ -219,7 +234,7 @@ const setupLoginButton = () => {
 };
 
 /**
- * Shows the Telegram modal if it hasn't been shown in the current session.
+ * ** RESTORED **: Shows the Telegram modal if it hasn't been shown in the current session.
  */
 const handleTelegramModal = () => {
     if (sessionStorage.getItem('telegramModalShown')) return;
@@ -231,7 +246,7 @@ const handleTelegramModal = () => {
 };
 
 /**
- * Initializes the dynamic live user count on the dashboard cards.
+ * ** RESTORED **: Initializes the dynamic live user count on the dashboard cards.
  */
 const initializeLiveUserCounts = () => {
     const countElements = document.querySelectorAll('.live-user-count span');
@@ -243,6 +258,35 @@ const initializeLiveUserCounts = () => {
     };
     updateCounts();
     setInterval(updateCounts, 3500);
+};
+
+/**
+ * ** ADVANCED **: A professional debounce function to prevent excessive function calls.
+ * @param {Function} func The function to debounce.
+ * @param {number} delay The delay in milliseconds.
+ * @returns {Function} The debounced function.
+ */
+const debounce = (func, delay) => {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+};
+
+/**
+ * Filters the dashboard cards based on search and category.
+ */
+const filterDashboard = () => {
+    const searchTerm = allDOMElements.searchBar.value.toLowerCase().trim();
+    const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category;
+    document.querySelectorAll('#dashboard-grid .content-card, #dashboard-grid a.content-card').forEach(card => {
+        const keywords = card.dataset.keywords.toLowerCase();
+        const category = card.dataset.category;
+        const categoryMatch = activeCategory === 'all' || category === activeCategory;
+        const searchMatch = searchTerm === '' || keywords.includes(searchTerm);
+        card.style.display = (categoryMatch && searchMatch) ? 'flex' : 'none';
+    });
 };
 
 // --- App Initialization Sequence ---
@@ -260,13 +304,27 @@ function initializeMainApp() {
     allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
     allDOMElements.websiteFrame.addEventListener('load', () => { allDOMElements.iframeLoader.style.display = 'none'; });
+    
+    // ** FIX **: Right Ad Slider Logic
     allDOMElements.adBarToggle.addEventListener('click', () => allDOMElements.rightAdBar.classList.toggle('expanded'));
+    
+    // ** ADVANCED **: Debounced search for a smoother experience
+    allDOMElements.searchBar.addEventListener('input', debounce(filterDashboard, 300));
+    
+    allDOMElements.categoryFilter.addEventListener('click', (e) => {
+        if (e.target.matches('.category-btn')) {
+            allDOMElements.categoryFilter.querySelector('.active').classList.remove('active');
+            e.target.classList.add('active');
+            filterDashboard();
+        }
+    });
 
     // ** Definitive Event Delegation for all button actions **
     document.body.addEventListener('click', (e) => {
         const targetButton = e.target.closest('[data-action]');
         if (!targetButton) return;
 
+        e.preventDefault(); // Prevent default link behavior if any
         const { action, url, setTimestamp } = targetButton.dataset;
 
         const actionCallback = () => {
@@ -277,9 +335,23 @@ function initializeMainApp() {
             }
         };
 
-        // For any action that involves navigation, show an ad first.
         if (action.startsWith('launch')) {
             showInterstitialAd(actionCallback);
+        }
+    });
+
+    // Side Panel Logic
+    allDOMElements.commandCenterBtn.addEventListener('click', () => allDOMElements.sidePanel.classList.toggle('visible'));
+    allDOMElements.sidePanelNav.addEventListener('click', (e) => {
+        const target = e.target.closest('.side-panel-button');
+        if (!target) return;
+        allDOMElements.sidePanel.classList.remove('visible');
+        if (target.id === 'side-panel-back-btn') navigateBack();
+        if (target.id === 'side-panel-exit-btn') {
+            showView('main-view');
+            allDOMElements.websiteFrame.src = 'about:blank';
+            appState.currentUrl = '';
+            appState.iframeHistory = [];
         }
     });
 
@@ -292,18 +364,12 @@ function initializeMainApp() {
 }
 
 // --- Main Execution Block ---
-
-// This listens for the custom event from firebase-init.js
 document.addEventListener('firebaseReady', (e) => {
-    console.log("Firebase is ready. Initializing main application.");
-    const { auth, db, userId } = e.detail;
-    appState.auth = auth;
-    appState.db = db;
-    appState.userId = userId;
+    appState.db = e.detail.db;
+    appState.userId = e.detail.userId;
     initializeMainApp();
 });
 
 document.addEventListener('firebaseFailed', (e) => {
-    console.error("Firebase failed to initialize. Hub cannot start.", e.detail.error);
     allDOMElements.loaderStatus.textContent = "Connection Failed. Please Refresh.";
 });
