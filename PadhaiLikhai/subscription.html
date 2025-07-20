@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Your Arsenal | PadhaiLikhai by Sagar Raj</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/png" href="icon-512.png">
+    <style>
+        /* * Designed & Developed by Sagar Raj
+         * Version 41: Definitive Subscription Page UI - Limit Break Edition
+         */
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@700&display=swap');
+
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #cccccc;
+            --background-start: #0a0a10;
+            --background-end: #1a1a2e;
+            --accent-color-start: #00f2fe;
+            --accent-color-end: #4facfe;
+            --success-color: #2ecc71;
+            --danger-color: #f04747;
+            --warning-color: #f39c12;
+            --glass-bg: rgba(30, 30, 46, 0.6);
+            --border-color: rgba(255, 255, 255, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --glow-color: rgba(0, 242, 254, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-start);
+            color: var(--primary-color);
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, var(--background-end), var(--background-start), #16222a, #3a6073);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .subscription-container {
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .logo { display: flex; align-items: center; gap: 10px; font-family: 'Roboto Mono', monospace; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 5px var(--accent-color-start); }
+
+        .back-to-hub-btn { color: var(--secondary-color); text-decoration: none; padding: 10px 20px; border-radius: 50px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid var(--border-color); }
+        .back-to-hub-btn:hover { background: rgba(255,255,255,0.1); color: var(--primary-color); }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px var(--glow-color);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            max-width: 600px;
+            margin: 0 auto 50px auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            perspective: 2000px;
+        }
+
+        .pricing-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px var(--shadow-color);
+            text-align: left;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+        }
+
+        .pricing-card.recommended {
+            border-color: var(--accent-color-start);
+            box-shadow: 0 0 40px var(--glow-color), 0 15px 35px var(--shadow-color);
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 40px var(--glow-color), 0 15px 35px var(--shadow-color); } 50% { box-shadow: 0 0 60px var(--accent-color-start), 0 15px 35px var(--shadow-color); } }
+
+        .plan-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .plan-price span {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            font-weight: 400;
+        }
+
+        .plan-description {
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+            min-height: 40px;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+
+        .plan-features li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .plan-features li i {
+            color: var(--success-color);
+            font-size: 1.2rem;
+        }
+
+        .plan-features li.disabled {
+            color: var(--secondary-color);
+            text-decoration: line-through;
+        }
+        .plan-features li.disabled i {
+            color: var(--danger-color);
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .current-plan-btn {
+            background: transparent;
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .coming-soon-btn {
+            background: linear-gradient(90deg, var(--accent-color-start), var(--accent-color-end));
+            color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.2);
+        }
+        .coming-soon-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.4);
+        }
+        .coming-soon-btn span {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--secondary-color);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+            .main-title {
+                font-size: 2.5rem;
+            }
+        }
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                padding-top: 100px;
+            }
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Designed & Developed by Sagar Raj -->
+    <header class="header">
+        <div class="logo">
+            <svg id="header-logo" width="30" height="30" viewBox="0 0 100 100"><path d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke="#00f2fe" stroke-width="10"/><path d="M 50 20 L 80 20 L 80 80" fill="none" stroke="#00f2fe" stroke-width="10"/></svg>
+            <span>PadhaiLikhai</span>
+        </div>
+        <a href="index.html" class="back-to-hub-btn"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    </header>
+
+    <div class="subscription-container">
+        <h1 class="main-title">Unlock Your Full Potential</h1>
+        <p class="subtitle">The PadhaiLikhai app is free forever. Upgrade to a Pro plan to unlock powerful new features and support the developer.</p>
+
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card" data-tilt>
+                <h2 class="plan-name">Free</h2>
+                <h3 class="plan-price">₹0</h3>
+                <p class="plan-description">The core PadhaiLikhai experience, free for everyone, always.</p>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check-circle"></i> Access to All Core Features</li>
+                    <li><i class="fas fa-check-circle"></i> Nexus Hub Access (Streaks, Points)</li>
+                    <li><i class="fas fa-check-circle"></i> Standard Ad Support</li>
+                    <li class="disabled"><i class="fas fa-times-circle"></i> Ad-Free Experience</li>
+                    <li class="disabled"><i class="fas fa-times-circle"></i> AI Doubt-Solver</li>
+                    <li class="disabled"><i class="fas fa-times-circle"></i> Exclusive "Pro" Badge</li>
+                </ul>
+                <button class="cta-button current-plan-btn" disabled>Your Current Plan</button>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="pricing-card recommended" data-tilt>
+                <h2 class="plan-name">Pro</h2>
+                <h3 class="plan-price">₹45 <span>/ month</span></h3>
+                <p class="plan-description">Supercharge your studies and get an ad-free experience.</p>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check-circle"></i> Everything in Free, plus:</li>
+                    <li><i class="fas fa-check-circle"></i> **Ad-Free Experience**</li>
+                    <li><i class="fas fa-check-circle"></i> Advanced Nexus Stats</li>
+                    <li><i class="fas fa-check-circle"></i> Exclusive "Pro" Profile Badge</li>
+                    <li><i class="fas fa-check-circle"></i> Priority Access to New Features</li>
+                    <li class="disabled"><i class="fas fa-times-circle"></i> AI Doubt-Solver</li>
+                </ul>
+                <button class="cta-button coming-soon-btn">
+                    <div>
+                        Get Pro
+                        <span>(Coming Soon)</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Ultimate Plan -->
+            <div class="pricing-card" data-tilt>
+                <h2 class="plan-name">Ultimate</h2>
+                <h3 class="plan-price">₹60 <span>/ month</span></h3>
+                <p class="plan-description">The ultimate unfair advantage for the most dedicated students.</p>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check-circle"></i> Everything in Pro, plus:</li>
+                    <li><i class="fas fa-check-circle"></i> **AI Doubt-Solver** (Photo Scan)</li>
+                    <li><i class="fas fa-check-circle"></i> Unlimited Mock Tests</li>
+                    <li><i class="fas fa-check-circle"></i> Exclusive Animated "Ultimate" Badge</li>
+                    <li><i class="fas fa-check-circle"></i> 10% Squad Nexus Point Boost</li>
+                </ul>
+                <button class="cta-button coming-soon-btn">
+                    <div>
+                        Get Ultimate
+                        <span>(Coming Soon)</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        Designed & Developed by Sagar Raj
+    </footer>
+
+    <script>
+        // Sagar Raj's Advanced 3D Tilt Effect
+        // This script adds the unimaginable 3D hover effect to the pricing cards.
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('[data-tilt]');
+
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -7; // Max rotation 7 degrees
+                    const rotateY = ((x - centerX) / centerX) * 7; // Max rotation 7 degrees
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
