@@ -1,6 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 52: Definitive Professional Upgrade & Final Fixes
- * This script orchestrates all functionality for the main application hub.
+ * Version 53: Definitive Professional Upgrade & Final Fixes
  */
 
 // --- Firebase Imports ---
@@ -127,24 +126,10 @@ const injectAdScript = (container, adConfig) => {
     container.appendChild(invokeScript);
 };
 
-const injectNativeAd = (container, adConfig) => {
-    if (!container) return;
-    container.innerHTML = '';
-    const nativeScript = document.createElement('script');
-    nativeScript.async = true;
-    nativeScript.dataset.cfasync = "false";
-    nativeScript.src = adConfig.invoke;
-    const nativeDiv = document.createElement('div');
-    nativeDiv.id = adConfig.containerId;
-    container.appendChild(nativeScript);
-    container.appendChild(nativeDiv);
-};
-
 const loadAds = () => {
     injectAdScript(allDOMElements.persistentAdBanner, ads.bottomBar);
     injectAdScript(allDOMElements.adGrid, ads.bigBar);
     injectAdScript(allDOMElements.rightAdContent, ads.bigBar);
-    injectNativeAd(allDOMElements.nativeAdContainer, ads.nativeBanner);
 };
 
 const initializePopunder = () => {
@@ -231,11 +216,20 @@ const navigateBack = () => {
     }
 };
 
+/**
+ * ** RESTORED & FIXED **: Sets up the login buttons, including "Force Login".
+ */
 const setupLoginButton = () => {
     const isLoggedIn = (Date.now() - parseInt(localStorage.getItem('sagarRajLoginTimestamp') || '0', 10)) < (36 * 60 * 60 * 1000);
-    allDOMElements.loginButtonArea.innerHTML = isLoggedIn
-        ? `<button class="styled-button" data-action="launchLogin" data-url="https://www.rolexcoderz.xyz/Course">Continue Study</button>`
-        : `<button class="styled-button" data-action="launchLogin" data-url="https://rolexcoderz.live/36xsuccess/" data-set-timestamp="true">Login for 36 Hours</button>`;
+    allDOMElements.loginButtonArea.innerHTML = '';
+    if (isLoggedIn) {
+        allDOMElements.loginButtonArea.innerHTML = `
+            <button class="styled-button" data-action="launchLogin" data-url="https://www.rolexcoderz.xyz/Course">Continue Study</button>
+            <button class="styled-button support-button" data-action="launchLogin" data-url="https://rolexcoderz.live/36xsuccess/" data-set-timestamp="true">Force Login</button>
+        `;
+    } else {
+        allDOMElements.loginButtonArea.innerHTML = `<button class="styled-button" data-action="launchLogin" data-url="https://rolexcoderz.live/36xsuccess/" data-set-timestamp="true">Login for 36 Hours</button>`;
+    }
 };
 
 const handleTelegramModal = () => {
@@ -268,7 +262,7 @@ const debounce = (func, delay) => {
 };
 
 /**
- * ** FIXED **: Filters the dashboard cards based on search and category.
+ * Filters the dashboard cards based on search and category.
  */
 const filterDashboard = () => {
     const searchTerm = allDOMElements.searchBar.value.toLowerCase().trim();
@@ -301,7 +295,6 @@ function initializeMainApp() {
     // ** FIXED **: Right Ad Slider Logic
     allDOMElements.adBarToggle.addEventListener('click', () => allDOMElements.rightAdBar.classList.toggle('expanded'));
     
-    // ** FIXED **: Debounced search for a smoother experience
     allDOMElements.searchBar.addEventListener('input', debounce(filterDashboard, 300));
     
     allDOMElements.categoryFilter.addEventListener('click', (e) => {
@@ -335,11 +328,13 @@ function initializeMainApp() {
 
     // ** FIXED **: Command Center Logic
     allDOMElements.commandCenterBtn.addEventListener('click', () => {
+        allDOMElements.commandCenterBtn.classList.toggle('open');
         allDOMElements.sidePanel.classList.toggle('visible');
     });
     allDOMElements.sidePanelNav.addEventListener('click', (e) => {
         const target = e.target.closest('.side-panel-button');
         if (!target) return;
+        allDOMElements.commandCenterBtn.classList.remove('open');
         allDOMElements.sidePanel.classList.remove('visible');
         if (target.id === 'side-panel-back-btn') navigateBack();
         if (target.id === 'side-panel-exit-btn') {
@@ -350,7 +345,7 @@ function initializeMainApp() {
         }
     });
 
-    // ** NEW **: First-Time User Info Logic
+    // ** FIXED **: First-Time User Info Logic
     if (!localStorage.getItem('userInfoSaved')) {
         allDOMElements.userInfoModal.classList.add('visible');
         allDOMElements.userInfoForm.addEventListener('submit', async (e) => {
