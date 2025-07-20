@@ -120,8 +120,8 @@
                     <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen sandbox="allow-scripts allow-forms allow-same-origin allow-popups" style="flex-grow: 1; border: none;"></iframe>
             </div>
             <div id="focus-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark-blue); z-index: 200; display: none;"></div>
-            <button id="command-center-btn" class="visible" style="/* styles in CSS */"></button>
-            <div id="side-panel" style="/* styles in CSS */">
+            <button id="command-center-btn" class="visible"></button>
+            <div id="side-panel">
                 <div class="side-panel-header"><span class="side-panel-title">Command Center</span></div>
                 <nav id="side-panel-nav">
                     <button class="side-panel-button" id="side-panel-back-btn"><i class="fas fa-arrow-left fa-fw"></i> Back</button>
@@ -129,6 +129,8 @@
                     <button class="side-panel-button" id="side-panel-calculator-btn"><i class="fas fa-calculator fa-fw"></i> Calculator</button>
                     <button class="side-panel-button" id="side-panel-notes-btn"><i class="fas fa-sticky-note fa-fw"></i> Mini Notes</button>
                     <button class="side-panel-button" id="side-panel-focus-btn"><i class="fas fa-eye fa-fw"></i> Focus Mode</button>
+                    <button class="side-panel-button" id="side-panel-profile-btn"><i class="fas fa-user-circle fa-fw"></i> Profile</button>
+                    <button class="side-panel-button" id="side-panel-permissions-btn"><i class="fas fa-user-shield fa-fw"></i> Permissions</button>
                     <button class="side-panel-button" id="side-panel-exit-btn"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
                 </nav>
             </div>
@@ -145,6 +147,23 @@
         <div id="interstitial-ad-modal" class="modal-overlay hidden"><div class="modal-content"><button id="close-ad-modal-btn" class="ad-close-btn" style="position: absolute; top: 15px; right: 15px; font-size: 1.5rem;"><i class="fas fa-times"></i></button><p>Please support us by watching this ad</p><div id="interstitial-ad-container"></div><div class="modal-ad-controls" style="margin-top: 20px;"><button id="skip-ad-button" class="styled-button">Skip Ad in 4s</button></div></div></div>
         <div id="user-info-modal" class="modal-overlay hidden"><div class="modal-content"></div></div>
         <div id="telegram-modal" class="modal-overlay hidden"><div class="modal-content"></div></div>
+        <div id="permissions-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h2 class="title">Permissions</h2>
+                <p class="subtitle">Grant permissions to enhance your experience.</p>
+                <div class="permissions-list">
+                    <div class="permission-item">
+                        <span>Camera Access</span>
+                        <button id="grant-camera-btn" class="styled-button">Grant</button>
+                    </div>
+                    <div class="permission-item">
+                        <span>Notifications</span>
+                        <button id="grant-notify-btn" class="styled-button">Grant</button>
+                    </div>
+                </div>
+                <button id="close-permissions-modal" class="styled-button support-button" style="margin-top: 20px;">Close</button>
+            </div>
+        </div>
     </div>
     
     <!-- Ad Containers -->

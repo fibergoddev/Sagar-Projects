@@ -108,16 +108,67 @@ function initializeMainApp() {
     });
 
     // Command Center listeners
+    allDOMElements.commandCenterBtn.addEventListener('click', () => {
+        allDOMElements.sidePanel.classList.toggle('visible');
+    });
+
     allDOMElements.sidePanelNav.addEventListener('click', (e) => {
         const button = e.target.closest('.side-panel-button');
         if (!button) return;
+
+        allDOMElements.sidePanel.classList.remove('visible');
+
         switch (button.id) {
+            case 'side-panel-back-btn':
+                // Implement back functionality if needed
+                break;
+            case 'side-panel-exit-btn':
+                showView('main-view');
+                allDOMElements.websiteFrame.src = 'about:blank';
+                appState.currentUrl = '';
+                break;
             case 'side-panel-focus-btn':
                 allDOMElements.focusOverlay.style.display = allDOMElements.focusOverlay.style.display === 'block' ? 'none' : 'block';
                 break;
             case 'side-panel-notes-btn':
                 allDOMElements.notesWidget.style.display = allDOMElements.notesWidget.style.display === 'block' ? 'none' : 'block';
                 break;
+            case 'side-panel-calculator-btn':
+                // Implement calculator functionality if needed
+                break;
+            case 'side-panel-profile-btn':
+                launchSite('https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html', false);
+                break;
+            case 'side-panel-permissions-btn':
+                allDOMElements.permissionsModal.classList.remove('hidden');
+                break;
+        }
+    });
+
+    allDOMElements.closePermissionsModal.addEventListener('click', () => {
+        allDOMElements.permissionsModal.classList.add('hidden');
+    });
+
+    allDOMElements.grantCameraBtn.addEventListener('click', async () => {
+        try {
+            await navigator.mediaDevices.getUserMedia({ video: true });
+            showNotification('Camera permission granted!', 'success');
+        } catch (err) {
+            showNotification('Camera permission was denied.', 'error');
+        }
+    });
+
+    allDOMElements.grantNotifyBtn.addEventListener('click', async () => {
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                showNotification('Notifications are now enabled.', 'success');
+                new Notification('Thank you!', { body: 'You will receive updates from PadhaiLikhai.' });
+            } else {
+                showNotification('Notification permission was denied.', 'error');
+            }
+        } catch (err) {
+            showNotification('Could not request notification permission.', 'error');
         }
     });
 
