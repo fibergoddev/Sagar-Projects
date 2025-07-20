@@ -1,5 +1,6 @@
 /* * Designed & Developed by Sagar Raj
- * Version 48: Definitive Aether Blue Hub Script (Stable)
+ * Version 49: Definitive Aether Blue Hub Script (Fully Restored & Stable)
+ * This script orchestrates all functionality for the main application hub.
  */
 
 // --- Firebase Imports ---
@@ -8,7 +9,7 @@
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Ad System Resources ---
-// Centralized object for all ad codes and links for easy management.
+// A centralized object for all ad codes and links for easy management and future updates.
 const ads = {
     directLink: 'https://medievalkin.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf',
     popunderScript: '//medievalkin.com/5d/2c/15/5d2c15bb87424bfe641144d764893adc.js',
@@ -23,7 +24,7 @@ const ads = {
 };
 
 // --- DOM Element Cache ---
-// Caching DOM elements for performance.
+// Caching all DOM elements on startup for faster access and better performance.
 const allDOMElements = {
     loaderOverlay: document.getElementById('loader-overlay'),
     loaderStatus: document.getElementById('loader-status'),
@@ -37,13 +38,22 @@ const allDOMElements = {
     closeAdModalBtn: document.getElementById('close-ad-modal-btn'),
     websiteFrame: document.getElementById('website-frame'),
     iframeLoader: document.getElementById('iframe-loader'),
+    commandCenterBtn: document.getElementById('command-center-btn'),
+    sidePanel: document.getElementById('side-panel'),
+    sidePanelNav: document.getElementById('side-panel-nav'),
+    calculator: document.getElementById('calculator'),
+    calcHeader: document.getElementById('calc-header'),
+    calcDisplay: document.getElementById('calc-display'),
+    calcButtons: document.getElementById('calc-buttons'),
+    notesWidget: document.getElementById('mini-notes'),
+    notesHeader: document.getElementById('notes-header'),
+    notesTextarea: document.getElementById('notes-textarea'),
     supportUsBtn: document.getElementById('support-us-btn'),
     backToMainBtn: document.getElementById('back-to-main-btn'),
     persistentAdBanner: document.getElementById('persistent-ad-banner'),
     adGrid: document.getElementById('ad-grid'),
     searchBar: document.getElementById('search-bar'),
     categoryFilter: document.querySelector('.category-filter'),
-    dashboardGrid: document.getElementById('dashboard-grid'),
     noResultsMessage: document.getElementById('no-results-message'),
     playGameBtn: document.getElementById('play-game-btn'),
     popunderContainer: document.getElementById('popunder-container'),
@@ -51,11 +61,15 @@ const allDOMElements = {
 };
 
 // --- App State ---
+// Centralized state management for the application.
 const appState = {
     db: null,
     auth: null,
     userId: null,
     popunderTriggered: false,
+    iframeHistory: [],
+    currentUrl: '',
+    inactivityTimer: null,
 };
 
 // --- Core Functions ---
@@ -73,14 +87,11 @@ const showNotification = (message, type = 'info') => {
     if (type === 'error') iconClass = 'fas fa-times-circle';
     n.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
     allDOMElements.notificationContainer.appendChild(n);
-    setTimeout(() => {
-        n.style.animation = 'slideOut 0.5s forwards';
-        setTimeout(() => n.remove(), 500);
-    }, 4500);
+    setTimeout(() => n.remove(), 5000);
 };
 
 /**
- * Tracks user data and saves it to Firestore.
+ * Tracks user data (device, last visit) and saves it to Firestore.
  */
 const trackUserData = async () => {
     if (!appState.db || !appState.userId) return;
@@ -146,7 +157,7 @@ const initializePopunder = () => {
 };
 
 /**
- * ** FIX **: Shows the interstitial ad modal. This is ONLY called by user actions.
+ * Shows the interstitial ad modal. This is ONLY called by user actions.
  * @param {string} targetUrl The URL to navigate to after the ad.
  */
 const showInterstitialAd = (targetUrl) => {
@@ -176,7 +187,7 @@ const showInterstitialAd = (targetUrl) => {
     closeAdModalBtn.onclick = () => closeFunction(false);
 };
 
-// --- Main Hub Logic ---
+// --- Main Hub Logic & Feature Restoration ---
 
 /**
  * Toggles the visibility of the main views.
@@ -186,6 +197,7 @@ const showView = (viewId) => {
     ['main-view', 'support-view', 'app-view'].forEach(id => {
         document.getElementById(id)?.classList.toggle('hidden', id !== viewId);
     });
+    allDOMElements.commandCenterBtn?.classList.toggle('visible', viewId === 'app-view');
 };
 
 /**
@@ -195,8 +207,54 @@ const showView = (viewId) => {
  */
 const launchSite = (url, setLoginTimestamp) => {
     if (setLoginTimestamp) localStorage.setItem('sagarRajLoginTimestamp', Date.now().toString());
-    allDOMElements.websiteFrame.src = url;
-    showView('app-view');
+    if (url !== appState.currentUrl && appState.currentUrl) {
+        appState.iframeHistory.push(appState.currentUrl);
+    }
+    appState.currentUrl = url;
+    allDOMElements.websiteFrame.src = 'about:blank';
+    setTimeout(() => {
+        allDOMElements.websiteFrame.src = url;
+        showView('app-view');
+        allDOMElements.iframeLoader.style.display = 'block';
+    }, 50);
+};
+
+/**
+ * Navigates back in the iFrame history or returns to the main hub.
+ */
+const navigateBack = () => {
+    if (appState.iframeHistory.length > 0) {
+        const prevUrl = appState.iframeHistory.pop();
+        appState.currentUrl = prevUrl;
+        allDOMElements.websiteFrame.src = prevUrl;
+        allDOMElements.iframeLoader.style.display = 'block';
+    } else {
+        showView('main-view');
+        allDOMElements.websiteFrame.src = 'about:blank';
+        appState.currentUrl = '';
+    }
+};
+
+/**
+ * Makes an element draggable by its header.
+ * @param {HTMLElement} elmnt The element to drag.
+ * @param {HTMLElement} header The header element to drag by.
+ */
+const makeDraggable = (elmnt, header) => {
+    let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
+    const dragHeader = header.querySelector('.fa-arrows-alt') || header;
+    dragHeader.onmousedown = e => {
+        e.preventDefault();
+        p3 = e.clientX;
+        p4 = e.clientY;
+        document.onmouseup = () => { document.onmouseup = null; document.onmousemove = null; };
+        document.onmousemove = e => {
+            p1 = p3 - e.clientX; p2 = p4 - e.clientY;
+            p3 = e.clientX; p4 = e.clientY;
+            elmnt.style.top = (elmnt.offsetTop - p2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - p1) + "px";
+        };
+    };
 };
 
 /**
@@ -247,6 +305,7 @@ function initializeMainApp() {
     allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
     allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd('game.html'));
+    allDOMElements.websiteFrame.addEventListener('load', () => { allDOMElements.iframeLoader.style.display = 'none'; });
     allDOMElements.searchBar.addEventListener('input', filterDashboard);
     allDOMElements.categoryFilter.addEventListener('click', (e) => {
         if (e.target.matches('.category-btn')) {
@@ -256,11 +315,34 @@ function initializeMainApp() {
         }
     });
 
+    // ** RESTORED **: Command Center and Side Panel Logic
+    allDOMElements.commandCenterBtn.addEventListener('click', () => {
+        allDOMElements.commandCenterBtn.classList.toggle('open');
+        allDOMElements.sidePanel.classList.toggle('visible');
+    });
+
+    allDOMElements.sidePanelNav.addEventListener('click', (e) => {
+        const target = e.target.closest('.side-panel-button');
+        if (!target) return;
+        allDOMElements.commandCenterBtn.classList.remove('open');
+        allDOMElements.sidePanel.classList.remove('visible');
+        switch (target.id) {
+            case 'side-panel-back-btn': navigateBack(); break;
+            case 'side-panel-calculator-btn': allDOMElements.calculator.style.display = 'block'; break;
+            case 'side-panel-notes-btn': allDOMElements.notesWidget.style.display = 'flex'; break;
+            case 'side-panel-exit-btn': showView('main-view'); allDOMElements.websiteFrame.src = 'about:blank'; appState.currentUrl = ''; appState.iframeHistory = []; break;
+        }
+    });
+
+    // ** RESTORED **: Widget Logic
+    makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
+    makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
+
     // ** FIX **: Smoothly transition from loader to main view
     setTimeout(() => {
         allDOMElements.loaderOverlay.classList.add('hidden');
         allDOMElements.mainView.classList.remove('hidden');
-    }, 500); // A brief delay for a smoother feel
+    }, 500);
 }
 
 // --- Main Execution Block ---
