@@ -107,6 +107,29 @@ function initializeMainApp() {
         }
     });
 
+    // Command Center listeners
+    allDOMElements.sidePanelNav.addEventListener('click', (e) => {
+        const button = e.target.closest('.side-panel-button');
+        if (!button) return;
+        switch (button.id) {
+            case 'side-panel-focus-btn':
+                allDOMElements.focusOverlay.style.display = allDOMElements.focusOverlay.style.display === 'block' ? 'none' : 'block';
+                break;
+            case 'side-panel-notes-btn':
+                allDOMElements.notesWidget.style.display = allDOMElements.notesWidget.style.display === 'block' ? 'none' : 'block';
+                break;
+        }
+    });
+
+    // Notes widget logic
+    allDOMElements.notesTextarea.value = localStorage.getItem('sagarRajNotes') || '';
+    allDOMElements.notesTextarea.addEventListener('keyup', () => {
+        localStorage.setItem('sagarRajNotes', allDOMElements.notesTextarea.value);
+    });
+
+    // Make notes widget draggable
+    makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
+
 
     // Hide loader and show initial modal
     setTimeout(() => {
@@ -114,6 +137,40 @@ function initializeMainApp() {
         // The Telegram/User Info modals are removed as they are not part of the new design.
         // The app will now show the main view directly.
     }, 500);
+}
+
+function makeDraggable(elmnt, header) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    if (header) {
+        header.onmousedown = dragMouseDown;
+    } else {
+        elmnt.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
 }
 
 // --- Main Execution Block ---

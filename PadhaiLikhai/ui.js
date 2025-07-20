@@ -44,6 +44,8 @@ export const allDOMElements = {
     playGameBtn: document.getElementById('play-game-btn'),
     popunderContainer: document.getElementById('popunder-container'),
     notificationContainer: document.getElementById('notification-container'),
+    rightAdBar: document.getElementById('right-ad-bar'),
+    rightAdContent: document.getElementById('right-ad-content'),
 };
 
 /**

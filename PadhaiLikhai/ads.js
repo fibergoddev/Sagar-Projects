@@ -20,6 +20,10 @@ const adConfig = {
     nativeBanner: {
         invoke: '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js',
         containerId: 'container-5a3a56f258731c59b0ae000546a15e25'
+    },
+    rightSideBar: {
+        options: { key: 'de366f663355ebaa73712755e3876ab8', format: 'iframe', height: 600, width: 120, params: {} },
+        invoke: '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js'
     }
 };
 
@@ -42,6 +46,13 @@ const injectAdScript = (container, adDetails) => {
 };
 
 /**
+ * Loads the right side ad.
+ */
+const loadRightSideAd = () => {
+    injectAdScript(allDOMElements.rightAdContent, adConfig.rightSideBar);
+};
+
+/**
  * Loads all the main ads for the application.
  */
 export const loadAds = () => {
@@ -52,6 +63,7 @@ export const loadAds = () => {
     allDOMElements.adGrid.appendChild(adSlot1);
     allDOMElements.adGrid.appendChild(adSlot2);
     injectAdScript(adSlot1, adConfig.bigBar);
+    loadRightSideAd();
 };
 
 /**
