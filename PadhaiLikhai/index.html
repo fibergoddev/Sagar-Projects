@@ -69,7 +69,6 @@
                             <div class="card-content">
                                 <h3 class="card-title">Next Toppers Batch</h3>
                                 <p class="card-description">Your exclusive portal to premium courses and study materials. Login to continue your session.</p>
-                                <div class="card-tags"><span class="tag">Course</span><span class="tag">Study</span></div>
                                 <div id="login-button-area" class="button-group">
                                     <!-- Login/Continue button will be injected here by script.js -->
                                 </div>
@@ -84,7 +83,6 @@
                             <div class="card-content">
                                 <h3 class="card-title">AI Doubt-Solver</h3>
                                 <p class="card-description">Scan any problem and get instant, step-by-step solutions from our advanced AI.</p>
-                                <div class="card-tags"><span class="tag">AI</span><span class="tag">Premium</span></div>
                                 <div class="button-group">
                                     <button class="styled-button" data-action="launch" data-url="doubtsolver.html">Solve Now</button>
                                 </div>
@@ -98,7 +96,6 @@
                             <div class="card-content">
                                 <h3 class="card-title">Neuro-Link Game</h3>
                                 <p class="card-description">Sharpen your focus and test your memory with our engaging, futuristic brain-training game.</p>
-                                <div class="card-tags"><span class="tag">Game</span><span class="tag">Focus</span></div>
                                 <div class="button-group">
                                     <button class="styled-button" data-action="launch" data-url="game.html">Play Now</button>
                                 </div>
@@ -111,7 +108,6 @@
                             <div class="card-content">
                                 <h3 class="card-title">Books Library</h3>
                                 <p class="card-description">Explore a vast, curated collection of educational resources, books, and research papers.</p>
-                                <div class="card-tags"><span class="tag">Book</span><span class="tag">Resources</span></div>
                             </div>
                         </a>
                     </div>
@@ -179,6 +175,28 @@
             <p class="subtitle">Get the latest updates, notes, and exclusive content on our Telegram channel.</p>
             <a href="https://t.me/PadhaiLikhai_official" target="_blank" class="styled-button" style="width: 100%; text-decoration: none;">Join Telegram</a>
             <button id="close-telegram-modal" class="styled-button" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--border-color);">Continue to App</button>
+        </div>
+    </div>
+    <!-- ** NEW **: User Info Modal -->
+    <div id="user-info-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="title">Welcome to PadhaiLikhai!</h2>
+            <p class="subtitle">Please tell us a bit about yourself to get started.</p>
+            <form id="user-info-form">
+                <div class="form-group">
+                    <label for="user-name">Name</label>
+                    <input type="text" id="user-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-class">Class</label>
+                    <input type="number" id="user-class" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-age">Age</label>
+                    <input type="number" id="user-age" required>
+                </div>
+                <button type="submit" class="styled-button" style="width: 100%;">Save & Continue</button>
+            </form>
         </div>
     </div>
     
