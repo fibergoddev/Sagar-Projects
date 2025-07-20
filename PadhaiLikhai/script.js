@@ -1,13 +1,14 @@
 /* * Designed & Developed by Sagar Raj
- * Version 46: Definitive Cyberpunk Main Hub Script
+ * Version 47: Definitive Blue Nebula Hub Script
  */
 
 // --- Firebase Imports ---
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+// These are necessary for user authentication and data tracking. The actual initialization
+// is handled by firebase-init.js, and this script waits for its signal.
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Ad System Resources ---
-// Centralized object for all new ad codes and links for easy management.
+// A centralized object for all new ad codes and links for easy management and future updates.
 const ads = {
     directLink: 'https://medievalkin.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf',
     popunderScript: '//medievalkin.com/5d/2c/15/5d2c15bb87424bfe641144d764893adc.js',
@@ -26,6 +27,7 @@ const ads = {
 };
 
 // --- DOM Element Cache ---
+// Caching all necessary DOM elements on startup for faster access and better performance.
 const allDOMElements = {
     loaderOverlay: document.getElementById('loader-overlay'),
     loaderStatus: document.getElementById('loader-status'),
@@ -41,10 +43,6 @@ const allDOMElements = {
     userInfoForm: document.getElementById('user-info-form'),
     telegramModal: document.getElementById('telegram-modal'),
     closeTelegramModal: document.getElementById('close-telegram-modal'),
-    permissionsModal: document.getElementById('permissions-modal'),
-    closePermissionsModal: document.getElementById('close-permissions-modal'),
-    grantCameraBtn: document.getElementById('grant-camera-btn'),
-    grantNotifyBtn: document.getElementById('grant-notify-btn'),
     websiteFrame: document.getElementById('website-frame'),
     iframeLoader: document.getElementById('iframe-loader'),
     focusOverlay: document.getElementById('focus-overlay'),
@@ -67,9 +65,6 @@ const allDOMElements = {
     dashboardGrid: document.getElementById('dashboard-grid'),
     noResultsMessage: document.getElementById('no-results-message'),
     playGameBtn: document.getElementById('play-game-btn'),
-    rightAdBar: document.getElementById('right-ad-bar'),
-    adBarToggle: document.getElementById('ad-bar-toggle'),
-    rightAdContent: document.getElementById('right-ad-content'),
     popunderContainer: document.getElementById('popunder-container'),
     notificationContainer: document.getElementById('notification-container'),
 };
@@ -81,11 +76,16 @@ const appState = {
     db: null,
     auth: null,
     userId: null,
-    inactivityTimer: null,
     popunderTriggered: false,
 };
 
 // --- Core Functions ---
+
+/**
+ * Displays a temporary notification on the screen.
+ * @param {string} message The message to display.
+ * @param {string} type 'info', 'success', or 'error'.
+ */
 const showNotification = (message, type = 'info') => {
     const n = document.createElement('div');
     n.className = `notification ${type}`;
@@ -97,7 +97,10 @@ const showNotification = (message, type = 'info') => {
     setTimeout(() => n.remove(), 5000);
 };
 
-const trackUserData = async (dataToUpdate = {}) => {
+/**
+ * Tracks user data and saves it to Firestore. Includes device type and location.
+ */
+const trackUserData = async () => {
     if (!appState.db || !appState.userId) return;
     try {
         const storedUserInfo = JSON.parse(localStorage.getItem('sagarRajUserInfo') || '{}');
@@ -119,21 +122,25 @@ const trackUserData = async (dataToUpdate = {}) => {
             console.warn("Could not fetch location data, using default.");
         }
         const userDocRef = doc(appState.db, "users", appState.userId);
-        const userData = {
+        await setDoc(userDocRef, {
             id: appState.userId,
             ...storedUserInfo,
             device,
             location: locationInfo,
             lastVisited: serverTimestamp(),
-            ...dataToUpdate,
-        };
-        await setDoc(userDocRef, userData, { merge: true });
+        }, { merge: true });
     } catch (error) {
         console.error("Failed to track user data:", error);
     }
 };
 
-// --- New Ad System ---
+// --- Ad System ---
+
+/**
+ * Dynamically injects a standard ad script into a container.
+ * @param {HTMLElement} container The container to inject the ad into.
+ * @param {object} adConfig The ad configuration from the `ads` object.
+ */
 const injectAdScript = (container, adConfig) => {
     if (!container) return;
     container.innerHTML = '';
@@ -147,33 +154,22 @@ const injectAdScript = (container, adConfig) => {
     container.appendChild(invokeScript);
 };
 
-const injectNativeAd = (container, adConfig) => {
-    if (!container) return;
-    container.innerHTML = '';
-    const nativeScript = document.createElement('script');
-    nativeScript.async = true;
-    nativeScript.dataset.cfasync = "false";
-    nativeScript.src = adConfig.invoke;
-    const nativeDiv = document.createElement('div');
-    nativeDiv.id = adConfig.containerId;
-    container.appendChild(nativeScript);
-    container.appendChild(nativeDiv);
-};
-
+/**
+ * Loads all the main ads for the application.
+ */
 const loadAds = () => {
     injectAdScript(allDOMElements.persistentAdBanner, ads.bottomBar);
     const adSlot1 = document.createElement('div');
-    adSlot1.className = 'ad-slot';
     const adSlot2 = document.createElement('div');
-    adSlot2.className = 'ad-slot';
     allDOMElements.adGrid.innerHTML = '';
     allDOMElements.adGrid.appendChild(adSlot1);
     allDOMElements.adGrid.appendChild(adSlot2);
     injectAdScript(adSlot1, ads.bigBar);
-    injectNativeAd(adSlot2, ads.nativeBanner);
-    injectAdScript(allDOMElements.rightAdContent, ads.bigBar);
 };
 
+/**
+ * Sets up a one-time event listener to trigger the popunder ad on the first user interaction.
+ */
 const initializePopunder = () => {
     const triggerPopunder = () => {
         if (appState.popunderTriggered) return;
@@ -186,10 +182,14 @@ const initializePopunder = () => {
     document.body.addEventListener('click', triggerPopunder, { once: true });
 };
 
-const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
+/**
+ * Shows the interstitial ad modal before navigating to a new page.
+ * @param {string} targetUrl The URL to navigate to after the ad.
+ */
+const showInterstitialAd = (targetUrl) => {
     const { interstitialAdModal, interstitialAdContainer, skipAdButton, closeAdModalBtn } = allDOMElements;
     injectAdScript(interstitialAdContainer, ads.bigBar);
-    interstitialAdModal.classList.add('visible');
+    interstitialAdModal.classList.remove('hidden');
     let timeLeft = 4;
     skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
     skipAdButton.disabled = true;
@@ -204,82 +204,115 @@ const showInterstitialAd = (targetUrl, setLoginTimestamp) => {
     }, 1000);
     const closeFunction = (navigate = false) => {
         clearInterval(timerInterval);
-        interstitialAdModal.classList.remove('visible');
+        interstitialAdModal.classList.add('hidden');
         if (navigate && targetUrl) {
             window.location.href = targetUrl;
         }
     };
-    skipAdButton.onclick = () => {
-        if (!skipAdButton.disabled) {
-            if (setLoginTimestamp) localStorage.setItem('sagarRajLoginTimestamp', Date.now().toString());
-            closeFunction(true);
-        }
-    };
+    skipAdButton.onclick = () => !skipAdButton.disabled && closeFunction(true);
     closeAdModalBtn.onclick = () => closeFunction(false);
 };
 
-// --- New Dynamic UI Functions ---
-const initializeLiveUserCounts = () => {
-    const countElements = document.querySelectorAll('.live-user-count span');
-    if (countElements.length === 0) return;
-    const updateCounts = () => {
-        countElements.forEach(el => {
-            const count = Math.floor(Math.random() * 40) + 10;
-            el.textContent = count;
-        });
-    };
-    updateCounts(); // Initial update
-    setInterval(updateCounts, 3500);
+// --- Main Hub Logic ---
+
+/**
+ * Toggles the visibility of different views within index.html.
+ * @param {string} viewId The ID of the view to show ('main-view', 'app-view', 'support-view').
+ */
+const showView = (viewId) => {
+    ['main-view', 'app-view', 'support-view'].forEach(id => {
+        document.getElementById(id)?.classList.toggle('hidden', id !== viewId);
+    });
+    allDOMElements.commandCenterBtn?.classList.toggle('visible', viewId === 'app-view');
 };
 
-// --- Refactored Main Logic ---
-const resetInactivityTimer = () => { clearTimeout(appState.inactivityTimer); appState.inactivityTimer = setTimeout(() => { if (allDOMElements.mainView.style.opacity !== "0") { showInterstitialAd(null, false); } }, 150000); };
-const checkLoginStatus = () => { const lastLogin = localStorage.getItem('sagarRajLoginTimestamp'); if (!lastLogin) return false; return (Date.now() - parseInt(lastLogin, 10)) < (36 * 60 * 60 * 1000); };
-const showView = (viewId) => { ['main-view', 'app-view', 'support-view'].forEach(id => { document.getElementById(id)?.classList.toggle('hidden', id !== viewId); }); allDOMElements.commandCenterBtn?.classList.toggle('visible', viewId === 'app-view'); allDOMElements.rightAdBar?.classList.toggle('visible-view', viewId === 'app-view'); };
-const launchSite = (url, setLoginTimestamp) => { if (setLoginTimestamp) localStorage.setItem('sagarRajLoginTimestamp', Date.now().toString()); if (url !== appState.currentUrl && appState.currentUrl) appState.iframeHistory.push(appState.currentUrl); appState.currentUrl = url; allDOMElements.websiteFrame.src = 'about:blank'; setTimeout(() => { allDOMElements.websiteFrame.src = url; showView('app-view'); allDOMElements.iframeLoader.classList.add('visible'); }, 50); };
-const navigateBack = () => { if (appState.iframeHistory.length > 0) { const prevUrl = appState.iframeHistory.pop(); appState.currentUrl = prevUrl; allDOMElements.websiteFrame.src = prevUrl; allDOMElements.iframeLoader.classList.add('visible'); } else { showView('main-view'); allDOMElements.websiteFrame.src = 'about:blank'; appState.currentUrl = ''; } };
-const setupLoginButton = () => { allDOMElements.loginButtonArea.innerHTML = ''; if (checkLoginStatus()) { allDOMElements.loginButtonArea.innerHTML = `<button class="styled-button" id="continue-study-btn">Continue Study</button>`; } else { allDOMElements.loginButtonArea.innerHTML = `<button class="styled-button" id="login-btn">Login for 36 Hours</button>`; } document.getElementById('continue-study-btn')?.addEventListener('click', () => launchSite('https://www.rolexcoderz.xyz/Course', false)); document.getElementById('login-btn')?.addEventListener('click', () => launchSite('https://rolexcoderz.live/36xsuccess/', true)); };
-const makeDraggable = (elmnt, header) => { let p1=0, p2=0, p3=0, p4=0; const dragHeader = header.querySelector('.fa-arrows-alt') || header; dragHeader.onmousedown = e => { e.preventDefault(); p3 = e.clientX; p4 = e.clientY; document.onmouseup = ()=>{document.onmouseup=null;document.onmousemove=null;}; document.onmousemove = e => { p1=p3-e.clientX; p2=p4-e.clientY; p3=e.clientX; p4=e.clientY; elmnt.style.top=(elmnt.offsetTop-p2)+"px"; elmnt.style.left=(elmnt.offsetLeft-p1)+"px"; }; }; };
-const handleCalculator = () => { allDOMElements.calcButtons.addEventListener('click', (e) => { const target = e.target.closest('.calc-btn'); if (!target) return; const key = target.textContent; const display = allDOMElements.calcDisplay; if (key === 'C') { display.value = ''; } else if (key === '=') { try { display.value = new Function('return ' + display.value.replace(/[^-()\d/*+.]/g, ''))(); } catch { display.value = 'Error'; } } else { if (display.value === 'Error') display.value = ''; display.value += key; } }); };
-const filterDashboard = () => { const searchTerm = allDOMElements.searchBar.value.toLowerCase().trim(); const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category; let resultsFound = false; document.querySelectorAll('#dashboard-grid .content-card, #dashboard-grid a.content-card').forEach(card => { const keywords = card.dataset.keywords.toLowerCase(); const category = card.dataset.category; const categoryMatch = activeCategory === 'all' || category === activeCategory; const searchMatch = searchTerm === '' || keywords.split(' ').some(k => k.startsWith(searchTerm)); card.classList.toggle('hidden', !(categoryMatch && searchMatch)); if (categoryMatch && searchMatch) resultsFound = true; }); allDOMElements.noResultsMessage.classList.toggle('hidden', resultsFound); };
+/**
+ * Loads a URL into the iFrame for the embedded course/login view.
+ * @param {string} url The URL to load.
+ * @param {boolean} setLoginTimestamp Whether to set the 36-hour login timestamp.
+ */
+const launchSite = (url, setLoginTimestamp) => {
+    if (setLoginTimestamp) localStorage.setItem('sagarRajLoginTimestamp', Date.now().toString());
+    appState.currentUrl = url;
+    allDOMElements.websiteFrame.src = 'about:blank';
+    setTimeout(() => {
+        allDOMElements.websiteFrame.src = url;
+        showView('app-view');
+        allDOMElements.iframeLoader.style.display = 'block';
+    }, 50);
+};
+
+/**
+ * Sets up the main login/continue button based on the stored timestamp.
+ */
+const setupLoginButton = () => {
+    const isLoggedIn = (Date.now() - parseInt(localStorage.getItem('sagarRajLoginTimestamp') || '0', 10)) < (36 * 60 * 60 * 1000);
+    allDOMElements.loginButtonArea.innerHTML = '';
+    if (isLoggedIn) {
+        allDOMElements.loginButtonArea.innerHTML = `<button class="styled-button" id="continue-study-btn">Continue Study</button>`;
+    } else {
+        allDOMElements.loginButtonArea.innerHTML = `<button class="styled-button" id="login-btn">Login for 36 Hours</button>`;
+    }
+    document.getElementById('continue-study-btn')?.addEventListener('click', () => launchSite('https://www.rolexcoderz.xyz/Course', false));
+    document.getElementById('login-btn')?.addEventListener('click', () => launchSite('https://rolexcoderz.live/36xsuccess/', true));
+};
+
+/**
+ * Filters the dashboard cards based on search term and category.
+ */
+const filterDashboard = () => {
+    const searchTerm = allDOMElements.searchBar.value.toLowerCase().trim();
+    const activeCategory = allDOMElements.categoryFilter.querySelector('.active').dataset.category;
+    let resultsFound = false;
+    document.querySelectorAll('#dashboard-grid .content-card, #dashboard-grid a.content-card').forEach(card => {
+        const keywords = card.dataset.keywords.toLowerCase();
+        const category = card.dataset.category;
+        const categoryMatch = activeCategory === 'all' || category === activeCategory;
+        const searchMatch = searchTerm === '' || keywords.includes(searchTerm);
+        const isHidden = !(categoryMatch && searchMatch);
+        card.classList.toggle('hidden', isHidden);
+        if (!isHidden) resultsFound = true;
+    });
+    allDOMElements.noResultsMessage.classList.toggle('hidden', resultsFound);
+};
 
 // --- App Initialization Sequence ---
+
+/**
+ * The main function that runs after Firebase is successfully initialized.
+ */
 function initializeMainApp() {
     trackUserData();
     loadAds();
     initializePopunder();
-    initializeLiveUserCounts();
-    
-    allDOMElements.closeTelegramModal.onclick = () => { allDOMElements.telegramModal.classList.remove('visible'); if (!localStorage.getItem('sagarRajUserInfo')) { allDOMElements.userInfoModal.classList.add('visible'); } else { setupLoginButton(); } };
-    allDOMElements.userInfoForm.addEventListener('submit', (e) => { e.preventDefault(); const userInfo = { name: document.getElementById('user-name').value, class: document.getElementById('user-class').value, age: document.getElementById('user-age').value }; localStorage.setItem('sagarRajUserInfo', JSON.stringify(userInfo)); allDOMElements.userInfoModal.classList.remove('visible'); setupLoginButton(); trackUserData(); });
-    allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.classList.remove('visible'));
-    allDOMElements.supportUsBtn.addEventListener('click', () => { showView('support-view'); });
-    allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
-    allDOMElements.commandCenterBtn.addEventListener('click', () => { allDOMElements.sidePanel.classList.toggle('visible'); allDOMElements.commandCenterBtn.classList.toggle('open'); });
-    allDOMElements.sidePanelNav.addEventListener('click', (e) => { const target = e.target.closest('.side-panel-button'); if (!target) return; allDOMElements.sidePanel.classList.remove('visible'); allDOMElements.commandCenterBtn.classList.remove('open'); switch (target.id) { case 'side-panel-exit-btn': showView('main-view'); allDOMElements.websiteFrame.src = 'about:blank'; appState.iframeHistory = []; appState.currentUrl = ''; break; case 'side-panel-back-btn': navigateBack(); break; case 'side-panel-profile-btn': launchSite('https://fibergoddev.github.io/Sagar-Projects/Cont/profile.html', false); break; case 'side-panel-calculator-btn': allDOMElements.calculator.classList.toggle('visible'); break; case 'side-panel-notes-btn': allDOMElements.notesWidget.classList.toggle('visible'); break; case 'side-panel-focus-btn': allDOMElements.focusOverlay.classList.toggle('active'); target.querySelector('i').classList.toggle('fa-eye-slash'); break; case 'side-panel-permissions-btn': allDOMElements.permissionsModal.classList.add('visible'); break; } });
-    allDOMElements.closePermissionsModal.addEventListener('click', () => allDOMElements.permissionsModal.classList.remove('visible'));
-    allDOMElements.grantCameraBtn.addEventListener('click', async () => { try { await navigator.mediaDevices.getUserMedia({ video: true }); showNotification('Camera permission granted!', 'success'); } catch (err) { showNotification('Camera permission was denied.', 'error'); } });
-    allDOMElements.grantNotifyBtn.addEventListener('click', async () => { try { const permission = await Notification.requestPermission(); if (permission === 'granted') { showNotification('Notifications are now enabled.', 'success'); } else { showNotification('Notification permission was denied.', 'error'); } } catch (err) { showNotification('Could not request notification permission.', 'error'); } });
-    allDOMElements.notesTextarea.value = localStorage.getItem('sagarRajNotes') || '';
-    allDOMElements.notesTextarea.addEventListener('keyup', () => localStorage.setItem('sagarRajNotes', allDOMElements.notesTextarea.value));
-    allDOMElements.searchBar.addEventListener('input', filterDashboard);
-    allDOMElements.categoryFilter.addEventListener('click', (e) => { if (e.target.matches('.category-btn')) { allDOMElements.categoryFilter.querySelector('.active').classList.remove('active'); e.target.classList.add('active'); filterDashboard(); } });
-    allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd('game.html', false));
-    allDOMElements.adBarToggle.addEventListener('click', () => allDOMElements.rightAdBar.classList.toggle('expanded'));
-    makeDraggable(allDOMElements.notesWidget, allDOMElements.notesHeader);
-    makeDraggable(allDOMElements.calculator, allDOMElements.calcHeader);
-    handleCalculator();
+    setupLoginButton();
     filterDashboard();
-    ['mousemove', 'keypress', 'scroll', 'click'].forEach(evt => window.addEventListener(evt, resetInactivityTimer));
-    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(err => console.error('SW registration failed:', err)); }); }
 
+    // Attach all primary event listeners
+    allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
+    allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
+    allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd('game.html'));
+    allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.style.display = 'none');
+    allDOMElements.searchBar.addEventListener('input', filterDashboard);
+    allDOMElements.categoryFilter.addEventListener('click', (e) => {
+        if (e.target.matches('.category-btn')) {
+            allDOMElements.categoryFilter.querySelector('.active').classList.remove('active');
+            e.target.classList.add('active');
+            filterDashboard();
+        }
+    });
+
+    // Hide loader and show initial modal
     setTimeout(() => {
-        allDOMElements.loaderOverlay.classList.add('hidden');
-        allDOMElements.telegramModal.classList.add('visible');
+        allDOMElements.loaderOverlay.style.display = 'none';
+        // The Telegram/User Info modals are removed as they are not part of the new design.
+        // The app will now show the main view directly.
     }, 500);
 }
 
 // --- Main Execution Block ---
+
+// This listens for the custom event from firebase-init.js
 document.addEventListener('firebaseReady', (e) => {
     console.log("Firebase is ready. Initializing main application.");
     const { auth, db, userId } = e.detail;
@@ -292,5 +325,4 @@ document.addEventListener('firebaseReady', (e) => {
 document.addEventListener('firebaseFailed', (e) => {
     console.error("Firebase failed to initialize. Hub cannot start.", e.detail.error);
     allDOMElements.loaderStatus.textContent = "Connection Failed. Please Refresh.";
-    allDOMElements.loaderStatus.style.color = "var(--danger-color)";
 });
