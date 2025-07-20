@@ -1,14 +1,14 @@
 /* * Designed & Developed by Sagar Raj
- * Version 47: Definitive Blue Nebula Hub Script
+ * Version 48: Definitive Aether Blue Hub Script (Stable)
  */
 
 // --- Firebase Imports ---
-// These are necessary for user authentication and data tracking. The actual initialization
-// is handled by firebase-init.js, and this script waits for its signal.
+// This script relies on firebase-init.js to handle the actual connection and
+// to fire an event when the connection is ready.
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Ad System Resources ---
-// A centralized object for all new ad codes and links for easy management and future updates.
+// Centralized object for all ad codes and links for easy management.
 const ads = {
     directLink: 'https://medievalkin.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf',
     popunderScript: '//medievalkin.com/5d/2c/15/5d2c15bb87424bfe641144d764893adc.js',
@@ -19,15 +19,11 @@ const ads = {
     bigBar: {
         options: { key: 'de366f663355ebaa73712755e3876ab8', format: 'iframe', height: 250, width: 300, params: {} },
         invoke: '//www.highperformanceformat.com/de366f663355ebaa73712755e3876ab8/invoke.js'
-    },
-    nativeBanner: {
-        invoke: '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js',
-        containerId: 'container-5a3a56f258731c59b0ae000546a15e25'
     }
 };
 
 // --- DOM Element Cache ---
-// Caching all necessary DOM elements on startup for faster access and better performance.
+// Caching DOM elements for performance.
 const allDOMElements = {
     loaderOverlay: document.getElementById('loader-overlay'),
     loaderStatus: document.getElementById('loader-status'),
@@ -39,23 +35,8 @@ const allDOMElements = {
     interstitialAdContainer: document.getElementById('interstitial-ad-container'),
     skipAdButton: document.getElementById('skip-ad-button'),
     closeAdModalBtn: document.getElementById('close-ad-modal-btn'),
-    userInfoModal: document.getElementById('user-info-modal'),
-    userInfoForm: document.getElementById('user-info-form'),
-    telegramModal: document.getElementById('telegram-modal'),
-    closeTelegramModal: document.getElementById('close-telegram-modal'),
     websiteFrame: document.getElementById('website-frame'),
     iframeLoader: document.getElementById('iframe-loader'),
-    focusOverlay: document.getElementById('focus-overlay'),
-    notesWidget: document.getElementById('mini-notes'),
-    notesHeader: document.getElementById('notes-header'),
-    notesTextarea: document.getElementById('notes-textarea'),
-    calculator: document.getElementById('calculator'),
-    calcHeader: document.getElementById('calc-header'),
-    calcDisplay: document.getElementById('calc-display'),
-    calcButtons: document.getElementById('calc-buttons'),
-    commandCenterBtn: document.getElementById('command-center-btn'),
-    sidePanel: document.getElementById('side-panel'),
-    sidePanelNav: document.getElementById('side-panel-nav'),
     supportUsBtn: document.getElementById('support-us-btn'),
     backToMainBtn: document.getElementById('back-to-main-btn'),
     persistentAdBanner: document.getElementById('persistent-ad-banner'),
@@ -71,8 +52,6 @@ const allDOMElements = {
 
 // --- App State ---
 const appState = {
-    iframeHistory: [],
-    currentUrl: '',
     db: null,
     auth: null,
     userId: null,
@@ -94,39 +73,28 @@ const showNotification = (message, type = 'info') => {
     if (type === 'error') iconClass = 'fas fa-times-circle';
     n.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
     allDOMElements.notificationContainer.appendChild(n);
-    setTimeout(() => n.remove(), 5000);
+    setTimeout(() => {
+        n.style.animation = 'slideOut 0.5s forwards';
+        setTimeout(() => n.remove(), 500);
+    }, 4500);
 };
 
 /**
- * Tracks user data and saves it to Firestore. Includes device type and location.
+ * Tracks user data and saves it to Firestore.
  */
 const trackUserData = async () => {
     if (!appState.db || !appState.userId) return;
     try {
-        const storedUserInfo = JSON.parse(localStorage.getItem('sagarRajUserInfo') || '{}');
         const getDeviceType = () => {
             const ua = navigator.userAgent;
             if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "Tablet";
             if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) return "Mobile";
             return "Desktop";
         };
-        const device = { type: getDeviceType(), os: navigator.platform };
-        let locationInfo = { city: "Lucknow", region: "Uttar Pradesh", country: "India" }; // Default location
-        try {
-            const locResponse = await fetch('https://ipapi.co/json/');
-            if (locResponse.ok) {
-                const locData = await locResponse.json();
-                locationInfo = { ip: locData.ip, city: locData.city, region: locData.region, country: locData.country_name };
-            }
-        } catch (e) {
-            console.warn("Could not fetch location data, using default.");
-        }
         const userDocRef = doc(appState.db, "users", appState.userId);
         await setDoc(userDocRef, {
             id: appState.userId,
-            ...storedUserInfo,
-            device,
-            location: locationInfo,
+            device: { type: getDeviceType(), os: navigator.platform },
             lastVisited: serverTimestamp(),
         }, { merge: true });
     } catch (error) {
@@ -137,9 +105,9 @@ const trackUserData = async () => {
 // --- Ad System ---
 
 /**
- * Dynamically injects a standard ad script into a container.
- * @param {HTMLElement} container The container to inject the ad into.
- * @param {object} adConfig The ad configuration from the `ads` object.
+ * Dynamically injects an ad script into a container.
+ * @param {HTMLElement} container The container element.
+ * @param {object} adConfig The ad configuration.
  */
 const injectAdScript = (container, adConfig) => {
     if (!container) return;
@@ -155,20 +123,15 @@ const injectAdScript = (container, adConfig) => {
 };
 
 /**
- * Loads all the main ads for the application.
+ * Loads all primary ads for the application.
  */
 const loadAds = () => {
     injectAdScript(allDOMElements.persistentAdBanner, ads.bottomBar);
-    const adSlot1 = document.createElement('div');
-    const adSlot2 = document.createElement('div');
-    allDOMElements.adGrid.innerHTML = '';
-    allDOMElements.adGrid.appendChild(adSlot1);
-    allDOMElements.adGrid.appendChild(adSlot2);
-    injectAdScript(adSlot1, ads.bigBar);
+    injectAdScript(allDOMElements.adGrid, ads.bigBar);
 };
 
 /**
- * Sets up a one-time event listener to trigger the popunder ad on the first user interaction.
+ * Sets up a one-time listener to trigger the popunder ad on first user interaction.
  */
 const initializePopunder = () => {
     const triggerPopunder = () => {
@@ -183,12 +146,12 @@ const initializePopunder = () => {
 };
 
 /**
- * Shows the interstitial ad modal before navigating to a new page.
+ * ** FIX **: Shows the interstitial ad modal. This is ONLY called by user actions.
  * @param {string} targetUrl The URL to navigate to after the ad.
  */
 const showInterstitialAd = (targetUrl) => {
-    const { interstitialAdModal, interstitialAdContainer, skipAdButton, closeAdModalBtn } = allDOMElements;
-    injectAdScript(interstitialAdContainer, ads.bigBar);
+    const { interstitialAdModal, skipAdButton, closeAdModalBtn } = allDOMElements;
+    injectAdScript(allDOMElements.interstitialAdContainer, ads.bigBar);
     interstitialAdModal.classList.remove('hidden');
     let timeLeft = 4;
     skipAdButton.textContent = `Skip Ad in ${timeLeft}s`;
@@ -216,49 +179,41 @@ const showInterstitialAd = (targetUrl) => {
 // --- Main Hub Logic ---
 
 /**
- * Toggles the visibility of different views within index.html.
- * @param {string} viewId The ID of the view to show ('main-view', 'app-view', 'support-view').
+ * Toggles the visibility of the main views.
+ * @param {string} viewId ID of the view to show.
  */
 const showView = (viewId) => {
-    ['main-view', 'app-view', 'support-view'].forEach(id => {
+    ['main-view', 'support-view', 'app-view'].forEach(id => {
         document.getElementById(id)?.classList.toggle('hidden', id !== viewId);
     });
-    allDOMElements.commandCenterBtn?.classList.toggle('visible', viewId === 'app-view');
 };
 
 /**
- * Loads a URL into the iFrame for the embedded course/login view.
+ * Loads a URL into the iFrame for the embedded course view.
  * @param {string} url The URL to load.
  * @param {boolean} setLoginTimestamp Whether to set the 36-hour login timestamp.
  */
 const launchSite = (url, setLoginTimestamp) => {
     if (setLoginTimestamp) localStorage.setItem('sagarRajLoginTimestamp', Date.now().toString());
-    appState.currentUrl = url;
-    allDOMElements.websiteFrame.src = 'about:blank';
-    setTimeout(() => {
-        allDOMElements.websiteFrame.src = url;
-        showView('app-view');
-        allDOMElements.iframeLoader.style.display = 'block';
-    }, 50);
+    allDOMElements.websiteFrame.src = url;
+    showView('app-view');
 };
 
 /**
- * Sets up the main login/continue button based on the stored timestamp.
+ * Sets up the main login button based on the stored timestamp.
  */
 const setupLoginButton = () => {
     const isLoggedIn = (Date.now() - parseInt(localStorage.getItem('sagarRajLoginTimestamp') || '0', 10)) < (36 * 60 * 60 * 1000);
-    allDOMElements.loginButtonArea.innerHTML = '';
-    if (isLoggedIn) {
-        allDOMElements.loginButtonArea.innerHTML = `<button class="styled-button" id="continue-study-btn">Continue Study</button>`;
-    } else {
-        allDOMElements.loginButtonArea.innerHTML = `<button class="styled-button" id="login-btn">Login for 36 Hours</button>`;
-    }
+    allDOMElements.loginButtonArea.innerHTML = isLoggedIn
+        ? `<button class="styled-button" id="continue-study-btn">Continue Study</button>`
+        : `<button class="styled-button" id="login-btn">Login for 36 Hours</button>`;
+    
     document.getElementById('continue-study-btn')?.addEventListener('click', () => launchSite('https://www.rolexcoderz.xyz/Course', false));
     document.getElementById('login-btn')?.addEventListener('click', () => launchSite('https://rolexcoderz.live/36xsuccess/', true));
 };
 
 /**
- * Filters the dashboard cards based on search term and category.
+ * Filters the dashboard cards based on search and category.
  */
 const filterDashboard = () => {
     const searchTerm = allDOMElements.searchBar.value.toLowerCase().trim();
@@ -292,7 +247,6 @@ function initializeMainApp() {
     allDOMElements.supportUsBtn.addEventListener('click', () => showView('support-view'));
     allDOMElements.backToMainBtn.addEventListener('click', () => showView('main-view'));
     allDOMElements.playGameBtn.addEventListener('click', () => showInterstitialAd('game.html'));
-    allDOMElements.websiteFrame.addEventListener('load', () => allDOMElements.iframeLoader.style.display = 'none');
     allDOMElements.searchBar.addEventListener('input', filterDashboard);
     allDOMElements.categoryFilter.addEventListener('click', (e) => {
         if (e.target.matches('.category-btn')) {
@@ -302,12 +256,11 @@ function initializeMainApp() {
         }
     });
 
-    // Hide loader and show initial modal
+    // ** FIX **: Smoothly transition from loader to main view
     setTimeout(() => {
-        allDOMElements.loaderOverlay.style.display = 'none';
-        // The Telegram/User Info modals are removed as they are not part of the new design.
-        // The app will now show the main view directly.
-    }, 500);
+        allDOMElements.loaderOverlay.classList.add('hidden');
+        allDOMElements.mainView.classList.remove('hidden');
+    }, 500); // A brief delay for a smoother feel
 }
 
 // --- Main Execution Block ---
