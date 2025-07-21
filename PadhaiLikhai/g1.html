@@ -1,0 +1,316 @@
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether Memoria - The Ultimate Mind-Bending Memory Odyssey</title>
+    <style>
+        /* Global Styles for Aether Blue Theme */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #001122; /* Dark deep-space blue */
+            color: #ffffff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        header {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Animated SVG Logo */
+        svg#aether-logo {
+            width: 150px;
+            height: 150px;
+        }
+
+        svg#aether-logo circle {
+            fill: none;
+            stroke: #00BFFF; /* Vibrant blue */
+            stroke-width: 4;
+            stroke-dasharray: 100;
+            animation: swirl 2s linear infinite;
+        }
+
+        @keyframes swirl {
+            0% { stroke-dashoffset: 0; transform: rotate(0deg); }
+            100% { stroke-dashoffset: -200; transform: rotate(360deg); }
+        }
+
+        /* Game Container */
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 17, 34, 0.8); /* Semi-transparent deep blue */
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            grid-gap: 10px;
+            margin: 20px 0;
+        }
+
+        .card {
+            width: 100px;
+            height: 100px;
+            background-color: #003366; /* Darker blue for cards */
+            border: 2px solid #00BFFF;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+            perspective: 1000px;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+            background-color: #00BFFF; /* Vibrant blue when flipped */
+        }
+
+        .card.matched {
+            background-color: #00FF00; /* Green for matched, with blue accent */
+            border-color: #00FF00;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px #00BFFF; }
+            50% { box-shadow: 0 0 20px #00BFFF; }
+            100% { box-shadow: 0 0 10px #00BFFF; }
+        }
+
+        /* Buttons with Vibrant Blue Accents */
+        button {
+            background-color: #003366;
+            border: 2px solid #00BFFF;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #00BFFF;
+            transform: scale(1.05);
+        }
+
+        #story-text {
+            text-align: center;
+            margin: 20px;
+            font-size: 16px;
+            max-width: 600px;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #score, #time {
+            font-size: 20px;
+            margin: 10px;
+        }
+
+        /* Ensure stable, bug-free layout */
+        * {
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Animated SVG Logo -->
+        <svg id="aether-logo" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" />
+            <circle cx="50" cy="50" r="30" transform="rotate(45 50 50)" />
+            <circle cx="50" cy="50" r="20" transform="rotate(90 50 50)" />
+        </svg>
+    </header>
+
+    <div id="game-container">
+        <h1>Aether Memoria</h1>
+        <p id="story-text">Welcome to Aether Memoria, the mind-blowing game where memories echo through the quantum void. Match the aether symbols to unravel the ancient story of the Nebula Guardians. Each match summons a spirit, bending reality and unlocking new paths. Created by award-winning developer "QuantumForge Studios" – winners of the Galactic Game Awards for Innovation in Interactive Storytelling.</p>
+        <div id="score">Score: 0</div>
+        <div id="time">Time: 0s</div>
+        <div id="game-board"></div>
+        <button id="start-button">Start Odyssey</button>
+        <button id="reset-button" style="display: none;">Reset Game</button>
+    </div>
+
+   <script>
+        // Game Logic for Aether Memoria
+        // Conceived by an award-winning game developer: A unique blend of memory matching with procedural storytelling and reality-bending effects.
+        // Unique Features: Procedural story generation based on matches, animated distortions on mismatches, endless replayability with evolving narratives.
+        // Engaging for teens: Fast-paced, visually stunning, with open-minded themes of exploration, choice, and cosmic mystery.
+
+        const gameBoard = document.getElementById('game-board');
+        const scoreDisplay = document.getElementById('score');
+        const timeDisplay = document.getElementById('time');
+        const storyText = document.getElementById('story-text');
+        const startButton = document.getElementById('start-button');
+        const resetButton = document.getElementById('reset-button');
+
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let score = 0;
+        let time = 0;
+        let timerInterval;
+        let isGameActive = false;
+
+        // Procedural Story Elements (Unique Narrative System)
+        const storyChapters = [
+            "As you match the first echoes, a Nebula Guardian awakens: 'The void calls... choose wisely.'",
+            "The aether fluxes! You've unlocked the Star Weaver's tale: 'Threads of fate intertwine.'",
+            "Reality bends! The Quantum Sage whispers: 'Echoes of the past shape the future.'",
+            "Cosmic revelation! The Void Dancer appears: 'Dance with shadows to find light.'",
+            "Epic climax! All guardians unite: 'You are the Aether Weaver – forge your destiny!'"
+        ];
+        let currentChapter = 0;
+
+        // Symbols for cards (Futuristic Aether Symbols)
+        const symbols = ['🌌', '🪐', '⭐', '🌠', '🛸', '🔮', '⚛️', '∞'];
+
+        function createBoard() {
+            const cardSymbols = [...symbols, ...symbols].sort(() => Math.random() - 0.5); // Duplicate and shuffle
+            gameBoard.innerHTML = '';
+            cards = cardSymbols.map((symbol, index) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.symbol = symbol;
+                card.dataset.index = index;
+                card.innerHTML = '?'; // Hidden initially
+                card.addEventListener('click', flipCard);
+                gameBoard.appendChild(card);
+                return card;
+            });
+        }
+
+        function flipCard() {
+            if (!isGameActive || flippedCards.length === 2 || this.classList.contains('flipped') || this.classList.contains('matched')) return;
+
+            this.classList.add('flipped');
+            this.innerHTML = this.dataset.symbol;
+            flippedCards.push(this);
+
+            if (flippedCards.length === 2) {
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.symbol === card2.dataset.symbol) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                score += 10;
+                scoreDisplay.textContent = `Score: ${score}`;
+                advanceStory();
+                if (matchedPairs === symbols.length) {
+                    endGame(true);
+                }
+            } else {
+                // Mismatch: Add distortion effect (unique twist)
+                document.body.style.animation = 'distort 0.5s';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    card1.innerHTML = '?';
+                    card2.innerHTML = '?';
+                }, 1000);
+            }
+            flippedCards = [];
+        }
+
+        // Distortion Animation for Mismatches
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes distort {
+                0% { transform: skew(0deg); }
+                50% { transform: skew(5deg); filter: blur(2px); }
+                100% { transform: skew(0deg); }
+            }`;
+        document.head.appendChild(style);
+
+        function advanceStory() {
+            if (currentChapter < storyChapters.length) {
+                storyText.textContent = storyChapters[currentChapter];
+                currentChapter++;
+            } else {
+                // Procedural extension: Generate open-ended story
+                storyText.textContent = `Echoes evolve! Your score of ${score} summons a custom guardian: '${generateCustomGuardian()}' – Continue the odyssey!`;
+            }
+        }
+
+        function generateCustomGuardian() {
+            const adjectives = ['Eternal', 'Quantum', 'Nebula', 'Void', 'Aether'];
+            const nouns = ['Whisperer', 'Forge', 'Dancer', 'Sage', 'Weaver'];
+            return `${adjectives[Math.floor(Math.random() * adjectives.length)]} ${nouns[Math.floor(Math.random() * nouns.length)]}`;
+        }
+
+        function startTimer() {
+            time = 0;
+            timerInterval = setInterval(() => {
+                time++;
+                timeDisplay.textContent = `Time: ${time}s`;
+            }, 1000);
+        }
+
+        function endGame(won) {
+            clearInterval(timerInterval);
+            isGameActive = false;
+            storyText.textContent = won ? `Victory! You've woven the Aether fully. Final Score: ${score} in ${time}s. A mind-bending journey ends... or does it?` : `Time's up! The void claims you. Score: ${score}`;
+            resetButton.style.display = 'block';
+        }
+
+        function startGame() {
+            createBoard();
+            matchedPairs = 0;
+            score = 0;
+            currentChapter = 0;
+            scoreDisplay.textContent = `Score: ${score}`;
+            storyText.textContent = storyChapters[0];
+            startButton.style.display = 'none';
+            resetButton.style.display = 'none';
+            isGameActive = true;
+            startTimer();
+            // Time limit for engagement (e.g., 2 minutes)
+            setTimeout(() => {
+                if (isGameActive) endGame(false);
+            }, 120000);
+        }
+
+        function resetGame() {
+            startGame();
+        }
+
+        startButton.addEventListener('click', startGame);
+        resetButton.addEventListener('click', resetGame);
+    </script>
+</body>
+</html>
+
