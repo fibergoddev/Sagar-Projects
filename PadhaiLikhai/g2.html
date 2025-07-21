@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aetheria: Echoes of the Void</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* 
+        ========================================
+        AETHER BLUE THEME - Style Sheet
+        Developed by a visionary web architect.
+        ========================================
+        */
+
+        :root {
+            --primary-bg: #0a0e1a; /* Deep Space Blue */
+            --primary-text: #c0d0f0; /* Starlight White/Blue */
+            --accent-glow: #00bfff; /* Aether Blue */
+            --accent-glow-transparent: rgba(0, 191, 255, 0.7);
+            --secondary-text: #8090b0;
+            --constellation-dim: rgba(0, 191, 255, 0.25); /* Faded Echoes */
+            --constellation-active: #00bfff;
+            
+            --font-title: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--primary-bg);
+            color: var(--primary-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            letter-spacing: 1px;
+        }
+
+        /* HEADER & LOGO */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 1200px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .logo-svg {
+            width: 50px;
+            height: 50px;
+            margin-right: 20px;
+            animation: slow-rotate 25s linear infinite;
+        }
+        
+        .logo-svg .ring-1 { animation: rotate-back 10s linear infinite; transform-origin: center; }
+        .logo-svg .ring-2 { animation: rotate-back 15s linear infinite reverse; transform-origin: center; }
+        .logo-svg .ring-3 { animation: rotate-back 20s linear infinite; transform-origin: center; }
+
+        @keyframes slow-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes rotate-back {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        .title-text {
+            font-family: var(--font-title);
+            font-size: 2.5rem;
+            color: var(--primary-text);
+            text-shadow: 0 0 10px var(--accent-glow);
+            font-weight: 500;
+        }
+
+        /* MAIN GAME CONTAINER */
+        .game-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        #gameCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 25px 25px;
+        }
+        
+        #gameCanvas.explore-mode {
+             cursor: grab;
+        }
+        #gameCanvas.explore-mode:active {
+             cursor: grabbing;
+        }
+
+
+        /* UI PANEL */
+        .ui-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 14, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 191, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.1);
+            transition: opacity 0.5s ease;
+        }
+
+        .cosmic-seed {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+
+        .cosmic-seed span {
+            color: var(--accent-glow);
+            text-shadow: 0 0 5px var(--accent-glow);
+            padding: 0 10px;
+        }
+
+        .instructions {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--secondary-text);
+            max-width: 450px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            background: transparent;
+            color: var(--accent-glow);
+            border: 2px solid var(--accent-glow);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+        }
+
+        .btn:hover, .btn:focus {
+            background: var(--accent-glow);
+            color: var(--primary-bg);
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn.secondary {
+            border-color: var(--secondary-text);
+            color: var(--secondary-text);
+            box-shadow: none;
+        }
+        .btn.secondary:hover {
+            background: var(--secondary-text);
+            color: var(--primary-bg);
+            box-shadow: 0 0 15px var(--secondary-text);
+        }
+
+        /* MODAL / OVERLAY */
+        #welcome-modal, #echo-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 26, 0.9);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        #welcome-modal.visible, #echo-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--primary-bg);
+            border: 1px solid var(--accent-glow-transparent);
+            border-radius: 12px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.2);
+            transform: scale(0.95);
+            transition: transform 0.4s ease;
+        }
+        
+        .visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-family: var(--font-title);
+            font-size: 2rem;
+            color: var(--accent-glow);
+            margin-bottom: 20px;
+        }
+
+        .modal-body {
+            color: var(--primary-text);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .modal-body strong {
+            color: var(--accent-glow);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================================== -->
+    <!--  HTML STRUCTURE                      -->
+    <!-- ==================================== -->
+    
+    <header class="header">
+        <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle class="ring-1" cx="50" cy="50" r="45" stroke="url(#gradient)" stroke-width="2" stroke-dasharray="10 10"/>
+            <circle class="ring-2" cx="50" cy="50" r="30" stroke="url(#gradient)" stroke-width="2" stroke-dasharray="8 8"/>
+            <circle class="ring-3" cx="50" cy="50" r="15" stroke="url(#gradient)" stroke-width="2"/>
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:var(--accent-glow);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:var(--primary-text);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
+        <h1 class="title-text">Aetheria</h1>
+    </header>
+
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div class="ui-panel" id="uiPanel">
+        <div class="cosmic-seed" id="cosmicSeed"><span>...</span> & <span>...</span></div>
+        <p class="instructions" id="instructions">Click on the void to place Starember. Connect the concepts into a constellation.</p>
+        <div class="button-group">
+            <button class="btn" id="castBtn">Cast Echo</button>
+            <button class="btn secondary" id="clearBtn">Clear</button>
+            <button class="btn" id="exploreBtn">Explore the Void</button>
+        </div>
+    </div>
+    
+    <!-- Welcome Modal -->
+    <div id="welcome-modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Welcome, Shaper</h2>
+            <p class="modal-body">
+                This is the Void. It is empty, but full of potential.
+                You will be given a <strong>Cosmic Seed</strong>—two concepts. Your task is not to win, but to <strong>create</strong>.
+                <br><br>
+                Click to place stars, forming a constellation that represents your interpretation. Cast it into the Void, and it will remain as an <strong>Echo</strong> of your thought.
+            </p>
+            <button class="btn" id="start-game-btn">Begin Shaping</button>
+        </div>
+    </div>
+
+    <!-- Echo Reveal Modal -->
+    <div id="echo-modal">
+        <div class="modal-content">
+            <h2 class="modal-title">An Echo...</h2>
+            <p class="modal-body" id="echo-words"></p>
+            <button class="btn" id="close-echo-btn">Return to the Void</button>
+        </div>
+    </div>
+
+
+    <script>
+    /*
+    ================================================
+    AETHERIA: ECHOES OF THE VOID - Game Logic
+    Engineered by a professional system architect.
+    ================================================
+    */
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- CORE ENGINE VARIABLES ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const uiPanel = document.getElementById('uiPanel');
+        const cosmicSeedEl = document.getElementById('cosmicSeed');
+        const instructionsEl = document.getElementById('instructions');
+        const castBtn = document.getElementById('castBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const exploreBtn = document.getElementById('exploreBtn');
+        
+        const welcomeModal = document.getElementById('welcome-modal');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const echoModal = document.getElementById('echo-modal');
+        const echoWordsEl = document.getElementById('echo-words');
+        const closeEchoBtn = document.getElementById('close-echo-btn');
+
+        let canvasWidth = window.innerWidth;
+        let canvasHeight = window.innerHeight;
+
+        let gameState = 'TUTORIAL'; // TUTORIAL, CREATING, EXPLORING
+        let currentConstellation = []; // Array of {x, y} for stars being placed
+        let savedConstellations = []; // Array of { words: [w1, w2], stars: [{x, y}, ...], center: {x,y} }
+        
+        let mouse = { x: 0, y: 0, isDown: false };
+        let camera = { x: 0, y: 0, zoom: 1 };
+        let panStart = { x: 0, y: 0 };
+
+
+        // --- DATA: THE COSMIC SEEDS ---
+        const cosmicSeeds = [
+            ['Silence', 'Growth'], ['Chaos', 'Serenity'], ['Memory', 'Forgetting'],
+            ['Joy', 'Sorrow'], ['Connection', 'Isolation'], ['Order', 'Freedom'],
+            ['Hope', 'Despair'], ['Beginning', 'End'], ['Simplicity', 'Complexity'],
+            ['Strength', 'Vulnerability'], ['Logic', 'Emotion'], ['Future', 'Past'],
+            ['Discovery', 'Loss'], ['Courage', 'Fear'], ['Stillness', 'Movement']
+        ];
+        let availableSeeds = [...cosmicSeeds];
+        let currentWords = [];
+
+
+        // --- INITIALIZATION ---
+        function init() {
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            
+            addEventListeners();
+            
+            // Show welcome modal on first load
+            welcomeModal.classList.add('visible');
+            
+            // Initial render
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function startGame() {
+            welcomeModal.classList.remove('visible');
+            loadFromLocalStorage();
+            startCreationMode();
+        }
+
+        // --- GAME STATE MANAGEMENT ---
+        function startCreationMode() {
+            gameState = 'CREATING';
+            currentConstellation = [];
+            camera = { x: 0, y: 0, zoom: 1 }; // Reset camera
+            
+            if (availableSeeds.length === 0) {
+                availableSeeds = [...cosmicSeeds]; // Replenish seeds if exhausted
+            }
+            
+            const seedIndex = Math.floor(Math.random() * availableSeeds.length);
+            currentWords = availableSeeds.splice(seedIndex, 1)[0];
+            
+            // Update UI
+            cosmicSeedEl.innerHTML = `<span>${currentWords[0]}</span> & <span>${currentWords[1]}</span>`;
+            instructionsEl.textContent = 'Click on the void to place Starember. Connect the concepts.';
+            castBtn.disabled = true;
+            castBtn.style.display = 'inline-block';
+            clearBtn.style.display = 'inline-block';
+            exploreBtn.textContent = 'Explore the Void';
+            uiPanel.style.opacity = 1;
+            canvas.classList.remove('explore-mode');
+        }
+
+        function startExploreMode() {
+            gameState = 'EXPLORING';
+            currentConstellation = []; // Clear any temp drawing
+            
+            // Update UI
+            instructionsEl.textContent = 'Click & drag to pan your universe. Click an Echo to reveal its origin.';
+            castBtn.style.display = 'none';
+            clearBtn.style.display = 'none';
+            exploreBtn.textContent = 'Create a New Echo';
+            uiPanel.style.opacity = 1;
+            canvas.classList.add('explore-mode');
+        }
+
+        function toggleExploreMode() {
+            if (gameState === 'EXPLORING') {
+                startCreationMode();
+            } else {
+                startExploreMode();
+            }
+        }
+
+
+        // --- CORE DRAWING LOGIC ---
+        function gameLoop() {
+            ctx.save();
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-bg').trim();
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            
+            // Apply camera transformations
+            ctx.translate(canvasWidth / 2, canvasHeight / 2);
+            ctx.scale(camera.zoom, camera.zoom);
+            ctx.translate(-canvasWidth / 2 + camera.x, -canvasHeight / 2 + camera.y);
+
+            // Draw all saved constellations (dimmed)
+            savedConstellations.forEach(constellation => {
+                drawConstellation(constellation.stars, getComputedStyle(document.documentElement).getPropertyValue('--constellation-dim').trim(), 2);
+            });
+
+            // Draw the constellation currently being created (bright)
+            if (gameState === 'CREATING' && currentConstellation.length > 0) {
+                drawConstellation(currentConstellation, getComputedStyle(document.documentElement).getPropertyValue('--accent-glow').trim(), 3, true);
+            }
+            
+            ctx.restore();
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        function drawConstellation(stars, color, starSize, showHoverEffect = false) {
+            if (stars.length === 0) return;
+
+            // Draw lines
+            ctx.beginPath();
+            ctx.moveTo(stars[0].x, stars[0].y);
+            for (let i = 1; i < stars.length; i++) {
+                ctx.lineTo(stars[i].x, stars[i].y);
+            }
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Draw stars (Starember)
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, starSize, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                
+                // Pulsing glow effect
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, starSize * 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = color.replace(')', ', 0.3)').replace('rgb', 'rgba');
+                ctx.fill();
+            });
+            
+            // Add a subtle hover effect to the next potential line segment
+            if (showHoverEffect && mouse.x && currentConstellation.length > 0) {
+                const lastStar = currentConstellation[currentConstellation.length - 1];
+                const mouseWorldPos = screenToWorld({x: mouse.x, y: mouse.y});
+                ctx.beginPath();
+                ctx.moveTo(lastStar.x, lastStar.y);
+                ctx.lineTo(mouseWorldPos.x, mouseWorldPos.y);
+                ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--constellation-dim').trim();
+                ctx.setLineDash([5, 5]);
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+        }
+        
+        // --- USER ACTIONS & EVENT HANDLERS ---
+        function addEventListeners() {
+            window.addEventListener('resize', onResize);
+            canvas.addEventListener('click', onCanvasClick);
+            canvas.addEventListener('mousemove', onMouseMove);
+            canvas.addEventListener('mousedown', onMouseDown);
+            canvas.addEventListener('mouseup', onMouseUp);
+            canvas.addEventListener('mouseout', onMouseUp); // Treat leaving canvas as mouse up
+            canvas.addEventListener('wheel', onWheel, { passive: false });
+            
+            startGameBtn.addEventListener('click', startGame);
+            castBtn.addEventListener('click', castConstellation);
+            clearBtn.addEventListener('click', clearCurrentConstellation);
+            exploreBtn.addEventListener('click', toggleExploreMode);
+            closeEchoBtn.addEventListener('click', () => echoModal.classList.remove('visible'));
+        }
+
+        function onCanvasClick(e) {
+            const worldPos = screenToWorld({ x: e.clientX, y: e.clientY });
+            
+            if (gameState === 'CREATING') {
+                currentConstellation.push({ x: worldPos.x, y: worldPos.y });
+                castBtn.disabled = false;
+            } else if (gameState === 'EXPLORING') {
+                // Check if click is near a saved constellation's center
+                for (const constellation of savedConstellations) {
+                    const dist = Math.hypot(worldPos.x - constellation.center.x, worldPos.y - constellation.center.y);
+                    if (dist < 30 / camera.zoom) { // 30px click radius, adjusted for zoom
+                        showEcho(constellation);
+                        break;
+                    }
+                }
+            }
+        }
+
+        function onMouseMove(e) {
+             mouse.x = e.clientX;
+             mouse.y = e.clientY;
+             if (gameState === 'EXPLORING' && mouse.isDown) {
+                const dx = (e.clientX - panStart.x) / camera.zoom;
+                const dy = (e.clientY - panStart.y) / camera.zoom;
+                camera.x -= dx;
+                camera.y -= dy;
+                panStart = { x: e.clientX, y: e.clientY };
+             }
+        }
+        
+        function onMouseDown(e) {
+            if (gameState === 'EXPLORING') {
+                mouse.isDown = true;
+                panStart = { x: e.clientX, y: e.clientY };
+            }
+        }
+
+        function onMouseUp() {
+            mouse.isDown = false;
+        }
+
+        function onWheel(e) {
+            if (gameState === 'EXPLORING') {
+                e.preventDefault();
+                const zoomIntensity = 0.1;
+                const wheel = e.deltaY < 0 ? 1 : -1;
+                const zoom = Math.exp(wheel * zoomIntensity);
+                
+                const newZoom = Math.max(0.2, Math.min(5, camera.zoom * zoom));
+                camera.zoom = newZoom;
+            }
+        }
+
+        function castConstellation() {
+            if (currentConstellation.length > 0) {
+                const center = getConstellationCenter(currentConstellation);
+                savedConstellations.push({
+                    words: currentWords,
+                    stars: [...currentConstellation],
+                    center: center
+                });
+                saveToLocalStorage();
+                startCreationMode();
+            }
+        }
+        
+        function getConstellationCenter(stars) {
+            let sumX = 0, sumY = 0;
+            stars.forEach(star => {
+                sumX += star.x;
+                sumY += star.y;
+            });
+            return { x: sumX / stars.length, y: sumY / stars.length };
+        }
+
+        function clearCurrentConstellation() {
+            currentConstellation = [];
+            castBtn.disabled = true;
+        }
+        
+        function showEcho(constellation) {
+            echoWordsEl.innerHTML = `This Echo was formed from the concepts of <strong>${constellation.words[0]}</strong> and <strong>${constellation.words[1]}</strong>.`;
+            echoModal.classList.add('visible');
+        }
+
+        function onResize() {
+            canvasWidth = window.innerWidth;
+            canvasHeight = window.innerHeight;
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+        }
+        
+        // --- UTILITY FUNCTIONS ---
+        function screenToWorld(pos) {
+            const worldX = (pos.x - canvasWidth / 2) / camera.zoom + (canvasWidth / 2 - camera.x);
+            const worldY = (pos.y - canvasHeight / 2) / camera.zoom + (canvasHeight / 2 - camera.y);
+            return { x: worldX, y: worldY };
+        }
+        
+        // --- LOCAL STORAGE PERSISTENCE ---
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('aetheria_void_data', JSON.stringify(savedConstellations));
+            } catch(e) {
+                console.warn("Could not save to local storage. Your void will be forgotten.", e);
+            }
+        }
+        
+        function loadFromLocalStorage() {
+            try {
+                const data = localStorage.getItem('aetheria_void_data');
+                if (data) {
+                    savedConstellations = JSON.parse(data);
+                    if (savedConstellations.length > 0) {
+                       exploreBtn.style.display = 'inline-block';
+                    } else {
+                       exploreBtn.style.display = 'none';
+                    }
+                } else {
+                    exploreBtn.style.display = 'none';
+                }
+            } catch(e) {
+                console.warn("Could not load from local storage.", e);
+                savedConstellations = [];
+                exploreBtn.style.display = 'none';
+            }
+        }
+
+        // --- LET THERE BE LIGHT ---
+        init();
+
+    });
+    </script>
+</body>
+</html>
