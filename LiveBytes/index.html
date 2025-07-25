@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LiveBytes - Professional Live Classes</title>
+    <title>LiveBytes - Advanced Live Classes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,15 +11,12 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f1f5f9; /* slate-100 */
         }
         .modal-backdrop {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(5px);
             z-index: 40;
@@ -27,8 +24,7 @@
         .modal {
             display: none;
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             z-index: 50;
         }
@@ -39,58 +35,82 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scaleX(-1); /* Mirror effect */
+            transform: scaleX(-1); /* Mirror effect for self-view */
         }
-        #main-video-container video {
-             border-radius: 0.75rem;
+        .video-wrapper.screen-share video {
+            transform: scaleX(1); /* Don't mirror screen share */
         }
         .video-wrapper {
             position: relative;
-            background-color: #1a202c;
+            background-color: #1e293b; /* slate-800 */
             border-radius: 0.5rem;
             overflow: hidden;
             border: 2px solid transparent;
+            transition: border-color 0.3s;
+            cursor: pointer;
         }
         .video-wrapper.hand-raised {
             border-color: #f59e0b; /* amber-500 */
+            box-shadow: 0 0 15px #f59e0b;
         }
         .video-wrapper .user-name {
             position: absolute;
-            bottom: 8px;
-            left: 8px;
-            background-color: rgba(0,0,0,0.5);
+            bottom: 8px; left: 8px;
+            background-color: rgba(0,0,0,0.6);
             color: white;
             padding: 2px 8px;
             border-radius: 0.25rem;
             font-size: 0.8rem;
         }
-        #chat-messages::-webkit-scrollbar { width: 6px; }
-        #chat-messages::-webkit-scrollbar-track { background: #e2e8f0; }
-        #chat-messages::-webkit-scrollbar-thumb { background: #a0aec0; border-radius: 3px; }
-        #chat-messages::-webkit-scrollbar-thumb:hover { background: #718096; }
+        .video-wrapper .pinned-icon {
+            display: none;
+            position: absolute;
+            top: 8px; right: 8px;
+            color: white;
+            background-color: rgba(0,0,0,0.6);
+            padding: 4px;
+            border-radius: 50%;
+        }
+        .video-wrapper.is-pinned .pinned-icon {
+            display: block;
+        }
+        #main-video-container .video-wrapper {
+            cursor: default;
+        }
+        .hand-raise-notification {
+            display: none;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
         button:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="text-gray-900">
 
     <!-- Main Container -->
     <div id="app" class="min-h-screen flex flex-col">
 
         <!-- Header -->
-        <header class="bg-white shadow-sm w-full p-4 flex justify-between items-center z-30 sticky top-0">
+        <header class="bg-white shadow-md w-full p-4 flex justify-between items-center z-30 sticky top-0">
             <div class="flex items-center space-x-3">
-                <i class="fas fa-satellite-dish text-2xl text-indigo-600"></i>
-                <h1 class="text-2xl font-bold text-gray-800">LiveBytes</h1>
+                <i class="fas fa-satellite-dish text-3xl text-indigo-600"></i>
+                <h1 class="text-3xl font-bold text-gray-800">LiveBytes</h1>
             </div>
             <div id="header-controls" class="hidden flex items-center space-x-4">
                 <span id="user-greeting" class="hidden md:block font-medium"></span>
                 <div class="relative">
-                    <button id="profile-button" class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center">
-                        <i class="fas fa-user"></i>
-                    </button>
+                    <button id="profile-button" class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center text-lg"><i class="fas fa-user"></i></button>
                     <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
                         <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
                     </div>
@@ -99,40 +119,40 @@
         </header>
 
         <!-- Main Content -->
-        <main class="flex-grow container mx-auto p-4 md:p-6">
+        <main class="flex-grow container mx-auto p-4">
             
             <div id="auth-screen">
-                 <div class="text-center max-w-md mx-auto mt-16 bg-white p-8 rounded-xl shadow-lg">
-                     <i class="fas fa-lock text-5xl text-indigo-500 mb-4"></i>
-                     <h2 class="text-3xl font-bold mb-2">Welcome to LiveBytes</h2>
-                     <p class="text-gray-600 mb-8">Secure, real-time classes. Please sign in to continue.</p>
-                     <button id="login-button" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg flex items-center justify-center">
-                         <i class="fas fa-sign-in-alt mr-2"></i> Sign In Anonymously
+                 <div class="text-center max-w-md mx-auto mt-16 bg-white p-10 rounded-xl shadow-2xl">
+                     <i class="fas fa-lock text-6xl text-indigo-500 mb-6"></i>
+                     <h2 class="text-4xl font-bold mb-3">Welcome to LiveBytes</h2>
+                     <p class="text-gray-600 mb-8">The next generation of live, interactive education. Please sign in to continue.</p>
+                     <button id="login-button" class="w-full bg-indigo-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg text-lg flex items-center justify-center gap-3">
+                         <i class="fas fa-sign-in-alt"></i> Sign In Anonymously
                      </button>
                  </div>
             </div>
 
             <div id="dashboard-screen" class="hidden">
                  <div class="text-center mb-10">
-                    <h2 class="text-4xl font-bold">Dashboard</h2>
-                    <p class="text-gray-600 mt-2">Create a new class or join an existing session.</p>
-                    <div class="mt-4 text-sm text-gray-500">Your User ID: <span id="user-id-display" class="font-mono bg-gray-200 px-2 py-1 rounded"></span></div>
+                    <h2 class="text-5xl font-bold">Dashboard</h2>
+                    <p class="text-gray-600 mt-3 text-lg">Create a new class or join an existing session.</p>
+                    <div class="mt-4 text-md text-gray-500">Your User ID: <span id="user-id-display" class="font-mono bg-gray-200 px-2 py-1 rounded"></span></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-                        <h3 class="text-2xl font-bold mb-6 text-center">For Teachers</h3>
-                        <button id="create-class-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg flex items-center justify-center gap-2">
+                    <div class="bg-white p-8 rounded-xl shadow-xl border border-gray-200 hover:shadow-2xl transition-shadow">
+                        <h3 class="text-3xl font-bold mb-6 text-center">For Teachers</h3>
+                        <button id="create-class-btn" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg text-lg flex items-center justify-center gap-3">
                             <i class="fas fa-plus-circle"></i> Create a New Class
                         </button>
                     </div>
-                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-                        <h3 class="text-2xl font-bold mb-6 text-center">For Students</h3>
+                    <div class="bg-white p-8 rounded-xl shadow-xl border border-gray-200 hover:shadow-2xl transition-shadow">
+                        <h3 class="text-3xl font-bold mb-6 text-center">For Students</h3>
                         <form id="join-class-form" class="space-y-4">
                             <div class="relative">
                                 <i class="fas fa-link absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                <input type="text" id="class-code-input" placeholder="Enter Class Code" class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition" required>
+                                <input type="text" id="class-code-input" placeholder="Enter Class Code" class="w-full pl-12 pr-4 py-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-lg" required>
                             </div>
-                            <button id="join-class-btn" type="submit" class="w-full bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 transition duration-300 shadow-lg flex items-center justify-center gap-2">
+                            <button id="join-class-btn" type="submit" class="w-full bg-green-500 text-white font-bold py-4 rounded-lg hover:bg-green-600 transition duration-300 shadow-lg text-lg flex items-center justify-center gap-3">
                                 <i class="fas fa-sign-in-alt"></i> Join Class
                             </button>
                         </form>
@@ -142,34 +162,33 @@
 
             <div id="live-class-screen" class="hidden h-full">
                 <div class="flex flex-col lg:flex-row h-[calc(100vh-120px)] gap-4">
-                    <div class="flex-grow flex flex-col bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
-                        <div id="main-video-container" class="flex-grow bg-black flex items-center justify-center relative text-white">
-                            <!-- Main video (teacher or self) appears here -->
-                            <span>Loading Video...</span>
-                        </div>
+                    <div class="flex-grow flex flex-col bg-gray-900 rounded-xl overflow-hidden shadow-2xl relative">
+                        <div id="main-video-container" class="flex-grow bg-black flex items-center justify-center text-white"></div>
                         <div id="student-video-strip" class="bg-gray-800 p-2 flex gap-2 overflow-x-auto"></div>
-                        <div class="bg-gray-800/50 backdrop-blur-sm p-3 flex justify-center items-center gap-3">
-                            <button id="mic-btn" class="w-12 h-12 bg-green-500 rounded-full text-white hover:bg-green-400 transition"><i class="fas fa-microphone"></i></button>
-                            <button id="cam-btn" class="w-12 h-12 bg-green-500 rounded-full text-white hover:bg-green-400 transition"><i class="fas fa-video"></i></button>
-                            <button id="raise-hand-btn" class="w-12 h-12 bg-blue-600 rounded-full text-white hover:bg-blue-500 transition"><i class="fas fa-hand-paper"></i></button>
-                            <button id="leave-class-btn" class="w-16 h-12 bg-red-600 rounded-full text-white hover:bg-red-500 transition"><i class="fas fa-phone-slash"></i></button>
+                        <div class="bg-gray-800/50 backdrop-blur-sm p-3 flex justify-center items-center gap-4">
+                            <button id="mic-btn" class="w-14 h-14 bg-green-500 rounded-full text-white text-xl hover:bg-green-400 transition"><i class="fas fa-microphone"></i></button>
+                            <button id="cam-btn" class="w-14 h-14 bg-green-500 rounded-full text-white text-xl hover:bg-green-400 transition"><i class="fas fa-video"></i></button>
+                            <button id="screen-share-btn" class="w-14 h-14 bg-blue-600 rounded-full text-white text-xl hover:bg-blue-500 transition"><i class="fas fa-desktop"></i></button>
+                            <button id="raise-hand-btn" class="w-14 h-14 bg-blue-600 rounded-full text-white text-xl hover:bg-blue-500 transition"><i class="fas fa-hand-paper"></i></button>
+                            <button id="leave-class-btn" class="w-20 h-14 bg-red-600 rounded-full text-white text-xl hover:bg-red-500 transition"><i class="fas fa-phone-slash"></i></button>
                         </div>
+                        <div id="hand-raise-notification" class="hand-raise-notification"></div>
                     </div>
-                    <div class="w-full lg:w-80 xl:w-96 flex flex-col bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                    <div class="w-full lg:w-96 flex flex-col bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
                         <div class="p-4 border-b">
-                            <h3 id="live-class-name" class="font-bold text-xl truncate">Live Session</h3>
+                            <h3 id="live-class-name" class="font-bold text-2xl truncate">Live Session</h3>
                             <p class="text-sm text-gray-500">Code: <span id="live-class-code" class="font-mono"></span></p>
                         </div>
                         <div class="p-4 border-b">
-                            <h4 class="font-semibold mb-2">Participants (<span id="participant-count">0</span>)</h4>
-                            <div id="participants-list" class="space-y-2 max-h-40 overflow-y-auto"></div>
+                            <h4 class="font-semibold text-lg mb-2">Participants (<span id="participant-count">0</span>)</h4>
+                            <div id="participants-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
                         </div>
                         <div class="flex-grow flex flex-col p-4">
-                            <h4 class="font-semibold mb-2">Chat</h4>
+                            <h4 class="font-semibold text-lg mb-2">Chat</h4>
                             <div id="chat-messages" class="flex-grow bg-gray-100 rounded-lg p-3 overflow-y-auto mb-3"></div>
                             <form id="chat-form" class="flex gap-2">
-                                <input type="text" id="chat-input" placeholder="Type a message..." class="flex-grow border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400" autocomplete="off" required>
-                                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"><i class="fas fa-paper-plane"></i></button>
+                                <input type="text" id="chat-input" placeholder="Type a message..." class="flex-grow border-2 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400" autocomplete="off" required>
+                                <button type="submit" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"><i class="fas fa-paper-plane"></i></button>
                             </form>
                         </div>
                     </div>
@@ -185,7 +204,7 @@
             <form id="create-class-form">
                 <div class="mb-4">
                     <label for="class-name" class="block text-sm font-medium text-gray-700 mb-1">Class Name</label>
-                    <input type="text" id="class-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required>
+                    <input type="text" id="class-name" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required>
                 </div>
                 <div class="flex justify-end space-x-4">
                     <button type="button" id="cancel-create-class" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Cancel</button>
@@ -202,47 +221,26 @@
 
         /*
         *********************************************************************************
-        * IMPORTANT FIX FOR "MISSING OR INSUFFICIENT PERMISSIONS" ERROR
+        * IMPORTANT: FIRESTORE SECURITY RULES
         *********************************************************************************
-        * The error "Missing or insufficient permissions" is caused by Firestore's
-        * default security rules, which deny all read and write access to the database.
-        *
-        * To fix this, you MUST update the security rules in your Firebase project.
-        *
-        * Follow these steps:
-        * 1. Go to your Firebase Console: https://console.firebase.google.com/
-        * 2. Select your project ("livebytes9").
-        * 3. In the left-hand menu, go to Build > Firestore Database.
-        * 4. Click on the "Rules" tab at the top.
-        * 5. Replace the entire content of the rules editor with the code below.
-        * 6. Click "Publish". The app will start working immediately.
-        *
-        * --- COPY AND PASTE THESE RULES INTO YOUR FIREBASE CONSOLE ---
+        * For this app to work, you MUST update the security rules in your Firebase project.
+        * 1. Go to your Firebase Console > Firestore Database > Rules tab.
+        * 2. Replace the existing rules with the following and click "Publish".
         *
         * rules_version = '2';
         * service cloud.firestore {
         * match /databases/{database}/documents {
         * match /classes/{classId} {
-        * // Any authenticated user can create a class or see the list of classes.
-        * allow read, create: if request.auth != null;
-        *
-        * // Any authenticated user can update a class (e.g., to join/leave).
-        * allow update: if request.auth != null;
-        *
-        * // A class can only be deleted by its teacher.
+        * allow read, create, update: if request.auth != null;
         * allow delete: if request.auth.uid == resource.data.teacherId;
         *
         * match /messages/{messageId} {
-        * // Any authenticated user can read messages.
         * allow read: if request.auth != null;
-        *
-        * // A user can only create messages if they are a participant in the class.
         * allow create: if request.auth != null && get(/databases/$(database)/documents/classes/$(classId)).data.participants[request.auth.uid] != null;
         * }
         * }
         * }
         * }
-        *
         *********************************************************************************
         */
 
@@ -259,64 +257,28 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Explicitly define all UI elements for robust access.
-        const allUI = {
-            headerControls: document.getElementById('header-controls'),
-            userGreeting: document.getElementById('user-greeting'),
-            userIdDisplay: document.getElementById('user-id-display'),
-            profileButton: document.getElementById('profile-button'),
-            profileDropdown: document.getElementById('profile-dropdown'),
-            logoutButton: document.getElementById('logout-button'),
-            
-            authScreen: document.getElementById('auth-screen'),
-            loginButton: document.getElementById('login-button'),
-            
-            dashboardScreen: document.getElementById('dashboard-screen'),
-            createClassBtn: document.getElementById('create-class-btn'),
-            joinClassForm: document.getElementById('join-class-form'),
-            classCodeInput: document.getElementById('class-code-input'),
-            joinClassBtn: document.getElementById('join-class-btn'),
-            
-            liveClassScreen: document.getElementById('live-class-screen'),
-            mainVideoContainer: document.getElementById('main-video-container'),
-            studentVideoStrip: document.getElementById('student-video-strip'),
-            micBtn: document.getElementById('mic-btn'),
-            camBtn: document.getElementById('cam-btn'),
-            raiseHandBtn: document.getElementById('raise-hand-btn'),
-            leaveClassBtn: document.getElementById('leave-class-btn'),
-            liveClassName: document.getElementById('live-class-name'),
-            liveClassCode: document.getElementById('live-class-code'),
-            participantCount: document.getElementById('participant-count'),
-            participantsList: document.getElementById('participants-list'),
-            chatMessages: document.getElementById('chat-messages'),
-            chatForm: document.getElementById('chat-form'),
-            chatInput: document.getElementById('chat-input'),
-
-            createClassModalContainer: document.getElementById('create-class-modal-container'),
-            createClassForm: document.getElementById('create-class-form'),
-            className: document.getElementById('class-name'),
-            cancelCreateClass: document.getElementById('cancel-create-class'),
-            submitCreateClass: document.getElementById('submit-create-class'),
-        };
+        const allUI = Object.fromEntries(Array.from(document.querySelectorAll('[id]')).map(el => [el.id.replace(/-./g, c => c[1].toUpperCase()), el]));
 
         let currentUser = null, currentClassCode = null, isTeacher = false;
-        let peer, localStream, unsubscribeClass, unsubscribeMessages;
+        let peer, localStream, screenStream, myParticipantInfo;
+        let unsubscribeClass, unsubscribeMessages;
         let connections = {};
+        let teacherId = null;
+        let pinnedUserId = null;
 
-        // --- Authentication & State Management ---
+        // --- Authentication & State ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
                 allUI.headerControls.classList.remove('hidden');
                 allUI.userGreeting.textContent = `Hello, User!`;
                 allUI.userIdDisplay.textContent = user.uid;
-                showScreen('dashboard');
+                showScreen('dashboardScreen');
             } else {
-                if (peer) peer.destroy();
-                cleanUpListeners();
+                cleanUpSession();
                 currentUser = null;
                 allUI.headerControls.classList.add('hidden');
-                showScreen('auth');
+                showScreen('authScreen');
             }
         });
 
@@ -325,9 +287,10 @@
             allUI.dashboardScreen.classList.add('hidden');
             allUI.liveClassScreen.classList.add('hidden');
             
-            const screenToShow = allUI[screenName + 'Screen'];
-            if (screenToShow) {
-                screenToShow.classList.remove('hidden');
+            if (allUI[screenName]) {
+                allUI[screenName].classList.remove('hidden');
+            } else {
+                console.error(`Screen "${screenName}" not found.`);
             }
         }
 
@@ -338,6 +301,19 @@
             unsubscribeMessages = null;
         }
 
+        function cleanUpSession() {
+            if (peer) peer.destroy();
+            [localStream, screenStream].forEach(s => s?.getTracks().forEach(t => t.stop()));
+            localStream = null;
+            screenStream = null;
+            peer = null;
+            connections = {};
+            teacherId = null;
+            pinnedUserId = null;
+            myParticipantInfo = null;
+            cleanUpListeners();
+        }
+
         // --- Event Listeners ---
         allUI.loginButton.addEventListener('click', async () => {
             try {
@@ -345,35 +321,29 @@
                 await signInAnonymously(auth);
             } catch (error) {
                 console.error("Sign-in failed:", error);
-                alert("Could not sign in. Please check your connection and try again.");
+                alert("Could not sign in. Please try again.");
             } finally {
                 allUI.loginButton.disabled = false;
             }
         });
         
-        allUI.logoutButton.addEventListener('click', () => { signOut(auth).catch(err => console.error(err)); });
+        allUI.logoutButton.addEventListener('click', () => signOut(auth).catch(console.error));
         allUI.createClassBtn.addEventListener('click', () => allUI.createClassModalContainer.classList.add('active'));
         allUI.cancelCreateClass.addEventListener('click', () => allUI.createClassModalContainer.classList.remove('active'));
 
         allUI.createClassForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             allUI.submitCreateClass.disabled = true;
-            const classNameValue = allUI.className.value;
+            const className = allUI.className.value;
             const classCode = Math.random().toString(36).substring(2, 8).toUpperCase();
             
             try {
-                const classRef = doc(db, "classes", classCode);
-                await setDoc(classRef, {
-                    name: classNameValue,
-                    teacherId: currentUser.uid,
-                    createdAt: serverTimestamp(),
-                    participants: {}
-                });
+                await setDoc(doc(db, "classes", classCode), { name: className, teacherId: currentUser.uid, createdAt: serverTimestamp(), participants: {} });
                 allUI.createClassModalContainer.classList.remove('active');
                 await enterClass(classCode, true);
             } catch (error) {
                 console.error("Error creating class:", error);
-                alert("Failed to create class. Please check your Firestore Security Rules in the Firebase Console.");
+                alert("Failed to create class. Please ensure your Firestore Security Rules are set correctly.");
             } finally {
                 allUI.submitCreateClass.disabled = false;
             }
@@ -386,7 +356,6 @@
             try {
                 await enterClass(classCode, false);
             } catch (error) {
-                console.error("Error joining class:", error);
                 alert(error.message);
             } finally {
                 allUI.joinClassBtn.disabled = false;
@@ -397,183 +366,182 @@
 
         // --- Class Entry & Exit ---
         async function enterClass(code, isJoiningAsTeacher) {
-            if (!currentUser) throw new Error("You must be signed in to join a class.");
+            if (!currentUser) throw new Error("You must be signed in.");
             
             const classRef = doc(db, "classes", code);
             const classSnap = await getDoc(classRef);
 
-            if (!classSnap.exists()) {
-                throw new Error("Class not found. Please check the code and try again.");
-            }
-
+            if (!classSnap.exists()) throw new Error("Class not found.");
+            
+            teacherId = classSnap.data().teacherId;
             currentClassCode = code;
             isTeacher = isJoiningAsTeacher;
+            allUI.screenShareBtn.style.display = isTeacher ? 'flex' : 'none';
 
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             } catch (err) {
-                console.error("Failed to get local stream", err);
-                throw new Error("Camera and microphone access is required. Please grant permission and try again.");
+                throw new Error("Camera/microphone access is required.");
             }
 
-            showScreen('liveClass');
+            showScreen('liveClassScreen');
             allUI.liveClassName.textContent = classSnap.data().name;
             allUI.liveClassCode.textContent = currentClassCode;
-            addVideoStream(allUI.mainVideoContainer, localStream, "You", currentUser.uid, true);
 
             setupPeer();
             
-            const participant = {
-                uid: currentUser.uid,
-                name: `${isTeacher ? 'Teacher' : 'Student'}-${currentUser.uid.substring(0, 5)}`,
-                isTeacher: isTeacher,
-                handRaised: false
-            };
-            await updateDoc(classRef, { [`participants.${currentUser.uid}`]: participant });
+            myParticipantInfo = { uid: currentUser.uid, name: `${isTeacher ? 'Teacher' : 'Student'}-${currentUser.uid.substring(0, 5)}`, isTeacher, handRaised: false };
+            await updateDoc(classRef, { [`participants.${currentUser.uid}`]: myParticipantInfo });
             
             listenToClassUpdates(currentClassCode);
         }
 
         async function leaveClass() {
             if (currentUser && currentClassCode) {
-                const classRef = doc(db, "classes", currentClassCode);
-                await updateDoc(classRef, { [`participants.${currentUser.uid}`]: deleteField() }).catch(console.error);
+                await updateDoc(doc(db, "classes", currentClassCode), { [`participants.${currentUser.uid}`]: deleteField() }).catch(console.error);
             }
-            
-            if (peer) peer.destroy();
-            if (localStream) localStream.getTracks().forEach(track => track.stop());
-            
-            localStream = null;
-            peer = null;
-            connections = {};
-            cleanUpListeners();
-
-            allUI.mainVideoContainer.innerHTML = '<span>Loading Video...</span>';
+            cleanUpSession();
+            allUI.mainVideoContainer.innerHTML = '';
             allUI.studentVideoStrip.innerHTML = '';
-            allUI.chatMessages.innerHTML = '';
-            showScreen('dashboard');
+            showScreen('dashboardScreen');
         }
 
-        // --- WebRTC (PeerJS) Logic ---
+        // --- WebRTC (PeerJS) & Media ---
         function setupPeer() {
             if (!currentUser || peer) return;
-            try {
-                peer = new Peer(currentUser.uid, {
-                    host: 'peerjs-server-livebytes.herokuapp.com',
-                    secure: true,
-                    port: 443
-                });
-
-                peer.on('open', id => console.log('PeerJS connection open. My ID:', id));
-
-                peer.on('call', call => {
-                    call.answer(localStream);
-                    call.on('stream', remoteStream => {
-                        const p = connections[call.peer]?.participant;
-                        addVideoStream(allUI.studentVideoStrip, remoteStream, p?.name || 'Guest', call.peer);
-                    });
-                    call.on('close', () => removeVideoStream(call.peer));
-                    connections[call.peer] = { ...connections[call.peer], conn: call };
-                });
-                
-                peer.on('error', err => {
-                    console.error("PeerJS Error:", err);
-                    alert(`A network connection error occurred: ${err.type}. Some videos may not load.`);
-                });
-            } catch (error) {
-                console.error("Failed to initialize PeerJS:", error);
-                alert("Could not establish a video connection. Please refresh and try again.");
-            }
+            peer = new Peer(currentUser.uid, { host: 'peerjs-server-livebytes.herokuapp.com', secure: true, port: 443 });
+            peer.on('open', id => console.log('PeerJS open. ID:', id));
+            peer.on('call', call => {
+                call.answer(localStream);
+                handleIncomingCall(call);
+            });
+            peer.on('error', err => console.error("PeerJS Error:", err));
         }
 
-        // --- Real-time Firestore Listeners ---
-        function listenToClassUpdates(classCode) {
-            const classRef = doc(db, "classes", classCode);
-            unsubscribeClass = onSnapshot(classRef, (doc) => {
-                if (!doc.exists()) {
-                    alert("The class has ended.");
-                    leaveClass();
-                    return;
-                }
-                updateParticipants(doc.data().participants || {});
-            }, (error) => {
-                console.error("Error listening to class updates:", error);
-                alert("Lost connection to the class.");
-                leaveClass();
+        function handleIncomingCall(call) {
+            call.on('stream', remoteStream => {
+                const metadata = call.metadata;
+                const streamType = metadata?.type || 'camera';
+                const peerId = call.peer;
+                
+                connections[peerId] = { ...connections[peerId], conn: call, stream: remoteStream, type: streamType };
+                updateVideoLayout();
             });
+            call.on('close', () => {
+                delete connections[call.peer];
+                updateVideoLayout();
+            });
+        }
+
+        function callUser(peerId, stream, type) {
+            if (!peer || !stream) return;
+            const call = peer.call(peerId, stream, { metadata: { type } });
+            if (call) {
+                handleIncomingCall(call);
+            }
+        }
+        
+        // --- UI Rendering & Layout ---
+        function updateVideoLayout() {
+            allUI.mainVideoContainer.innerHTML = '';
+            allUI.studentVideoStrip.innerHTML = '';
             
-            const messagesRef = collection(db, "classes", classCode, "messages");
-            const q = query(messagesRef);
-            unsubscribeMessages = onSnapshot(q, (snapshot) => {
+            let spotlightUserId = pinnedUserId || teacherId;
+            
+            const selfStream = screenStream || localStream;
+            const selfType = screenStream ? 'screen' : 'camera';
+            if (spotlightUserId === currentUser.uid) {
+                addVideoStream(allUI.mainVideoContainer, selfStream, "You", currentUser.uid, true, selfType, true);
+            } else {
+                addVideoStream(allUI.studentVideoStrip, selfStream, "You", currentUser.uid, true, selfType, pinnedUserId === currentUser.uid);
+            }
+
+            Object.values(connections).forEach(({ stream, participant, type }) => {
+                if (!participant) return;
+                if (participant.uid === spotlightUserId) {
+                    addVideoStream(allUI.mainVideoContainer, stream, participant.name, participant.uid, false, type, true);
+                } else {
+                    addVideoStream(allUI.studentVideoStrip, stream, participant.name, participant.uid, false, type, pinnedUserId === participant.uid);
+                }
+            });
+        }
+
+        function addVideoStream(container, stream, name, userId, isMuted, type, isPinned) {
+            const wrapperId = `video-wrapper-${userId}`;
+            if (document.getElementById(wrapperId)) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.id = wrapperId;
+            wrapper.className = `video-wrapper relative ${container === allUI.mainVideoContainer ? 'w-full h-full' : 'h-32 w-48 flex-shrink-0'}`;
+            if (type === 'screen') wrapper.classList.add('screen-share');
+            if (isPinned) wrapper.classList.add('is-pinned');
+            
+            wrapper.onclick = () => {
+                if (container !== allUI.mainVideoContainer) {
+                    pinnedUserId = (pinnedUserId === userId) ? null : userId;
+                    updateVideoLayout();
+                }
+            };
+
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.muted = isMuted;
+            video.playsInline = true;
+            video.play().catch(console.error);
+
+            const nameTag = document.createElement('div');
+            nameTag.className = 'user-name';
+            nameTag.textContent = name;
+            
+            const pinIcon = document.createElement('i');
+            pinIcon.className = 'pinned-icon fas fa-thumbtack';
+
+            wrapper.append(video, nameTag, pinIcon);
+            container.append(wrapper);
+        }
+
+        // --- Real-time Listeners ---
+        function listenToClassUpdates(classCode) {
+            unsubscribeClass = onSnapshot(doc(db, "classes", classCode), (doc) => {
+                if (!doc.exists()) { alert("The class has ended."); leaveClass(); return; }
+                updateParticipants(doc.data().participants || {});
+            }, (error) => { alert("Lost connection to the class."); leaveClass(); });
+            
+            unsubscribeMessages = onSnapshot(query(collection(db, "classes", classCode, "messages")), (snapshot) => {
                 allUI.chatMessages.innerHTML = '';
-                const messages = snapshot.docs.map(d => d.data()).sort((a, b) => a.timestamp - b.timestamp);
-                messages.forEach(renderMessage);
+                snapshot.docs.map(d => d.data()).sort((a, b) => a.timestamp - b.timestamp).forEach(renderMessage);
                 allUI.chatMessages.scrollTop = allUI.chatMessages.scrollHeight;
-            }, (error) => console.error("Error listening to chat:", error));
+            });
         }
         
         function updateParticipants(participants) {
             allUI.participantsList.innerHTML = '';
-            const participantArray = Object.values(participants);
-            allUI.participantCount.textContent = participantArray.length;
+            allUI.participantCount.textContent = Object.keys(participants).length;
             
-            participantArray.forEach(p => {
+            Object.values(participants).forEach(p => {
                 renderParticipant(p);
-                if (p.uid !== currentUser.uid && peer && !connections[p.uid]?.conn) {
-                    console.log(`Calling new participant: ${p.uid}`);
-                    const call = peer.call(p.uid, localStream);
-                    if (call) {
-                        call.on('stream', remoteStream => addVideoStream(allUI.studentVideoStrip, remoteStream, p.name, p.uid));
-                        call.on('close', () => removeVideoStream(p.uid));
-                        connections[p.uid] = { conn: call, participant: p };
-                    }
+                if (p.uid !== currentUser.uid && !connections[p.uid]) {
+                    connections[p.uid] = { participant: p };
+                    callUser(p.uid, screenStream || localStream, screenStream ? 'screen' : 'camera');
+                } else if (connections[p.uid]) {
+                    connections[p.uid].participant = p;
                 }
-                const videoWrapper = document.getElementById(`video-${p.uid}`);
-                if (videoWrapper) videoWrapper.classList.toggle('hand-raised', p.handRaised);
+                const wrapper = document.getElementById(`video-wrapper-${p.uid}`);
+                if(wrapper) wrapper.classList.toggle('hand-raised', p.handRaised);
             });
 
             Object.keys(connections).forEach(peerId => {
                 if (!participants[peerId]) {
                     connections[peerId].conn?.close();
                     delete connections[peerId];
-                    removeVideoStream(peerId);
                 }
             });
-        }
-
-        // --- UI Rendering ---
-        function addVideoStream(container, stream, name, peerId, isMuted = false) {
-            if (document.getElementById(`video-${peerId}`)) return;
-
-            const wrapper = document.createElement('div');
-            wrapper.id = `video-${peerId}`;
-            wrapper.className = 'video-wrapper h-32 w-48 flex-shrink-0';
-            
-            const video = document.createElement('video');
-            video.srcObject = stream;
-            video.muted = isMuted;
-            video.playsInline = true;
-            video.play().catch(e => console.error("Video play failed:", e));
-
-            const nameTag = document.createElement('div');
-            nameTag.className = 'user-name';
-            nameTag.textContent = name;
-            
-            wrapper.append(video, nameTag);
-            if (container === allUI.mainVideoContainer) {
-                container.innerHTML = '';
-                wrapper.className = 'video-wrapper w-full h-full';
-            }
-            container.append(wrapper);
-        }
-
-        function removeVideoStream(peerId) {
-            document.getElementById(`video-${peerId}`)?.remove();
+            updateVideoLayout();
         }
 
         function renderParticipant(p) {
             const el = document.createElement('div');
-            el.className = 'flex items-center justify-between text-sm';
+            el.className = 'flex items-center justify-between text-sm p-2 rounded-md hover:bg-gray-100';
             el.innerHTML = `<div class="flex items-center gap-2"><i class="fas ${p.isTeacher ? 'fa-chalkboard-teacher text-indigo-500' : 'fa-user-graduate text-gray-500'}"></i><span>${p.name}</span></div>${p.handRaised ? '<i class="fas fa-hand-paper text-yellow-500 animate-bounce"></i>' : ''}`;
             allUI.participantsList.appendChild(el);
         }
@@ -581,42 +549,13 @@
         function renderMessage(msg) {
              const el = document.createElement('div');
              const sentByMe = msg.uid === currentUser.uid;
-             el.className = `mb-2 ${sentByMe ? 'text-right' : 'text-left'}`;
+             el.className = `flex ${sentByMe ? 'justify-end' : 'justify-start'} mb-2`;
              const timestamp = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || '';
-             el.innerHTML = `<div class="inline-block max-w-xs p-2 rounded-lg ${sentByMe ? 'bg-indigo-500 text-white' : 'bg-gray-200'}"><div class="text-xs font-bold ${sentByMe ? 'text-indigo-200' : 'text-gray-500'}">${msg.name}</div><div class="break-words">${msg.text}</div><div class="text-xs mt-1 ${sentByMe ? 'text-indigo-200' : 'text-gray-400'}">${timestamp}</div></div>`;
+             el.innerHTML = `<div class="max-w-xs p-2 rounded-lg ${sentByMe ? 'bg-indigo-500 text-white' : 'bg-gray-200'}"><div class="text-xs font-bold mb-1 ${sentByMe ? 'text-indigo-200' : 'text-gray-500'}">${msg.name}</div><div class="break-words">${msg.text}</div><div class="text-xs mt-1 text-right ${sentByMe ? 'text-indigo-200' : 'text-gray-400'}">${timestamp}</div></div>`;
              allUI.chatMessages.appendChild(el);
         }
 
-        // --- Live Class Actions ---
-        allUI.chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const text = allUI.chatInput.value.trim();
-            if (!text || !currentUser || !currentClassCode) return;
-            
-            const originalText = text;
-            allUI.chatInput.value = '';
-            try {
-                const classDoc = await getDoc(doc(db, "classes", currentClassCode));
-                const myName = classDoc.data().participants[currentUser.uid].name;
-                await addDoc(collection(db, "classes", currentClassCode, "messages"), {
-                    text, uid: currentUser.uid, name: myName, timestamp: serverTimestamp()
-                });
-            } catch(err) {
-                console.error("Message send failed:", err);
-                allUI.chatInput.value = originalText; // Restore message on failure
-            }
-        });
-        
-        allUI.raiseHandBtn.addEventListener('click', async () => {
-            if (!currentUser || !currentClassCode) return;
-            const classRef = doc(db, "classes", currentClassCode);
-            try {
-                const classSnap = await getDoc(classRef);
-                const currentStatus = classSnap.data().participants[currentUser.uid].handRaised;
-                await updateDoc(classRef, { [`participants.${currentUser.uid}.handRaised`]: !currentStatus });
-            } catch (error) { console.error("Raise hand failed:", error); }
-        });
-
+        // --- Live Actions ---
         allUI.micBtn.addEventListener('click', () => {
             const enabled = localStream.getAudioTracks()[0].enabled;
             localStream.getAudioTracks()[0].enabled = !enabled;
@@ -629,6 +568,49 @@
             localStream.getVideoTracks()[0].enabled = !enabled;
             allUI.camBtn.classList.toggle('bg-red-500', enabled);
             allUI.camBtn.classList.toggle('bg-green-500', !enabled);
+        });
+
+        allUI.screenShareBtn.addEventListener('click', async () => {
+            if (screenStream) {
+                screenStream.getTracks().forEach(t => t.stop());
+                screenStream = null;
+                allUI.screenShareBtn.classList.remove('bg-red-500');
+            } else {
+                try {
+                    screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                    allUI.screenShareBtn.classList.add('bg-red-500');
+                    screenStream.getVideoTracks()[0].onended = () => {
+                        screenStream = null;
+                        allUI.screenShareBtn.classList.remove('bg-red-500');
+                        Object.values(connections).forEach(({ conn }) => conn?.peerConnection.getSenders().find(s => s.track?.kind === 'video').replaceTrack(localStream.getVideoTracks()[0]));
+                        updateVideoLayout();
+                    };
+                } catch (err) { console.error("Screen share failed:", err); return; }
+            }
+
+            const newTrack = (screenStream || localStream).getVideoTracks()[0];
+            Object.values(connections).forEach(({ conn }) => {
+                const sender = conn?.peerConnection.getSenders().find(s => s.track?.kind === 'video');
+                if (sender) sender.replaceTrack(newTrack);
+            });
+            updateVideoLayout();
+        });
+
+        allUI.raiseHandBtn.addEventListener('click', async () => {
+            const classRef = doc(db, "classes", currentClassCode);
+            const classSnap = await getDoc(classRef);
+            const currentStatus = classSnap.data().participants[currentUser.uid].handRaised;
+            await updateDoc(classRef, { [`participants.${currentUser.uid}.handRaised`]: !currentStatus });
+        });
+
+        allUI.chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = allUI.chatInput.value.trim();
+            if (!text) return;
+            allUI.chatInput.value = '';
+            try {
+                await addDoc(collection(db, "classes", currentClassCode, "messages"), { text, uid: currentUser.uid, name: myParticipantInfo.name, timestamp: serverTimestamp() });
+            } catch(err) { console.error("Message send failed:", err); }
         });
 
         allUI.profileButton.addEventListener('click', (e) => { e.stopPropagation(); allUI.profileDropdown.classList.toggle('hidden'); });
