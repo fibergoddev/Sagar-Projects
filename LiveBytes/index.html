@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LiveBytes - Professional Live Classes</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* A slightly softer gray */
         }
         .modal-backdrop {
             display: none;
@@ -18,7 +20,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
             z-index: 40;
         }
         .modal {
@@ -28,33 +31,60 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 50;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        .active .modal-backdrop, .active .modal {
+        .modal-container.active .modal-backdrop, .modal-container.active .modal {
             display: block;
         }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.75rem; /* rounded-xl */
+        }
+        #main-video-container video {
+             border-radius: 0;
+        }
+        .video-wrapper {
+            position: relative;
+            background-color: #2d3748; /* gray-800 */
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .video-wrapper .user-name {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+        }
+        #chat-messages::-webkit-scrollbar { width: 6px; }
+        #chat-messages::-webkit-scrollbar-track { background: #e2e8f0; }
+        #chat-messages::-webkit-scrollbar-thumb { background: #a0aec0; border-radius: 3px; }
+        #chat-messages::-webkit-scrollbar-thumb:hover { background: #718096; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="text-gray-800">
 
     <!-- Main Container -->
     <div id="app" class="min-h-screen flex flex-col">
 
         <!-- Header -->
-        <header class="bg-white shadow-md w-full p-4 flex justify-between items-center">
+        <header class="bg-white shadow-sm w-full p-4 flex justify-between items-center z-30 sticky top-0">
             <div class="flex items-center space-x-3">
                 <i class="fas fa-satellite-dish text-2xl text-indigo-600"></i>
                 <h1 class="text-2xl font-bold text-gray-800">LiveBytes</h1>
             </div>
-            <div class="flex items-center space-x-4">
+            <div id="header-controls" class="hidden flex items-center space-x-4">
                 <span id="user-greeting" class="hidden md:block font-medium">Hello, Guest!</span>
                 <div class="relative">
                     <button id="profile-button" class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center">
                         <i class="fas fa-user"></i>
                     </button>
-                    <!-- Profile Dropdown -->
                     <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
                         <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
                     </div>
                 </div>
@@ -62,71 +92,90 @@
         </header>
 
         <!-- Main Content -->
-        <main class="flex-grow container mx-auto p-4 md:p-8">
+        <main class="flex-grow container mx-auto p-4 md:p-6">
             
             <!-- Login/Auth Screen -->
             <div id="auth-screen" class="text-center max-w-md mx-auto mt-16">
                  <i class="fas fa-lock text-5xl text-indigo-500 mb-4"></i>
                  <h2 class="text-3xl font-bold mb-2">Welcome to LiveBytes</h2>
-                 <p class="text-gray-600 mb-8">Please sign in to continue.</p>
-                 <button id="login-button" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg">
+                 <p class="text-gray-600 mb-8">Secure, real-time classes. Please sign in to continue.</p>
+                 <button id="login-button" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg flex items-center justify-center">
                      <i class="fas fa-sign-in-alt mr-2"></i> Sign In Anonymously
                  </button>
-                 <p class="text-xs text-gray-500 mt-4">Your User ID will be generated automatically.</p>
+                 <p class="text-xs text-gray-500 mt-4">Your User ID will be generated automatically for this session.</p>
             </div>
 
             <!-- Dashboard Screen -->
             <div id="dashboard-screen" class="hidden">
-                <div class="text-center mb-12">
+                 <div class="text-center mb-10">
                     <h2 class="text-4xl font-bold">Dashboard</h2>
-                    <p class="text-gray-600 mt-2">Manage your classes or join a session.</p>
+                    <p class="text-gray-600 mt-2">Create a new class or join an existing session.</p>
                     <div class="mt-4 text-sm text-gray-500">Your User ID: <span id="user-id-display" class="font-mono bg-gray-200 px-2 py-1 rounded"></span></div>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Teacher Section -->
-                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
                         <h3 class="text-2xl font-bold mb-6 text-center">For Teachers</h3>
-                        <div class="space-y-4">
-                            <button id="create-class-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg">
-                                <i class="fas fa-plus-circle mr-2"></i> Create a New Class
-                            </button>
-                            <button class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg hover:bg-gray-300 transition duration-300">
-                                <i class="fas fa-chalkboard-teacher mr-2"></i> Manage My Classes
-                            </button>
-                        </div>
+                        <button id="create-class-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-plus-circle"></i> Create a New Class
+                        </button>
                     </div>
-
-                    <!-- Student Section -->
-                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
                         <h3 class="text-2xl font-bold mb-6 text-center">For Students</h3>
                         <div class="space-y-4">
                             <div class="relative">
                                 <i class="fas fa-link absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                <input type="text" id="class-code-input" placeholder="Enter Class Code or Link" class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                                <input type="text" id="class-code-input" placeholder="Enter Class Code" class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition">
                             </div>
-                            <button id="join-class-btn" class="w-full bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 transition duration-300 shadow-lg">
-                                <i class="fas fa-sign-in-alt mr-2"></i> Join Class
+                            <button id="join-class-btn" class="w-full bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 transition duration-300 shadow-lg flex items-center justify-center gap-2">
+                                <i class="fas fa-sign-in-alt"></i> Join Class
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-             <!-- Live Class Screen -->
-            <div id="live-class-screen" class="hidden">
-                <!-- This will be populated with video streams, chat, etc. -->
-                 <div class="bg-gray-900 text-white p-4 rounded-lg">
-                    <h2 class="text-2xl font-bold">Live Class in Session</h2>
-                    <p>Class Code: <span id="live-class-code" class="font-mono"></span></p>
-                    <!-- Video, chat, etc. will go here -->
-                 </div>
+            <!-- Live Class Screen -->
+            <div id="live-class-screen" class="hidden h-full">
+                <div class="flex flex-col lg:flex-row h-[calc(100vh-120px)] gap-4">
+                    <div class="flex-grow flex flex-col bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
+                        <div id="main-video-container" class="flex-grow bg-black flex items-center justify-center relative">
+                            <!-- Main video (teacher or self) appears here -->
+                        </div>
+                        <div id="student-video-strip" class="bg-gray-800 p-2 flex gap-2 overflow-x-auto">
+                            <!-- Student videos thumbnail strip -->
+                        </div>
+                        <div class="bg-gray-800/50 backdrop-blur-sm p-3 flex justify-center items-center gap-3">
+                            <button id="mic-btn" class="w-12 h-12 bg-green-500 rounded-full text-white hover:bg-green-400 transition"><i class="fas fa-microphone"></i></button>
+                            <button id="cam-btn" class="w-12 h-12 bg-green-500 rounded-full text-white hover:bg-green-400 transition"><i class="fas fa-video"></i></button>
+                            <button id="raise-hand-btn" class="w-12 h-12 bg-blue-600 rounded-full text-white hover:bg-blue-500 transition"><i class="fas fa-hand-paper"></i></button>
+                            <button id="leave-class-btn" class="w-16 h-12 bg-red-600 rounded-full text-white hover:bg-red-500 transition"><i class="fas fa-phone-slash"></i></button>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-80 xl:w-96 flex flex-col bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                        <div class="p-4 border-b">
+                            <h3 id="live-class-name" class="font-bold text-xl">Live Session</h3>
+                            <p class="text-sm text-gray-500">Code: <span id="live-class-code" class="font-mono"></span></p>
+                        </div>
+                        <div class="p-4 border-b">
+                            <h4 class="font-semibold mb-2">Participants (<span id="participant-count">0</span>)</h4>
+                            <div id="participants-list" class="space-y-2 max-h-40 overflow-y-auto"></div>
+                        </div>
+                        <div class="flex-grow flex flex-col p-4">
+                            <h4 class="font-semibold mb-2">Chat</h4>
+                            <div id="chat-messages" class="flex-grow bg-gray-100 rounded-lg p-3 overflow-y-auto mb-3"></div>
+                            <form id="chat-form" class="flex gap-2">
+                                <input type="text" id="chat-input" placeholder="Type a message..." class="flex-grow border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400" autocomplete="off">
+                                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"><i class="fas fa-paper-plane"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
 
     <!-- Create Class Modal -->
-    <div id="create-class-modal-container" class="active">
+    <div id="create-class-modal-container" class="modal-container">
         <div class="modal-backdrop"></div>
         <div id="create-class-modal" class="modal bg-white w-11/12 md:max-w-md p-8 rounded-xl shadow-2xl">
             <h3 class="text-2xl font-bold mb-6">Create New Class</h3>
@@ -134,10 +183,6 @@
                 <div class="mb-4">
                     <label for="class-name" class="block text-sm font-medium text-gray-700 mb-1">Class Name</label>
                     <input type="text" id="class-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required>
-                </div>
-                <div class="mb-6">
-                    <label for="class-schedule" class="block text-sm font-medium text-gray-700 mb-1">Schedule (Optional)</label>
-                    <input type="datetime-local" id="class-schedule" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div class="flex justify-end space-x-4">
                     <button type="button" id="cancel-create-class" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Cancel</button>
@@ -149,179 +194,370 @@
     
     <!-- Firebase SDKs -->
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, addDoc, serverTimestamp, query, deleteField } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCRtGY2tNdVLzRzFCu8zjtBfIJFAx03x0U",
             authDomain: "livebytes9.firebaseapp.com",
             projectId: "livebytes9",
             storageBucket: "livebytes9.appspot.com",
             messagingSenderId: "850298480640",
-            appId: "1:850298480640:web:df091fa72415573a2e90e5",
-            measurementId: "G-40RTZ1MLP5"
+            appId: "1:850298480640:web:df091fa72415573a2e90e5"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         // --- UI Elements ---
-        const authScreen = document.getElementById('auth-screen');
-        const dashboardScreen = document.getElementById('dashboard-screen');
-        const liveClassScreen = document.getElementById('live-class-screen');
-        const loginButton = document.getElementById('login-button');
-        const createClassBtn = document.getElementById('create-class-btn');
-        const joinClassBtn = document.getElementById('join-class-btn');
-        const createClassModalContainer = document.getElementById('create-class-modal-container');
-        const createClassModal = document.getElementById('create-class-modal');
-        const cancelCreateClassBtn = document.getElementById('cancel-create-class');
-        const createClassForm = document.getElementById('create-class-form');
-        const profileButton = document.getElementById('profile-button');
-        const profileDropdown = document.getElementById('profile-dropdown');
-        const userIdDisplay = document.getElementById('user-id-display');
-        const userGreeting = document.getElementById('user-greeting');
+        const allUI = {
+            authScreen: document.getElementById('auth-screen'),
+            dashboardScreen: document.getElementById('dashboard-screen'),
+            liveClassScreen: document.getElementById('live-class-screen'),
+            loginButton: document.getElementById('login-button'),
+            logoutButton: document.getElementById('logout-button'),
+            createClassBtn: document.getElementById('create-class-btn'),
+            joinClassBtn: document.getElementById('join-class-btn'),
+            leaveClassBtn: document.getElementById('leave-class-btn'),
+            createClassModalContainer: document.getElementById('create-class-modal-container'),
+            createClassForm: document.getElementById('create-class-form'),
+            cancelCreateClassBtn: document.getElementById('cancel-create-class'),
+            profileButton: document.getElementById('profile-button'),
+            profileDropdown: document.getElementById('profile-dropdown'),
+            userIdDisplay: document.getElementById('user-id-display'),
+            userGreeting: document.getElementById('user-greeting'),
+            headerControls: document.getElementById('header-controls'),
+            chatForm: document.getElementById('chat-form'),
+            chatInput: document.getElementById('chat-input'),
+            chatMessages: document.getElementById('chat-messages'),
+            raiseHandBtn: document.getElementById('raise-hand-btn'),
+            participantsList: document.getElementById('participants-list'),
+            participantCount: document.getElementById('participant-count'),
+            liveClassName: document.getElementById('live-class-name'),
+            liveClassCode: document.getElementById('live-class-code'),
+            mainVideoContainer: document.getElementById('main-video-container'),
+            studentVideoStrip: document.getElementById('student-video-strip'),
+            micBtn: document.getElementById('mic-btn'),
+            camBtn: document.getElementById('cam-btn'),
+        };
 
         // --- App State ---
         let currentUser = null;
+        let currentClassCode = null;
+        let isTeacher = false;
+        let peer;
+        let localStream;
+        let unsubscribeClass = null;
+        let unsubscribeMessages = null;
+        const connections = {}; // { peerId: MediaConnection }
 
         // --- Authentication ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is signed in.
                 currentUser = user;
+                allUI.headerControls.classList.remove('hidden');
                 showDashboard();
-                userIdDisplay.textContent = user.uid;
-                userGreeting.textContent = `Hello, User!`;
-                userGreeting.classList.remove('hidden');
+                allUI.userIdDisplay.textContent = user.uid;
+                allUI.userGreeting.textContent = `Hello, User!`;
             } else {
-                // User is signed out.
                 currentUser = null;
+                allUI.headerControls.classList.add('hidden');
+                if (unsubscribeClass) unsubscribeClass();
+                if (unsubscribeMessages) unsubscribeMessages();
+                destroyPeer();
                 showAuthScreen();
-                userGreeting.classList.add('hidden');
             }
         });
 
-        loginButton.addEventListener('click', () => {
-            signInAnonymously(auth).catch((error) => {
-                console.error("Anonymous sign-in failed:", error);
-                alert("Could not sign in. Please try again.");
-            });
+        allUI.loginButton.addEventListener('click', () => {
+            signInAnonymously(auth).catch((error) => console.error("Sign-in failed:", error));
+        });
+        
+        allUI.logoutButton.addEventListener('click', () => {
+            signOut(auth).catch((error) => console.error("Sign-out failed:", error));
         });
 
-        // --- UI Logic ---
+        // --- UI Navigation ---
         function showAuthScreen() {
-            authScreen.classList.remove('hidden');
-            dashboardScreen.classList.add('hidden');
-            liveClassScreen.classList.add('hidden');
+            allUI.authScreen.classList.remove('hidden');
+            allUI.dashboardScreen.classList.add('hidden');
+            allUI.liveClassScreen.classList.add('hidden');
         }
 
         function showDashboard() {
-            authScreen.classList.add('hidden');
-            dashboardScreen.classList.remove('hidden');
-            liveClassScreen.classList.add('hidden');
+            allUI.authScreen.classList.add('hidden');
+            allUI.dashboardScreen.classList.remove('hidden');
+            allUI.liveClassScreen.classList.add('hidden');
+            document.querySelector('main').classList.add('p-4', 'md:p-6');
+            currentClassCode = null;
         }
 
-        function showLiveClassScreen(classCode) {
-            authScreen.classList.add('hidden');
-            dashboardScreen.classList.add('hidden');
-            liveClassScreen.classList.remove('hidden');
-            document.getElementById('live-class-code').textContent = classCode;
+        async function showLiveClassScreen(classCode, teacherStatus) {
+            currentClassCode = classCode;
+            isTeacher = teacherStatus;
+            allUI.authScreen.classList.add('hidden');
+            allUI.dashboardScreen.classList.add('hidden');
+            allUI.liveClassScreen.classList.remove('hidden');
+            document.querySelector('main').classList.remove('p-4', 'md:p-6');
+            allUI.liveClassCode.textContent = classCode;
+            
+            await setupLocalMedia();
+            setupPeer();
+            listenToClassUpdates(classCode);
         }
 
-        // Profile Dropdown Toggle
-        profileButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('hidden');
-        });
+        // --- Media & PeerJS Setup ---
+        async function setupLocalMedia() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                addVideoStream(allUI.mainVideoContainer, localStream, "You", currentUser.uid, true);
+            } catch (err) {
+                console.error("Failed to get local stream", err);
+                alert("You must allow camera and microphone access to join the class.");
+                showDashboard();
+            }
+        }
 
-        document.addEventListener('click', () => {
-            profileDropdown.classList.add('hidden');
-        });
+        function setupPeer() {
+            if (!currentUser) return;
+            peer = new Peer(currentUser.uid, {
+                host: 'peerjs-server-livebytes.herokuapp.com',
+                secure: true,
+                port: 443
+            });
 
+            peer.on('open', id => {
+                console.log('My peer ID is: ' + id);
+            });
+
+            peer.on('call', call => {
+                // Answer incoming calls with our local stream
+                call.answer(localStream);
+                call.on('stream', remoteStream => {
+                    // When we receive their stream, add it to the UI
+                    const participant = connections[call.peer]?.participant;
+                    const name = participant ? participant.name : 'Guest';
+                    addVideoStream(allUI.studentVideoStrip, remoteStream, name, call.peer);
+                });
+                connections[call.peer] = { conn: call };
+            });
+            
+            peer.on('error', err => console.error("PeerJS Error:", err));
+        }
+        
+        function destroyPeer() {
+            if (peer) {
+                peer.destroy();
+                peer = null;
+            }
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            Object.values(connections).forEach(c => c.conn.close());
+        }
+
+        // --- Video Element Management ---
+        function addVideoStream(container, stream, name, peerId, isMuted = false) {
+            if (document.getElementById(`video-${peerId}`)) return; // Already exists
+
+            const wrapper = document.createElement('div');
+            wrapper.id = `video-${peerId}`;
+            wrapper.className = 'video-wrapper h-32 w-48 flex-shrink-0';
+            
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.muted = isMuted;
+            video.playsInline = true;
+            video.addEventListener('loadedmetadata', () => video.play());
+
+            const nameTag = document.createElement('div');
+            nameTag.className = 'user-name';
+            nameTag.textContent = name;
+            
+            wrapper.append(video, nameTag);
+
+            if (container === allUI.mainVideoContainer) {
+                container.innerHTML = '';
+                wrapper.className = 'w-full h-full';
+                container.append(wrapper);
+            } else {
+                container.append(wrapper);
+            }
+        }
+
+        function removeVideoStream(peerId) {
+            const videoElement = document.getElementById(`video-${peerId}`);
+            if (videoElement) videoElement.remove();
+        }
 
         // --- Modal Logic ---
-        function openCreateClassModal() {
-            createClassModalContainer.classList.add('active');
-        }
-
-        function closeCreateClassModal() {
-            createClassModalContainer.classList.remove('active');
-            createClassForm.reset();
-        }
-
-        createClassBtn.addEventListener('click', openCreateClassModal);
-        cancelCreateClassBtn.addEventListener('click', closeCreateClassModal);
-        createClassModalContainer.querySelector('.modal-backdrop').addEventListener('click', closeCreateClassModal);
+        allUI.createClassBtn.addEventListener('click', () => allUI.createClassModalContainer.classList.add('active'));
+        allUI.cancelCreateClassBtn.addEventListener('click', () => allUI.createClassModalContainer.classList.remove('active'));
 
         // --- Class Management ---
-        createClassForm.addEventListener('submit', async (e) => {
+        allUI.createClassForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!currentUser) {
-                alert("You must be signed in to create a class.");
-                return;
-            }
-
+            if (!currentUser) return;
             const className = document.getElementById('class-name').value;
-            const classCode = generateClassCode();
+            const classCode = Math.random().toString(36).substring(2, 8).toUpperCase();
             
             try {
-                // Store class data in Firestore
                 const classRef = doc(db, "classes", classCode);
                 await setDoc(classRef, {
                     name: className,
                     teacherId: currentUser.uid,
-                    createdAt: new Date(),
-                    students: []
+                    createdAt: serverTimestamp(),
+                    participants: {} // Start with empty participants
                 });
-                
-                alert(`Class created successfully! Your class code is: ${classCode}`);
-                closeCreateClassModal();
-                // For now, we just show an alert. Later we'll redirect to the class management page.
-            } catch (error) {
-                console.error("Error creating class:", error);
-                alert("Failed to create class. Please try again.");
-            }
+                alert(`Class created! Code: ${classCode}`);
+                allUI.createClassModalContainer.classList.remove('active');
+                await joinClass(classCode, true);
+            } catch (error) { console.error("Error creating class:", error); }
         });
 
-        joinClassBtn.addEventListener('click', async () => {
-            const classCode = document.getElementById('class-code-input').value.trim();
-            if (!classCode) {
-                alert("Please enter a class code.");
-                return;
-            }
-            if (!currentUser) {
-                alert("You must be signed in to join a class.");
-                return;
-            }
-            
-            // Check if class exists
+        allUI.joinClassBtn.addEventListener('click', () => {
+            const classCode = document.getElementById('class-code-input').value.trim().toUpperCase();
+            if (classCode) joinClass(classCode, false);
+        });
+        
+        async function joinClass(classCode, isJoiningAsTeacher) {
+            if (!currentUser) return;
             const classRef = doc(db, "classes", classCode);
             const classSnap = await getDoc(classRef);
 
             if (classSnap.exists()) {
-                // For now, just switch to the live class view
-                showLiveClassScreen(classCode);
-                // In a real app, you would add the student to the class document
-                // and then establish a real-time connection.
+                const participant = {
+                    uid: currentUser.uid,
+                    name: `${isJoiningAsTeacher ? 'Teacher' : 'Student'}-${currentUser.uid.substring(0, 5)}`,
+                    isTeacher: isJoiningAsTeacher,
+                    handRaised: false
+                };
+                await updateDoc(classRef, { [`participants.${currentUser.uid}`]: participant });
+                showLiveClassScreen(classCode, isJoiningAsTeacher);
             } else {
-                alert("Class not found. Please check the code and try again.");
+                alert("Class not found.");
+            }
+        }
+        
+        allUI.leaveClassBtn.addEventListener('click', async () => {
+             if (unsubscribeClass) unsubscribeClass();
+             if (unsubscribeMessages) unsubscribeMessages();
+             
+             if (currentUser && currentClassCode) {
+                const classRef = doc(db, "classes", currentClassCode);
+                await updateDoc(classRef, { [`participants.${currentUser.uid}`]: deleteField() });
+             }
+
+             destroyPeer();
+             showDashboard();
+        });
+
+        // --- Real-time Listeners (Live Class) ---
+        function listenToClassUpdates(classCode) {
+            const classRef = doc(db, "classes", classCode);
+            unsubscribeClass = onSnapshot(classRef, (doc) => {
+                if (!doc.exists()) { alert("The class has ended."); showDashboard(); return; }
+                const classData = doc.data();
+                allUI.liveClassName.textContent = classData.name;
+                updateParticipants(classData.participants);
+            });
+            
+            const messagesRef = collection(db, "classes", classCode, "messages");
+            const q = query(messagesRef);
+            unsubscribeMessages = onSnapshot(q, (snapshot) => {
+                allUI.chatMessages.innerHTML = '';
+                const messages = snapshot.docs.map(d => d.data()).sort((a, b) => a.timestamp - b.timestamp);
+                messages.forEach(renderMessage);
+                allUI.chatMessages.scrollTop = allUI.chatMessages.scrollHeight;
+            });
+        }
+        
+        function updateParticipants(participants) {
+            allUI.participantsList.innerHTML = '';
+            const participantArray = Object.values(participants);
+            allUI.participantCount.textContent = participantArray.length;
+            
+            participantArray.forEach(p => {
+                const el = document.createElement('div');
+                el.className = 'flex items-center justify-between text-sm';
+                el.innerHTML = `<div class="flex items-center gap-2"><i class="fas ${p.isTeacher ? 'fa-chalkboard-teacher text-indigo-500' : 'fa-user-graduate text-gray-500'}"></i><span>${p.name}</span></div>${p.handRaised ? '<i class="fas fa-hand-paper text-yellow-500 animate-bounce"></i>' : ''}`;
+                allUI.participantsList.appendChild(el);
+
+                // --- PeerJS Calling Logic ---
+                if (p.uid !== currentUser.uid && peer && !connections[p.uid]) {
+                    console.log(`Attempting to call ${p.uid}`);
+                    const call = peer.call(p.uid, localStream);
+                    call.on('stream', remoteStream => {
+                        addVideoStream(allUI.studentVideoStrip, remoteStream, p.name, p.uid);
+                    });
+                    call.on('close', () => removeVideoStream(p.uid));
+                    connections[p.uid] = { conn: call, participant: p };
+                }
+            });
+
+            // Clean up connections for users who left
+            Object.keys(connections).forEach(peerId => {
+                if (!participants[peerId]) {
+                    connections[peerId].conn.close();
+                    delete connections[peerId];
+                    removeVideoStream(peerId);
+                }
+            });
+        }
+        
+        function renderMessage(msg) {
+             const el = document.createElement('div');
+             const sentByMe = msg.uid === currentUser.uid;
+             el.className = `mb-2 ${sentByMe ? 'text-right' : 'text-left'}`;
+             const timestamp = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || '';
+             el.innerHTML = `<div class="inline-block p-2 rounded-lg ${sentByMe ? 'bg-indigo-500 text-white' : 'bg-gray-200'}"><div class="text-xs font-bold ${sentByMe ? 'text-indigo-200' : 'text-gray-500'}">${msg.name}</div><div>${msg.text}</div><div class="text-xs mt-1 ${sentByMe ? 'text-indigo-200' : 'text-gray-400'}">${timestamp}</div></div>`;
+             allUI.chatMessages.appendChild(el);
+        }
+
+        // --- Live Class Actions ---
+        allUI.chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = allUI.chatInput.value.trim();
+            if (text && currentUser && currentClassCode) {
+                const classDoc = await getDoc(doc(db, "classes", currentClassCode));
+                const myName = classDoc.data().participants[currentUser.uid].name;
+                await addDoc(collection(db, "classes", currentClassCode, "messages"), {
+                    text, uid: currentUser.uid, name: myName, timestamp: serverTimestamp()
+                });
+                allUI.chatInput.value = '';
+            }
+        });
+        
+        allUI.raiseHandBtn.addEventListener('click', async () => {
+            if (!currentUser || !currentClassCode) return;
+            const classRef = doc(db, "classes", currentClassCode);
+            const classSnap = await getDoc(classRef);
+            if(classSnap.exists()){
+                const currentStatus = classSnap.data().participants[currentUser.uid].handRaised;
+                await updateDoc(classRef, { [`participants.${currentUser.uid}.handRaised`]: !currentStatus });
             }
         });
 
+        allUI.micBtn.addEventListener('click', () => {
+            const enabled = localStream.getAudioTracks()[0].enabled;
+            localStream.getAudioTracks()[0].enabled = !enabled;
+            allUI.micBtn.classList.toggle('bg-red-500', enabled);
+            allUI.micBtn.classList.toggle('bg-green-500', !enabled);
+        });
 
-        function generateClassCode() {
-            // Simple 6-digit code generator
-            return Math.random().toString(36).substring(2, 8).toUpperCase();
-        }
+        allUI.camBtn.addEventListener('click', () => {
+            const enabled = localStream.getVideoTracks()[0].enabled;
+            localStream.getVideoTracks()[0].enabled = !enabled;
+            allUI.camBtn.classList.toggle('bg-red-500', enabled);
+            allUI.camBtn.classList.toggle('bg-green-500', !enabled);
+        });
 
-        // Initially hide the modal container
-        createClassModalContainer.classList.remove('active');
-
+        // --- Final Setup ---
+        allUI.profileButton.addEventListener('click', (e) => { e.stopPropagation(); allUI.profileDropdown.classList.toggle('hidden'); });
+        document.addEventListener('click', () => allUI.profileDropdown.classList.add('hidden'));
     </script>
 </body>
 </html>
