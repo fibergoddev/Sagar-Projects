@@ -8,7 +8,7 @@
     <style>
         /*
          * Chrono-Chai - Responsive & Advanced Game Engine
-         * Version 28: The Definitive Build
+         * Version 29: Bug Fix & Robust Loading
          * Designed & Developed by Sagar Raj & Gemini
          */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto+Mono:wght@700&display=swap');
@@ -187,6 +187,15 @@
 </head>
 <body>
     <div id="game-container">
+        <!-- Loading / Error Overlay -->
+        <div id="status-overlay" class="modal-overlay visible">
+            <div class="modal-content">
+                <h2 id="status-title">Loading Chrono-Chai...</h2>
+                <p id="status-text">Calibrating time-stream... Please wait.</p>
+                <a href="index.html" id="status-back-btn" class="styled-button hidden" style="background: transparent; color: var(--accent-neon);">Back to Hub</a>
+            </div>
+        </div>
+
         <!-- User Info Modal (First time only) -->
         <div id="user-info-modal" class="modal-overlay hidden">
             <div class="modal-content">
@@ -290,6 +299,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             // --- DOM Elements ---
             const dom = {
+                statusOverlay: document.getElementById('status-overlay'),
+                statusTitle: document.getElementById('status-title'),
+                statusText: document.getElementById('status-text'),
+                statusBackBtn: document.getElementById('status-back-btn'),
                 userInfoModal: document.getElementById('user-info-modal'),
                 userInfoForm: document.getElementById('user-info-form'),
                 startScreen: document.getElementById('start-screen'),
@@ -339,52 +352,54 @@
 
             // --- Local Storage Keys ---
             const userInfoKey = 'sagarRajUserInfo';
-                const gameSaveKey = 'chronoChaiSaveData';
+            const gameSaveKey = 'chronoChaiSaveData';
 
             // --- Main Functions ---
             async function initializeApp() {
-                const userInfo = JSON.parse(localStorage.getItem(userInfoKey));
-                if (!userInfo || !userInfo.class) {
-                    dom.userInfoModal.classList.add('visible');
-                } else {
-                    await loadGameData(userInfo);
-                    setupDailyChallenge();
-                    dom.welcomeBackText.textContent = `Welcome back, ${userInfo.name}! History awaits.`;
-                    dom.startScreen.classList.add('visible');
+                try {
+                    await loadGameData(); // Try to load data first
+                    const userInfo = JSON.parse(localStorage.getItem(userInfoKey));
+                    if (!userInfo || !userInfo.class) {
+                        dom.statusOverlay.classList.add('hidden');
+                        dom.userInfoModal.classList.add('visible');
+                    } else {
+                        filterQuestionsByClass(userInfo.class);
+                        setupDailyChallenge();
+                        dom.welcomeBackText.textContent = `Welcome back, ${userInfo.name}! History awaits.`;
+                        dom.statusOverlay.classList.add('hidden');
+                        dom.startScreen.classList.add('visible');
+                    }
+                } catch (error) {
+                    console.error("Initialization failed:", error);
+                    dom.statusTitle.textContent = 'Error Loading Game';
+                    dom.statusText.textContent = 'Could not load questions.json. Please make sure the file is in the same folder as this game and is not corrupted.';
+                    dom.statusBackBtn.classList.remove('hidden');
                 }
             }
 
-            async function loadGameData(userInfo) {
-                try {
-                    const response = await fetch('questions.json');
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    fullQuestionBank = await response.json();
-                    
-                    const userClass = parseInt(userInfo.class);
-                    userQuestionBank = fullQuestionBank.filter(q => q.class <= userClass);
-                    
-                    if (userQuestionBank.length === 0) {
-                        console.warn("Could not find any questions for class " + userClass + " or lower. Defaulting to all questions.");
-                        userQuestionBank = fullQuestionBank;
-                    }
-                } catch (error) {
-                    console.error("Failed to load game questions:", error);
-                    alert("Error: Could not load game data. Please check your connection and refresh.");
+            async function loadGameData() {
+                const response = await fetch('questions.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                fullQuestionBank = await response.json();
+            }
+            
+            function filterQuestionsByClass(userClass) {
+                const classInt = parseInt(userClass);
+                userQuestionBank = fullQuestionBank.filter(q => q.class <= classInt);
+                if (userQuestionBank.length === 0) {
+                    console.warn(`No questions found for class ${classInt} or lower. Using all questions.`);
+                    userQuestionBank = fullQuestionBank;
                 }
             }
 
             function setupDailyChallenge() {
                 const today = new Date().toDateString();
                 if (gameState.lastPlayedDate !== today) {
-                    // New day, new challenge
                     const subjects = ["Physics", "Chemistry", "Biology", "Mathematics"];
                     const randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
-                    dailyChallenge = {
-                        type: 'subject',
-                        target: randomSubject,
-                        goal: 5,
-                        reward: 50 // 50 coins
-                    };
+                    dailyChallenge = { type: 'subject', target: randomSubject, goal: 5, reward: 50 };
                     gameState.dailyChallengeProgress = 0;
                 }
                 dom.dailyChallengeText.textContent = `Serve ${dailyChallenge.goal} ${dailyChallenge.target} customers for a bonus of ${dailyChallenge.reward} coins! (${gameState.dailyChallengeProgress}/${dailyChallenge.goal})`;
@@ -407,7 +422,6 @@
                 }
                 
                 gameState.isAnswerable = true;
-                // Select a random question, not based on ID
                 const randomIndex = Math.floor(Math.random() * userQuestionBank.length);
                 const questionData = userQuestionBank[randomIndex];
                 gameState.currentQuestion = questionData;
@@ -425,7 +439,6 @@
                 
                 const optionsContainer = dom.answerOptions;
                 optionsContainer.innerHTML = '';
-                // Randomize option order
                 const shuffledOptions = Object.entries(q.options).sort(() => Math.random() - 0.5);
 
                 shuffledOptions.forEach(([key, value]) => {
@@ -457,18 +470,17 @@
                 });
 
                 if (correct) {
-                    const xpGained = 10 + (gameState.currentQuestion.class - 5); // More XP for higher class questions
+                    const xpGained = 10 + (gameState.currentQuestion.class - 5);
                     gameState.score += xpGained;
                     gameState.coins += 1;
                     addXP(xpGained);
                     
-                    // Daily Challenge Check
                     if (dailyChallenge.target === gameState.currentQuestion.subject) {
                         gameState.dailyChallengeProgress++;
                         if (gameState.dailyChallengeProgress >= dailyChallenge.goal) {
                             gameState.coins += dailyChallenge.reward;
                             alert(`Daily Challenge Complete! You earned a bonus of ${dailyChallenge.reward} coins!`);
-                            gameState.dailyChallengeProgress = 0; // Reset for the day
+                            gameState.dailyChallengeProgress = -1; // Mark as complete
                         }
                     }
 
@@ -485,7 +497,7 @@
             }
 
             function startTimer() {
-                let timeRemaining = 15000; // 15 seconds
+                let timeRemaining = 15000;
                 dom.timerProgress.style.transition = 'none';
                 dom.timerProgress.style.width = '100%';
                 
@@ -520,7 +532,7 @@
                 clearInterval(gameState.timer);
                 dom.finalScore.textContent = gameState.score;
                 dom.finalCoins.textContent = gameState.coins;
-                dom.finalXp.textContent = gameState.score; // Total score is total XP for the round
+                dom.finalXp.textContent = gameState.score;
                 dom.gameOverScreen.classList.add('visible');
                 dom.hud.classList.add('hidden');
                 dom.mainGameArea.classList.add('hidden');
@@ -532,7 +544,6 @@
                 saveGameState();
             }
 
-            // --- UI & State Updates ---
             function updateHUD() {
                 dom.score.textContent = gameState.score;
                 dom.highScore.textContent = gameState.highScore;
@@ -543,15 +554,15 @@
             }
 
             function resetGameState() {
-                const savedData = JSON.parse(localStorage.getItem(gameSaveKey));
+                const savedData = JSON.parse(localStorage.getItem(gameSaveKey)) || {};
                 gameState = {
                     ...initialGameState,
-                    highScore: savedData ? savedData.highScore : 0,
-                    coins: savedData ? savedData.coins : 0,
-                    level: savedData ? savedData.level : 1,
-                    xp: savedData ? savedData.xp : 0,
-                    lastPlayedDate: savedData ? savedData.lastPlayedDate : null,
-                    dailyChallengeProgress: savedData ? savedData.dailyChallengeProgress : 0,
+                    highScore: savedData.highScore || 0,
+                    coins: savedData.coins || 0,
+                    level: savedData.level || 1,
+                    xp: savedData.xp || 0,
+                    lastPlayedDate: savedData.lastPlayedDate || null,
+                    dailyChallengeProgress: savedData.dailyChallengeProgress || 0,
                 };
                 const lifeIcons = dom.lives.querySelectorAll('i');
                 lifeIcons.forEach(icon => icon.classList.remove('lost'));
@@ -580,24 +591,24 @@
                 updateHUD();
             }
 
-            // --- Event Listeners ---
-            dom.userInfoForm.addEventListener('submit', async (e) => {
+            dom.userInfoForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const userInfo = {
                     name: document.getElementById('user-name').value,
                     class: document.getElementById('user-class').value,
                 };
                 localStorage.setItem(userInfoKey, JSON.stringify(userInfo));
-                dom.userInfoModal.classList.remove('visible');
-                await loadGameData(userInfo);
+                dom.userInfoModal.classList.add('hidden');
+                
+                filterQuestionsByClass(userInfo.class);
                 setupDailyChallenge();
+                dom.welcomeBackText.textContent = `Welcome, ${userInfo.name}! History awaits.`;
                 dom.startScreen.classList.add('visible');
             });
 
             dom.startGameBtn.onclick = startGame;
             dom.restartGameBtn.onclick = startGame;
 
-            // --- Initial Load ---
             loadGameState();
             initializeApp();
         });
