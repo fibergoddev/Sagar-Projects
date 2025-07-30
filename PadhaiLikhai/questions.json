@@ -1,0 +1,394 @@
+[
+  {
+    "id": 1,
+    "class": 9,
+    "subject": "Physics",
+    "historical_figure": "Isaac Newton",
+    "question": "A passenger in a moving train tosses a coin which falls behind him. It implies that the motion of the train is:",
+    "options": {
+      "A": "Uniform",
+      "B": "Accelerated",
+      "C": "Retarded",
+      "D": "Along circular tracks"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 2,
+    "class": 9,
+    "subject": "Chemistry",
+    "historical_figure": "John Dalton",
+    "question": "Which postulate of Dalton's atomic theory is the result of the law of conservation of mass?",
+    "options": {
+      "A": "All matter is made of very tiny particles called atoms.",
+      "B": "Atoms are indivisible particles, which cannot be created or destroyed in a chemical reaction.",
+      "C": "Atoms of a given element are identical in mass and chemical properties.",
+      "D": "Atoms combine in the ratio of small whole numbers to form compounds."
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 3,
+    "class": 9,
+    "subject": "Biology",
+    "historical_figure": "Robert Hooke",
+    "question": "Which of these is not a function of the cell wall in plants?",
+    "options": {
+      "A": "It provides a definite shape to the cell.",
+      "B": "It provides structural strength to the plant.",
+      "C": "It controls the entry and exit of substances.",
+      "D": "It is fully permeable and protects from osmotic lysis."
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 4,
+    "class": 9,
+    "subject": "Physics",
+    "historical_figure": "Galileo Galilei",
+    "question": "An object travels 16 m in 4 s and then another 16 m in 2 s. What is the average speed of the object?",
+    "options": {
+      "A": "5.33 m/s",
+      "B": "6 m/s",
+      "C": "2.67 m/s",
+      "D": "12 m/s"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 5,
+    "class": 10,
+    "subject": "Chemistry",
+    "historical_figure": "Friedrich Wöhler",
+    "question": "Which of the following compounds has a triple bond?",
+    "options": {
+      "A": "C2H6",
+      "B": "C3H8",
+      "C": "C3H4",
+      "D": "C4H8"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 6,
+    "class": 10,
+    "subject": "Physics",
+    "historical_figure": "Georg Ohm",
+    "question": "A wire of resistance R is cut into five equal parts. These parts are then connected in parallel. If the equivalent resistance of this combination is R', then the ratio R/R' is:",
+    "options": {
+      "A": "1/25",
+      "B": "1/5",
+      "C": "5",
+      "D": "25"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 7,
+    "class": 10,
+    "subject": "Biology",
+    "historical_figure": "Gregor Mendel",
+    "question": "In a pea plant, the allele for round seeds (R) is dominant over the allele for wrinkled seeds (r). A cross between two plants results in 50% round seeds and 50% wrinkled seeds. What are the genotypes of the parent plants?",
+    "options": {
+      "A": "RR x rr",
+      "B": "RR x Rr",
+      "C": "Rr x Rr",
+      "D": "Rr x rr"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 8,
+    "class": 10,
+    "subject": "Chemistry",
+    "historical_figure": "Svante Arrhenius",
+    "question": "When a small amount of acid is added to water, the phenomena which occur are:",
+    "options": {
+      "A": "Dilution and Neutralisation",
+      "B": "Dilution and Ionisation",
+      "C": "Ionisation and Neutralisation",
+      "D": "Formation of salt"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 9,
+    "class": 11,
+    "subject": "Physics",
+    "historical_figure": "Daniel Bernoulli",
+    "question": "An aircraft's wings are shaped to make air move faster over the top of the wing. This application is based on which principle?",
+    "options": {
+      "A": "Pascal's Principle",
+      "B": "Archimedes' Principle",
+      "C": "Bernoulli's Principle",
+      "D": "Stoke's Law"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 10,
+    "class": 11,
+    "subject": "Chemistry",
+    "historical_figure": "Gilbert N. Lewis",
+    "question": "According to VSEPR theory, the geometry of the BrF5 molecule is:",
+    "options": {
+      "A": "Trigonal bipyramidal",
+      "B": "Square pyramidal",
+      "C": "Octahedral",
+      "D": "See-saw"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 11,
+    "class": 11,
+    "subject": "Biology",
+    "historical_figure": "R. H. Whittaker",
+    "question": "Which of the following is a defining characteristic of living organisms?",
+    "options": {
+      "A": "Growth",
+      "B": "Reproduction",
+      "C": "Response to external stimuli (consciousness)",
+      "D": "Metabolism"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 12,
+    "class": 11,
+    "subject": "Mathematics",
+    "historical_figure": "Georg Cantor",
+    "question": "If A and B are two sets such that n(A) = 17, n(B) = 23 and n(A U B) = 38, then what is n(A ∩ B)?",
+    "options": {
+      "A": "2",
+      "B": "4",
+      "C": "0",
+      "D": "5"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 13,
+    "class": 12,
+    "subject": "Physics",
+    "historical_figure": "Michael Faraday",
+    "question": "Lenz's law is a consequence of the law of conservation of:",
+    "options": {
+      "A": "Charge",
+      "B": "Momentum",
+      "C": "Mass",
+      "D": "Energy"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 14,
+    "class": 12,
+    "subject": "Chemistry",
+    "historical_figure": "Walther Nernst",
+    "question": "The standard electrode potential (E°) for the half-cell reaction Zn²⁺(aq) + 2e⁻ → Zn(s) is -0.76 V. What does this negative value indicate?",
+    "options": {
+      "A": "Zinc readily accepts electrons.",
+      "B": "Zinc is a strong oxidizing agent.",
+      "C": "Zinc is a strong reducing agent and is more easily oxidized than hydrogen.",
+      "D": "The reaction is not feasible."
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 15,
+    "class": 12,
+    "subject": "Biology",
+    "historical_figure": "Watson and Crick",
+    "question": "If a double-stranded DNA has 20 percent of cytosine, what will be the percentage of adenine in it?",
+    "options": {
+      "A": "20%",
+      "B": "40%",
+      "C": "30%",
+      "D": "60%"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 16,
+    "class": 12,
+    "subject": "Mathematics",
+    "historical_figure": "Thomas Bayes",
+    "question": "A bag contains 4 red and 4 black balls. Another bag contains 2 red and 6 black balls. One of the two bags is selected at random and a ball is drawn. The ball is found to be red. What is the probability that the ball was drawn from the first bag?",
+    "options": {
+      "A": "1/3",
+      "B": "2/3",
+      "C": "1/2",
+      "D": "1/4"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 17,
+    "class": 9,
+    "subject": "Chemistry",
+    "historical_figure": "Evangelista Torricelli",
+    "question": "Which of the following will show the Tyndall effect?",
+    "options": {
+      "A": "Salt solution",
+      "B": "Milk",
+      "C": "Copper sulphate solution",
+      "D": "Sugar solution"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 18,
+    "class": 10,
+    "subject": "Physics",
+    "historical_figure": "Hans Christian Oersted",
+    "question": "The magnetic field inside a long straight solenoid carrying current:",
+    "options": {
+      "A": "is zero.",
+      "B": "decreases as we move towards its end.",
+      "C": "increases as we move towards its end.",
+      "D": "is the same at all points."
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 19,
+    "class": 11,
+    "subject": "Physics",
+    "historical_figure": "Robert Hooke",
+    "question": "The stress-strain graph for two materials A and B are shown. Which material is more ductile?",
+    "options": {
+      "A": "Material A",
+      "B": "Material B",
+      "C": "Both are equally ductile",
+      "D": "Cannot be determined"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 20,
+    "class": 12,
+    "subject": "Chemistry",
+    "historical_figure": "Alfred Werner",
+    "question": "The oxidation number of Cobalt in K[Co(CO)4] is:",
+    "options": {
+      "A": "+1",
+      "B": "+3",
+      "C": "-1",
+      "D": "-3"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 21,
+    "class": 12,
+    "subject": "Biology",
+    "historical_figure": "Charles Darwin",
+    "question": "The wings of a butterfly and the wings of a bat are examples of:",
+    "options": {
+      "A": "Homologous structures",
+      "B": "Analogous structures",
+      "C": "Vestigial organs",
+      "D": "Atavism"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 22,
+    "class": 11,
+    "subject": "Mathematics",
+    "historical_figure": "Blaise Pascal",
+    "question": "What is the coefficient of x^5 in the expansion of (x + 3)^8?",
+    "options": {
+      "A": "1512",
+      "B": "56",
+      "C": "4536",
+      "D": "1344"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 23,
+    "class": 10,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "In the human digestive system, the process of digestion begins in the _______ and is completed in the ______.",
+    "options": {
+      "A": "Stomach, Large Intestine",
+      "B": "Mouth, Small Intestine",
+      "C": "Mouth, Stomach",
+      "D": "Small Intestine, Large Intestine"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 24,
+    "class": 9,
+    "subject": "Physics",
+    "historical_figure": "Archimedes",
+    "question": "A body floats with one-third of its volume outside water and the rest of its volume inside water. The density of the body is:",
+    "options": {
+      "A": "(2/3) g/cm³",
+      "B": "(1/3) g/cm³",
+      "C": "1 g/cm³",
+      "D": "Data insufficient"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 25,
+    "class": 11,
+    "subject": "Chemistry",
+    "historical_figure": "Henry Louis Le Chatelier",
+    "question": "For the reaction N2(g) + 3H2(g) ⇌ 2NH3(g), ΔH = -92.4 kJ/mol. What condition will favor the forward reaction?",
+    "options": {
+      "A": "Low temperature and low pressure",
+      "B": "Low temperature and high pressure",
+      "C": "High temperature and low pressure",
+      "D": "High temperature and high pressure"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 26,
+    "class": 12,
+    "subject": "Physics",
+    "historical_figure": "Albert Einstein",
+    "question": "The work function of a metal is 4.2 eV. If radiation of 300 nm wavelength falls on the metal, photoelectrons will be emitted. What is the kinetic energy of the fastest photoelectron? (h = 6.63 x 10⁻³⁴ Js, c = 3 x 10⁸ m/s, 1 eV = 1.6 x 10⁻¹⁹ J)",
+    "options": {
+      "A": "1.2 eV",
+      "B": "0 eV (no emission)",
+      "C": "-0.07 eV",
+      "D": "4.13 eV"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 27,
+    "class": 10,
+    "subject": "Mathematics",
+    "historical_figure": "Euclid",
+    "question": "According to Euclid's division lemma, if a and b are two positive integers, then there exist unique integers q and r such that a = bq + r, where r must satisfy:",
+    "options": {
+      "A": "1 < r < b",
+      "B": "0 < r ≤ b",
+      "C": "0 ≤ r < b",
+      "D": "0 < r < b"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 28,
+    "class": 12,
+    "subject": "Mathematics",
+    "historical_figure": "Arthur Cayley",
+    "question": "If A is a square matrix such that A² = A, then (I + A)³ - 7A is equal to:",
+    "options": {
+      "A": "A",
+      "B": "I - A",
+      "C": "I",
+      "D": "3A"
+    },
+    "correctAnswer": "C"
+  }
+]
