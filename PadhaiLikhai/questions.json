@@ -256,14 +256,14 @@
     "class": 11,
     "subject": "Physics",
     "historical_figure": "Robert Hooke",
-    "question": "The stress-strain graph for two materials A and B are shown. Which material is more ductile?",
+    "question": "The ratio of stress to strain, within the elastic limit, is known as:",
     "options": {
-      "A": "Material A",
-      "B": "Material B",
-      "C": "Both are equally ductile",
-      "D": "Cannot be determined"
+      "A": "Poisson's Ratio",
+      "B": "Young's Modulus",
+      "C": "Bulk Modulus",
+      "D": "Shear Modulus"
     },
-    "correctAnswer": "A"
+    "correctAnswer": "B"
   },
   {
     "id": 20,
@@ -354,12 +354,12 @@
     "class": 12,
     "subject": "Physics",
     "historical_figure": "Albert Einstein",
-    "question": "The work function of a metal is 4.2 eV. If radiation of 300 nm wavelength falls on the metal, photoelectrons will be emitted. What is the kinetic energy of the fastest photoelectron? (h = 6.63 x 10⁻³⁴ Js, c = 3 x 10⁸ m/s, 1 eV = 1.6 x 10⁻¹⁹ J)",
+    "question": "The work function of a metal is 4.2 eV. If radiation of 200 nm wavelength falls on the metal, what is the kinetic energy of the fastest photoelectron? (h = 6.63 x 10⁻³⁴ Js, c = 3 x 10⁸ m/s, 1 eV = 1.6 x 10⁻¹⁹ J)",
     "options": {
       "A": "1.2 eV",
-      "B": "0 eV (no emission)",
-      "C": "-0.07 eV",
-      "D": "4.13 eV"
+      "B": "2.0 eV",
+      "C": "6.2 eV",
+      "D": "0 eV (no emission)"
     },
     "correctAnswer": "B"
   },
@@ -390,5 +390,1083 @@
       "D": "3A"
     },
     "correctAnswer": "C"
+  },
+  {
+    "id": 29,
+    "class": 9,
+    "subject": "Biology",
+    "historical_figure": "Camillo Golgi",
+    "question": "Which cell organelle is involved in the formation of lysosomes?",
+    "options": {
+        "A": "Endoplasmic Reticulum",
+        "B": "Mitochondria",
+        "C": "Golgi apparatus",
+        "D": "Ribosomes"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 30,
+    "class": 9,
+    "subject": "Chemistry",
+    "historical_figure": "Amedeo Avogadro",
+    "question": "What is the mass of 0.5 moles of N2 gas? (Atomic mass of N = 14u)",
+    "options": {
+        "A": "28g",
+        "B": "14g",
+        "C": "7g",
+        "D": "21g"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 31,
+    "class": 10,
+    "subject": "Chemistry",
+    "historical_figure": "Dmitri Mendeleev",
+    "question": "An element X forms a chloride with the formula XCl2, which is a solid with a high melting point. X would most likely be in the same group of the Periodic Table as:",
+    "options": {
+        "A": "Na",
+        "B": "Mg",
+        "C": "Al",
+        "D": "Si"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 32,
+    "class": 10,
+    "subject": "Physics",
+    "historical_figure": "Willebrord Snell",
+    "question": "A ray of light passes from a medium X to another medium Y. No refraction of light occurs if the ray of light hits the boundary of medium Y at an angle of:",
+    "options": {
+        "A": "0°",
+        "B": "45°",
+        "C": "90°",
+        "D": "120°"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 33,
+    "class": 11,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "The C4 plants are photosynthetically more efficient than C3 plants because:",
+    "options": {
+        "A": "they have more chloroplasts.",
+        "B": "the CO2 compensation point is more.",
+        "C": "CO2 efflux is not prevented.",
+        "D": "they have a mechanism that increases the concentration of CO2 at the enzyme site."
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 34,
+    "class": 11,
+    "subject": "Physics",
+    "historical_figure": "Isaac Newton",
+    "question": "A cricketer catches a ball of mass 150 g moving at a speed of 20 m/s. If the catching process is completed in 0.1 s, the force of the blow exerted by the ball on the hand of the player is equal to:",
+    "options": {
+        "A": "300 N",
+        "B": "150 N",
+        "C": "30 N",
+        "D": "3 N"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 35,
+    "class": 12,
+    "subject": "Chemistry",
+    "historical_figure": "Jacobus Henricus van 't Hoff",
+    "question": "Which of the following is not a colligative property?",
+    "options": {
+        "A": "Osmotic pressure",
+        "B": "Elevation in boiling point",
+        "C": "Vapour pressure",
+        "D": "Depression in freezing point"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 36,
+    "class": 12,
+    "subject": "Physics",
+    "historical_figure": "James Clerk Maxwell",
+    "question": "Which of the following has the shortest wavelength?",
+    "options": {
+        "A": "Microwaves",
+        "B": "Ultraviolet rays",
+        "C": "X-rays",
+        "D": "Gamma rays"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 37,
+    "class": 9,
+    "subject": "Physics",
+    "historical_figure": "N/A",
+    "question": "The audible range of frequency for human beings is:",
+    "options": {
+        "A": "20 Hz to 2000 Hz",
+        "B": "2 Hz to 20 Hz",
+        "C": "20 Hz to 20,000 Hz",
+        "D": "20,000 Hz to 200,000 Hz"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 38,
+    "class": 10,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "The gap between two neurons is called a:",
+    "options": {
+        "A": "Dendrite",
+        "B": "Synapse",
+        "C": "Axon",
+        "D": "Impulse"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 39,
+    "class": 11,
+    "subject": "Chemistry",
+    "historical_figure": "Niels Bohr",
+    "question": "The number of angular nodes for a 4d orbital is:",
+    "options": {
+        "A": "4",
+        "B": "3",
+        "C": "2",
+        "D": "1"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 40,
+    "class": 12,
+    "subject": "Biology",
+    "historical_figure": "Stanley Cohen & Herbert Boyer",
+    "question": "The 'sticky ends' on a DNA segment are generated by the action of:",
+    "options": {
+        "A": "DNA ligase",
+        "B": "Restriction enzymes",
+        "C": "DNA polymerase",
+        "D": "Reverse transcriptase"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 41,
+    "class": 10,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "If the sum of the roots of the quadratic equation kx² + 6x + 4k = 0 is equal to their product, then the value of k is:",
+    "options": {
+        "A": "-3/2",
+        "B": "3/2",
+        "C": "2/3",
+        "D": "-2/3"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 42,
+    "class": 11,
+    "subject": "Mathematics",
+    "historical_figure": "Leonhard Euler",
+    "question": "The value of i⁹ + i¹⁹ is:",
+    "options": {
+        "A": "0",
+        "B": "1",
+        "C": "-1",
+        "D": "i"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 43,
+    "class": 12,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "The function f(x) = |x| is:",
+    "options": {
+        "A": "Continuous and differentiable everywhere",
+        "B": "Continuous everywhere but not differentiable at x=0",
+        "C": "Discontinuous at x=0",
+        "D": "Neither continuous nor differentiable at x=0"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 44,
+    "class": 9,
+    "subject": "Biology",
+    "historical_figure": "Carl Linnaeus",
+    "question": "Which of the following is a cold-blooded animal?",
+    "options": {
+        "A": "Pigeon",
+        "B": "Whale",
+        "C": "Kangaroo",
+        "D": "Frog"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 45,
+    "class": 10,
+    "subject": "Chemistry",
+    "historical_figure": "N/A",
+    "question": "An aqueous solution turns red litmus solution blue. Excess addition of which of the following solution would reverse the change?",
+    "options": {
+        "A": "Baking powder",
+        "B": "Lime",
+        "C": "Ammonium hydroxide solution",
+        "D": "Hydrochloric acid"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 46,
+    "class": 11,
+    "subject": "Physics",
+    "historical_figure": "Johannes Kepler",
+    "question": "Kepler's second law regarding constancy of areal velocity of a planet is a consequence of the law of conservation of:",
+    "options": {
+        "A": "Energy",
+        "B": "Angular momentum",
+        "C": "Linear momentum",
+        "D": "Mass"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 47,
+    "class": 12,
+    "subject": "Physics",
+    "historical_figure": "Christiaan Huygens",
+    "question": "In Young's double-slit experiment, if the distance between the slits is halved and the distance between the slits and the screen is doubled, the fringe width becomes:",
+    "options": {
+        "A": "Half",
+        "B": "Double",
+        "C": "Four times",
+        "D": "Unchanged"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 48,
+    "class": 9,
+    "subject": "Chemistry",
+    "historical_figure": "J.J. Thomson",
+    "question": "Which of the following correctly represents the electronic distribution in the Mg atom?",
+    "options": {
+        "A": "3, 8, 1",
+        "B": "2, 8, 2",
+        "C": "1, 8, 3",
+        "D": "8, 2, 2"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 49,
+    "class": 10,
+    "subject": "Physics",
+    "historical_figure": "N/A",
+    "question": "The part of the human eye that controls the amount of light entering it is the:",
+    "options": {
+        "A": "Cornea",
+        "B": "Retina",
+        "C": "Pupil",
+        "D": "Iris"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 50,
+    "class": 11,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "Which of the following is the site of glycolysis in a cell?",
+    "options": {
+        "A": "Mitochondrial matrix",
+        "B": "Cytoplasm",
+        "C": "Inner mitochondrial membrane",
+        "D": "Chloroplast"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 51,
+    "class": 12,
+    "subject": "Chemistry",
+    "historical_figure": "Williamson",
+    "question": "The reaction of an alkyl halide with sodium alkoxide to form an ether is known as:",
+    "options": {
+        "A": "Wurtz reaction",
+        "B": "Fittig reaction",
+        "C": "Williamson synthesis",
+        "D": "Grignard reaction"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 52,
+    "class": 9,
+    "subject": "Mathematics",
+    "historical_figure": "Euclid",
+    "question": "Which of the following is an irrational number?",
+    "options": {
+        "A": "√16",
+        "B": "√(12/3)",
+        "C": "√12",
+        "D": "√100"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 53,
+    "class": 10,
+    "subject": "Mathematics",
+    "historical_figure": "Pythagoras",
+    "question": "The distance of the point P(2, 3) from the x-axis is:",
+    "options": {
+        "A": "2",
+        "B": "3",
+        "C": "1",
+        "D": "5"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 54,
+    "class": 11,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "The value of sin(75°) is:",
+    "options": {
+        "A": "(√3 + 1) / 2√2",
+        "B": "(√3 - 1) / 2√2",
+        "C": "(√2 + 1) / 2√3",
+        "D": "(√2 - 1) / 2√3"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 55,
+    "class": 12,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "The order and degree of the differential equation (d²y/dx²)² + (dy/dx)³ = x sin(x) are respectively:",
+    "options": {
+        "A": "2, 3",
+        "B": "2, 2",
+        "C": "1, 3",
+        "D": "3, 2"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 56,
+    "class": 9,
+    "subject": "Physics",
+    "historical_figure": "James Prescott Joule",
+    "question": "An electric heater is rated 1500 W. How much energy does it use in 10 hours?",
+    "options": {
+        "A": "15 kWh",
+        "B": "150 kWh",
+        "C": "1.5 kWh",
+        "D": "0.15 kWh"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 57,
+    "class": 10,
+    "subject": "Biology",
+    "historical_figure": "Jean-Baptiste Lamarck",
+    "question": "The theory of inheritance of acquired characters was given by:",
+    "options": {
+        "A": "Charles Darwin",
+        "B": "Gregor Mendel",
+        "C": "Jean-Baptiste Lamarck",
+        "D": "Hugo de Vries"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 58,
+    "class": 11,
+    "subject": "Physics",
+    "historical_figure": "Sadi Carnot",
+    "question": "A Carnot engine has an efficiency of 50% when its sink is at 27°C. What is the temperature of the source?",
+    "options": {
+        "A": "227°C",
+        "B": "327°C",
+        "C": "127°C",
+        "D": "427°C"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 59,
+    "class": 12,
+    "subject": "Physics",
+    "historical_figure": "Charles-Augustin de Coulomb",
+    "question": "Two point charges +3μC and +8μC repel each other with a force of 40 N. If a charge of -5μC is added to each of them, then the force between them will become:",
+    "options": {
+        "A": "-10 N",
+        "B": "+10 N",
+        "C": "+20 N",
+        "D": "-20 N"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 60,
+    "class": 9,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "Parenchyma cells containing chloroplasts are known as:",
+    "options": {
+        "A": "Aerenchyma",
+        "B": "Chlorenchyma",
+        "C": "Sclerenchyma",
+        "D": "Collenchyma"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 61,
+    "class": 10,
+    "subject": "Chemistry",
+    "historical_figure": "N/A",
+    "question": "Which of the following is used for the dissolution of gold?",
+    "options": {
+        "A": "Hydrochloric acid",
+        "B": "Sulphuric acid",
+        "C": "Nitric acid",
+        "D": "Aqua regia"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 62,
+    "class": 11,
+    "subject": "Chemistry",
+    "historical_figure": "J. H. van't Hoff & Le Bel",
+    "question": "Which of the following compounds will show geometrical isomerism?",
+    "options": {
+        "A": "Propene",
+        "B": "But-1-ene",
+        "C": "But-2-ene",
+        "D": "2-Methylpropene"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 63,
+    "class": 12,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "The process of transfer of pollen grains from the anther to the stigma of another flower of the same plant is called:",
+    "options": {
+        "A": "Autogamy",
+        "B": "Geitonogamy",
+        "C": "Xenogamy",
+        "D": "Allogamy"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 64,
+    "class": 9,
+    "subject": "Chemistry",
+    "historical_figure": "N/A",
+    "question": "Dry ice is:",
+    "options": {
+        "A": "Water in solid state",
+        "B": "Water in gaseous state",
+        "C": "Carbon dioxide in liquid state",
+        "D": "Carbon dioxide in solid state"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 65,
+    "class": 10,
+    "subject": "Physics",
+    "historical_figure": "N/A",
+    "question": "A person cannot see distant objects clearly. His vision can be corrected by using a lens of:",
+    "options": {
+        "A": "Concave lens of suitable power",
+        "B": "Convex lens of suitable power",
+        "C": "Bifocal lens",
+        "D": "Cylindrical lens"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 66,
+    "class": 11,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "The 'powerhouse' of the cell, mitochondria, synthesizes ATP through:",
+    "options": {
+        "A": "Photophosphorylation",
+        "B": "Substrate-level phosphorylation",
+        "C": "Oxidative phosphorylation",
+        "D": "Glycolysis"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 67,
+    "class": 12,
+    "subject": "Chemistry",
+    "historical_figure": "Ludwig Gattermann & Julius Koch",
+    "question": "Benzaldehyde can be prepared from benzene by treating it with CO and HCl in the presence of anhydrous AlCl3. This reaction is known as:",
+    "options": {
+        "A": "Rosenmund reduction",
+        "B": "Stephen reaction",
+        "C": "Gattermann-Koch reaction",
+        "D": "Etard reaction"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 68,
+    "class": 9,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "The degree of the zero polynomial is:",
+    "options": {
+        "A": "0",
+        "B": "1",
+        "C": "Any natural number",
+        "D": "Not defined"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 69,
+    "class": 10,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "For what value of k, do the equations 3x - y + 8 = 0 and 6x - ky = -16 represent coincident lines?",
+    "options": {
+        "A": "1/2",
+        "B": "-1/2",
+        "C": "2",
+        "D": "-2"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 70,
+    "class": 11,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "The eccentricity of the hyperbola 9y² - 4x² = 36 is:",
+    "options": {
+        "A": "√13 / 2",
+        "B": "√13 / 3",
+        "C": "3 / √13",
+        "D": "2 / √13"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 71,
+    "class": 12,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "The value of the integral ∫(from -π/2 to π/2) sin⁷(x) dx is:",
+    "options": {
+        "A": "1",
+        "B": "-1",
+        "C": "0",
+        "D": "π"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 72,
+    "class": 9,
+    "subject": "Physics",
+    "historical_figure": "Isaac Newton",
+    "question": "A goalkeeper in a game of football pulls his hands backwards after holding the ball shot at the goal. This enables the goalkeeper to:",
+    "options": {
+        "A": "Exert larger force on the ball",
+        "B": "Reduce the force exerted by the ball on hands",
+        "C": "Increase the rate of change of momentum",
+        "D": "Decrease the rate of change of momentum"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 73,
+    "class": 10,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "The breakdown of pyruvate to give carbon dioxide, water and energy takes place in:",
+    "options": {
+        "A": "Cytoplasm",
+        "B": "Mitochondria",
+        "C": "Chloroplast",
+        "D": "Nucleus"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 74,
+    "class": 11,
+    "subject": "Physics",
+    "historical_figure": "N/A",
+    "question": "For an adiabatic process, the relation between pressure (P) and volume (V) is given by:",
+    "options": {
+        "A": "PV = constant",
+        "B": "P/V = constant",
+        "C": "PV^γ = constant",
+        "D": "P^γV = constant"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 75,
+    "class": 12,
+    "subject": "Physics",
+    "historical_figure": "John Bardeen, Walter Brattain, and William Shockley",
+    "question": "In a p-n junction diode, the depletion region is formed due to:",
+    "options": {
+        "A": "Drift of electrons",
+        "B": "Diffusion of charge carriers",
+        "C": "Drift of holes",
+        "D": "Recombination of electrons and holes"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 76,
+    "class": 9,
+    "subject": "Biology",
+    "historical_figure": "Edward Jenner",
+    "question": "Which one of the following is not a viral disease?",
+    "options": {
+        "A": "Dengue",
+        "B": "AIDS",
+        "C": "Typhoid",
+        "D": "Influenza"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 77,
+    "class": 10,
+    "subject": "Chemistry",
+    "historical_figure": "N/A",
+    "question": "Butanone is a four-carbon compound with the functional group:",
+    "options": {
+        "A": "Carboxylic acid",
+        "B": "Aldehyde",
+        "C": "Ketone",
+        "D": "Alcohol"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 78,
+    "class": 11,
+    "subject": "Chemistry",
+    "historical_figure": "Robert Boyle",
+    "question": "At constant temperature, the pressure of a fixed amount of gas varies inversely with its volume. This is known as:",
+    "options": {
+        "A": "Charles's Law",
+        "B": "Boyle's Law",
+        "C": "Gay Lussac's Law",
+        "D": "Avogadro's Law"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 79,
+    "class": 12,
+    "subject": "Biology",
+    "historical_figure": "Eli Lilly",
+    "question": "The first human hormone produced by recombinant DNA technology was:",
+    "options": {
+        "A": "Estrogen",
+        "B": "Thyroxin",
+        "C": "Insulin",
+        "D": "Progesterone"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 80,
+    "class": 9,
+    "subject": "Chemistry",
+    "historical_figure": "Ernest Rutherford",
+    "question": "Rutherford's alpha-particle scattering experiment was responsible for the discovery of:",
+    "options": {
+        "A": "Atomic Nucleus",
+        "B": "Electron",
+        "C": "Proton",
+        "D": "Neutron"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 81,
+    "class": 10,
+    "subject": "Physics",
+    "historical_figure": "James Watt",
+    "question": "The commercial unit of energy is:",
+    "options": {
+        "A": "Joule",
+        "B": "Watt",
+        "C": "Kilowatt-hour",
+        "D": "Watt-hour"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 82,
+    "class": 11,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "The exchange of genetic material between non-sister chromatids of homologous chromosomes occurs during which stage of meiosis I?",
+    "options": {
+        "A": "Leptotene",
+        "B": "Zygotene",
+        "C": "Pachytene",
+        "D": "Diplotene"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 83,
+    "class": 12,
+    "subject": "Chemistry",
+    "historical_figure": "Arrhenius",
+    "question": "For a first-order reaction, the half-life period is independent of:",
+    "options": {
+        "A": "Initial concentration",
+        "B": "Temperature",
+        "C": "Rate constant",
+        "D": "Pressure"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 84,
+    "class": 9,
+    "subject": "Mathematics",
+    "historical_figure": "Heron of Alexandria",
+    "question": "The sides of a triangular plot are in the ratio of 3 : 5 : 7 and its perimeter is 300 m. The area of the plot is:",
+    "options": {
+        "A": "1500√3 m²",
+        "B": "1200√3 m²",
+        "C": "1000√3 m²",
+        "D": "1600√3 m²"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 85,
+    "class": 10,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "If sin A = 1/2, then the value of cot A is:",
+    "options": {
+        "A": "√3",
+        "B": "1/√3",
+        "C": "√3/2",
+        "D": "1"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 86,
+    "class": 11,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "The number of terms in the expansion of (a + b + c)¹⁰ is:",
+    "options": {
+        "A": "11",
+        "B": "55",
+        "C": "66",
+        "D": "12"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 87,
+    "class": 12,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "The angle between the two planes 2x + y - 2z = 5 and 3x - 6y - 2z = 7 is:",
+    "options": {
+        "A": "cos⁻¹(4/21)",
+        "B": "cos⁻¹(3/20)",
+        "C": "sin⁻¹(4/21)",
+        "D": "sin⁻¹(3/20)"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 88,
+    "class": 9,
+    "subject": "Physics",
+    "historical_figure": "Isaac Newton",
+    "question": "The value of acceleration due to gravity (g) is:",
+    "options": {
+        "A": "Maximum at the poles",
+        "B": "Maximum at the equator",
+        "C": "Same everywhere on the surface of Earth",
+        "D": "Maximum at the center of the Earth"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 89,
+    "class": 10,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "Which of the following is a plant hormone responsible for ripening of fruits?",
+    "options": {
+        "A": "Auxin",
+        "B": "Gibberellin",
+        "C": "Cytokinin",
+        "D": "Ethylene"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 90,
+    "class": 11,
+    "subject": "Physics",
+    "historical_figure": "N/A",
+    "question": "A body of mass 2 kg is rotating in a circular path of radius 0.5 m with an angular velocity of 20 rad/s. The centripetal force acting on the body is:",
+    "options": {
+        "A": "100 N",
+        "B": "200 N",
+        "C": "300 N",
+        "D": "400 N"
+    },
+    "correctAnswer": "D"
+  },
+  {
+    "id": 91,
+    "class": 12,
+    "subject": "Physics",
+    "historical_figure": "Gustav Kirchhoff",
+    "question": "Kirchhoff's first law (junction rule) is based on the conservation of:",
+    "options": {
+        "A": "Energy",
+        "B": "Momentum",
+        "C": "Charge",
+        "D": "Mass"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 92,
+    "class": 9,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "Which tissue is responsible for the transport of water and minerals in plants?",
+    "options": {
+        "A": "Phloem",
+        "B": "Xylem",
+        "C": "Parenchyma",
+        "D": "Sclerenchyma"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 93,
+    "class": 10,
+    "subject": "Chemistry",
+    "historical_figure": "N/A",
+    "question": "The process of heating an ore in a limited supply of air below its melting point is known as:",
+    "options": {
+        "A": "Roasting",
+        "B": "Calcination",
+        "C": "Smelting",
+        "D": "Leaching"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 94,
+    "class": 11,
+    "subject": "Chemistry",
+    "historical_figure": "Linus Pauling",
+    "question": "Which of the following molecules has the highest bond order?",
+    "options": {
+        "A": "O2",
+        "B": "N2",
+        "C": "F2",
+        "D": "Ne2"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 95,
+    "class": 12,
+    "subject": "Biology",
+    "historical_figure": "Alfred Hershey and Martha Chase",
+    "question": "The Hershey-Chase experiments on bacteriophages proved that:",
+    "options": {
+        "A": "Protein is the genetic material",
+        "B": "RNA is the genetic material",
+        "C": "DNA is the genetic material",
+        "D": "Viruses do not have genetic material"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 96,
+    "class": 9,
+    "subject": "Chemistry",
+    "historical_figure": "N/A",
+    "question": "Which of the following methods is suitable for separating a mixture of sand and ammonium chloride?",
+    "options": {
+        "A": "Filtration",
+        "B": "Evaporation",
+        "C": "Sublimation",
+        "D": "Distillation"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 97,
+    "class": 10,
+    "subject": "Physics",
+    "historical_figure": "Michael Faraday",
+    "question": "The phenomenon of electromagnetic induction is:",
+    "options": {
+        "A": "the process of charging a body.",
+        "B": "the process of generating magnetic field due to a current passing through a coil.",
+        "C": "producing induced current in a coil due to relative motion between a magnet and the coil.",
+        "D": "the process of rotating a coil of an electric motor."
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 98,
+    "class": 11,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "Which pigment acts as a reaction center during photosynthesis?",
+    "options": {
+        "A": "Carotene",
+        "B": "Xanthophyll",
+        "C": "Chlorophyll a",
+        "D": "Chlorophyll b"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 99,
+    "class": 12,
+    "subject": "Chemistry",
+    "historical_figure": "N/A",
+    "question": "Which of the following is a thermosetting polymer?",
+    "options": {
+        "A": "PVC",
+        "B": "Bakelite",
+        "C": "Nylon-6",
+        "D": "Polythene"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 100,
+    "class": 10,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "The sum of the probabilities of all the elementary events of an experiment is:",
+    "options": {
+        "A": "0",
+        "B": "1",
+        "C": "0.5",
+        "D": "2"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 101,
+    "class": 11,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "The derivative of x² sin(x) with respect to x is:",
+    "options": {
+        "A": "2x cos(x)",
+        "B": "2x sin(x) - x² cos(x)",
+        "C": "2x sin(x) + x² cos(x)",
+        "D": "x² cos(x) - 2x sin(x)"
+    },
+    "correctAnswer": "C"
+  },
+  {
+    "id": 102,
+    "class": 12,
+    "subject": "Mathematics",
+    "historical_figure": "N/A",
+    "question": "If A and B are two events such that P(A) = 0.4, P(B) = 0.8 and P(B|A) = 0.6, then P(A U B) is:",
+    "options": {
+        "A": "0.24",
+        "B": "0.96",
+        "C": "0.88",
+        "D": "0.32"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 103,
+    "class": 12,
+    "subject": "Physics",
+    "historical_figure": "Louis de Broglie",
+    "question": "An electron is accelerated through a potential difference of 100 V. What is its de Broglie wavelength?",
+    "options": {
+        "A": "1.227 Å",
+        "B": "0.1227 Å",
+        "C": "12.27 Å",
+        "D": "0.01227 Å"
+    },
+    "correctAnswer": "A"
+  },
+  {
+    "id": 104,
+    "class": 11,
+    "subject": "Chemistry",
+    "historical_figure": "S. P. L. Sørensen",
+    "question": "The pH of a 0.001 M NaOH solution is:",
+    "options": {
+        "A": "3",
+        "B": "11",
+        "C": "4",
+        "D": "10"
+    },
+    "correctAnswer": "B"
+  },
+  {
+    "id": 105,
+    "class": 10,
+    "subject": "Biology",
+    "historical_figure": "N/A",
+    "question": "The asexual reproduction in yeast occurs by:",
+    "options": {
+        "A": "Fragmentation",
+        "B": "Fission",
+        "C": "Spore formation",
+        "D": "Budding"
+    },
+    "correctAnswer": "D"
   }
 ]
