@@ -77,6 +77,7 @@
         .ad-placeholder {
             font-size: 0.8rem;
             color: #8b949e;
+            text-align: center;
         }
     </style>
 </head>
@@ -217,6 +218,7 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // --- CORRECTED FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
             authDomain: "padhailikhai-app.firebaseapp.com",
@@ -231,8 +233,13 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let userId = null;
-        let isAuthReady = false; // Auth state tracking
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'padhailikhai-app';
+
+        // --- Robust Auth State Handling ---
+        let authReadyPromiseResolver;
+        const authReadyPromise = new Promise(resolve => {
+            authReadyPromiseResolver = resolve;
+        });
 
         const cardData = [
             { id: 'nexttoppers-batch', title: 'NextToppers Premium Batch', description: 'Unlock your potential with our exclusive batch. Get access to premium lectures, notes, and test series for 36 hours.', image: 'https://placehold.co/600x400/238636/ffffff?text=NextToppers', tags: ['course', 'trending', 'premium'], special: 'nexttoppers' },
@@ -250,28 +257,41 @@
         };
 
         // --- CORE APP LOGIC ---
-        document.addEventListener('DOMContentLoaded', () => {
-            setupAuthListener();
-            performSignIn();
-
-            window.onload = () => {
-                setTimeout(() => {
-                    document.getElementById('loader-wrapper').style.display = 'none';
-                    document.getElementById('app-content').classList.remove('hidden');
-                    setTimeout(() => document.getElementById('telegram-modal').classList.remove('hidden'), 1500);
-                    initAds();
-                }, 3000);
-            };
-            
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Setup non-async listeners immediately
             handleTheme();
             handleModalsAndPanels();
             handlePermissions();
             handleSearchAndFilter();
+            
+            // Start the auth process and wait for it to complete
+            setupAuthListener();
+            performSignIn();
+            await authReadyPromise;
+            
+            console.log("Authentication is ready. Initializing user-dependent components.");
+            
+            // Now it's safe to run async operations that depend on auth
+            await checkUserProfile();
+            renderCards();
+
+            // Finally, reveal the app content
+            revealApp();
         });
+
+        function revealApp() {
+            // This function is now called reliably after all setup is done.
+            setTimeout(() => {
+                document.getElementById('loader-wrapper').style.display = 'none';
+                document.getElementById('app-content').classList.remove('hidden');
+                setTimeout(() => document.getElementById('telegram-modal').classList.remove('hidden'), 1500);
+                initAds();
+            }, 3000); // Keep the aesthetic delay
+        }
 
         // --- AUTHENTICATION & USER DATA ---
         function setupAuthListener() {
-            onAuthStateChanged(auth, async (user) => {
+            const unsubscribe = onAuthStateChanged(auth, (user) => {
                 if (user) {
                     userId = user.uid;
                     console.log("Auth state changed: User signed in with UID:", userId);
@@ -279,9 +299,10 @@
                     userId = null;
                     console.log("Auth state changed: User signed out.");
                 }
-                isAuthReady = true; // Mark auth as ready regardless of outcome
-                await checkUserProfile();
-                renderCards();
+                // This resolves the promise, unblocking the app's initialization
+                authReadyPromiseResolver();
+                // We only need to resolve this once on the initial load.
+                unsubscribe();
             });
         }
 
@@ -293,21 +314,31 @@
                     } else {
                         await signInAnonymously(auth);
                     }
+                } else {
+                   // If user is already there, the onAuthStateChanged will still fire
+                   // and resolve the promise.
+                   console.log("User already signed in.");
                 }
             } catch (error) {
                 console.error("Error during initial sign-in:", error);
                 showMessage("Authentication failed. Some features may not work.", true);
-                isAuthReady = true; // Still mark as ready to unblock UI
+                authReadyPromiseResolver(); // Resolve promise even on error to not block UI
             }
         }
 
         async function checkUserProfile() {
-            if (!isAuthReady || !userId) return; // Guard against running before auth is ready
+            if (!userId) {
+                console.log("No user signed in, skipping profile check.");
+                return;
+            }
             const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/profile`, 'info');
             try {
                 const docSnap = await getDoc(userDocRef);
                 if (!docSnap.exists()) {
+                    console.log("New user detected. Showing info modal.");
                     document.getElementById('user-info-modal').classList.remove('hidden');
+                } else {
+                    console.log("Existing user profile found.");
                 }
             } catch (error) {
                 console.error("Error checking user profile:", error);
@@ -317,7 +348,7 @@
 
         document.getElementById('user-info-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!isAuthReady || !userId) return showMessage("Authentication error. Please refresh.", true);
+            if (!userId) return showMessage("Authentication error. Please refresh.", true);
 
             const userData = {
                 name: document.getElementById('user-name').value,
@@ -438,7 +469,6 @@
 
         // --- DYNAMIC CONTENT & ACTIONS ---
         async function renderCards() {
-            if (!isAuthReady) return; // Guard: Wait for auth
             const grid = document.getElementById('cards-grid');
             grid.innerHTML = '';
             
@@ -502,6 +532,12 @@
             
             const hoursElapsed = (Date.now() - (userState.loginTimestamp || 0)) / 3600000;
 
+            const openStudyModal = (url) => {
+                document.getElementById('force-login-iframe').src = url;
+                document.getElementById('force-login-modal').classList.remove('hidden');
+                document.getElementById('study-mode-panel').classList.add('visible');
+            };
+
             if (userState.loginTimestamp && hoursElapsed < 36) {
                 actionArea.innerHTML = `
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -509,22 +545,18 @@
                         <button class="force-login-btn w-full bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition-colors">Force Login</button>
                     </div>
                 `;
-                actionArea.querySelector('.continue-study-btn').addEventListener('click', () => window.open('https://www.rolexcoderz.xyz/Course', '_blank'));
-                actionArea.querySelector('.force-login-btn').addEventListener('click', () => {
-                    document.getElementById('force-login-iframe').src = 'https://rolexcoderz.live/36xsuccess/';
-                    document.getElementById('force-login-modal').classList.remove('hidden');
-                    document.getElementById('study-mode-panel').classList.add('visible');
-                });
+                actionArea.querySelector('.continue-study-btn').addEventListener('click', () => openStudyModal('https://www.rolexcoderz.xyz/Course'));
+                actionArea.querySelector('.force-login-btn').addEventListener('click', () => openStudyModal('https://rolexcoderz.live/36xsuccess/'));
             } else {
                 actionArea.innerHTML = `<button class="login-36h-btn w-full bg-premium text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity">Login for 36 Hours</button>`;
                 actionArea.querySelector('.login-36h-btn').addEventListener('click', () => {
                     const loginAction = async () => {
-                        if (!isAuthReady || !userId) return showMessage("Authentication isn't ready. Please wait a moment.", true);
+                        if (!userId) return showMessage("Authentication isn't ready. Please wait a moment.", true);
                         try {
                             await setDoc(doc(db, `artifacts/${appId}/users/${userId}/state`, 'nexttoppers'), { loginTimestamp: Date.now() }, { merge: true });
                             showMessage("36-hour access granted!");
-                            window.open('https://rolexcoderz.live/36xsuccess/', '_blank');
-                            renderCards();
+                            openStudyModal('https://rolexcoderz.live/36xsuccess/');
+                            renderCards(); // Re-render to update the button state immediately
                         } catch (error) {
                             console.error("Error saving login timestamp:", error);
                             showMessage("Could not start your session. Please try again.", true);
@@ -549,7 +581,12 @@
 
         // --- ADVERTISEMENT & NOTIFICATION LOGIC ---
         function injectAd(container, adDetails) {
-            container.innerHTML = '<p class="ad-placeholder">Loading ad... If it doesn\'t appear, please disable your ad-blocker.</p>';
+            container.innerHTML = ''; // Clear previous content
+            const placeholder = document.createElement('p');
+            placeholder.className = 'ad-placeholder';
+            placeholder.textContent = 'Loading ad... If it doesn\'t appear, please disable your ad-blocker.';
+            container.appendChild(placeholder);
+
             const optionsScript = document.createElement('script');
             optionsScript.type = 'text/javascript';
             optionsScript.innerHTML = `atOptions = ${JSON.stringify(adDetails)};`;
@@ -564,7 +601,7 @@
         function initAds() {
             const injectScript = (src) => {
                 const s = document.createElement('script');
-                s.type = 'text/javascript'; s.src = src; document.head.appendChild(s);
+                s.type = 'text/javascript'; s.async = true; s.src = src; document.head.appendChild(s);
             };
             injectScript(adConfig.popunder);
             injectScript(adConfig.socialBar);
@@ -574,11 +611,11 @@
             const nativeBannerContainer = document.getElementById('ad-native-banner-container');
             if(nativeBannerContainer) {
                 nativeBannerContainer.id = adConfig.nativeBanner.containerId;
+                nativeBannerContainer.innerHTML = ''; // Clear placeholder
                 const script = document.createElement('script');
                 script.async = true;
                 script.dataset.cfasync = false;
                 script.src = adConfig.nativeBanner.src;
-                nativeBannerContainer.innerHTML = ''; // Clear placeholder
                 nativeBannerContainer.appendChild(script);
             }
         }
@@ -588,7 +625,7 @@
             container.innerHTML = `
                 <div class="text-center p-4 border border-dashed border-gray-600 rounded-lg">
                     <h4 class="font-bold mb-2 text-main">Big Banner Ad</h4>
-                    <div id="support-ad-big-bar" class="flex justify-center"></div>
+                    <div id="support-ad-big-bar" class="flex justify-center min-h-[250px] items-center"></div>
                 </div>
                 <div class="text-center p-4 border border-dashed border-gray-600 rounded-lg">
                     <h4 class="font-bold mb-2 text-main">Direct Link Ad</h4>
@@ -612,7 +649,7 @@
             skipBtn.disabled = true;
             timerEl.textContent = `(${timeLeft})`;
 
-            clearInterval(skipInterval); // Clear any previous timers
+            clearInterval(skipInterval);
             skipInterval = setInterval(() => {
                 timeLeft--;
                 timerEl.textContent = `(${timeLeft})`;
@@ -629,7 +666,6 @@
                 if (typeof skipAdCallback === 'function') {
                     skipAdCallback();
                 }
-                skipBtn.removeEventListener('click', skipHandler);
             };
             skipBtn.addEventListener('click', skipHandler, { once: true });
         }
