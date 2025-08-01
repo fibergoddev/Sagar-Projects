@@ -1,206 +1,841 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PadhaiLikhai | The Ultimate Study Hub by Sagar Raj</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome is loaded from a CDN for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>PadhaiLikhai - Your Study Partner</title>
+    <meta name="description" content="Access premium study materials and courses for free. Join NextToppers and accelerate your learning journey. Developed by Sagar Raj.">
+    <meta name="theme-color" content="#1a202c">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="icon-512.png">
+    <link rel="apple-touch-icon" href="https://placehold.co/192x192/1a202c/ffffff?text=PL">
+    <link rel="icon" href="https://placehold.co/48x48/1a202c/ffffff?text=PL">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- High Contrast Dark Theme (Default) --- */
+        .dark body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        .dark .bg-card { background-color: #161b22; }
+        .dark .border-card { border-color: #30363d; }
+        .dark .bg-header { background-color: rgba(13, 17, 23, 0.8); backdrop-filter: blur(8px); }
+        .dark .text-main { color: #c9d1d9; }
+        .dark .text-secondary { color: #8b949e; }
+        .dark .bg-button { background-color: #238636; }
+        .dark .hover\:bg-button-hover:hover { background-color: #2ea043; }
+        .dark .bg-premium {
+            background: linear-gradient(135deg, #6e45e2, #88d3ce);
+        }
+        .dark .search-bar { background-color: #010409; border-color: #30363d; }
+        .dark .search-bar:focus-within { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.4); }
+
+        /* --- Premium Light Theme --- */
+        .light body {
+            background-color: #f0f2f5;
+            color: #1c1e21;
+        }
+        .light .bg-card { background-color: #ffffff; }
+        .light .border-card { border-color: #dddfe2; }
+        .light .bg-header { background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); }
+        .light .text-main { color: #1c1e21; }
+        .light .text-secondary { color: #606770; }
+        .light .bg-button { background-color: #1877f2; }
+        .light .hover\:bg-button-hover:hover { background-color: #166fe5; }
+        .light .bg-premium {
+             background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        }
+        .light .search-bar { background-color: #ffffff; border-color: #ccd0d5; }
+        .light .search-bar:focus-within { border-color: #1877f2; box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.2); }
+
+        /* --- Custom Loader --- */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0d1117;
+            z-index: 999999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loader-svg {
+            width: 120px;
+            height: 120px;
+        }
+        .loader-svg path {
+            stroke: #238636;
+            stroke-width: 8;
+            fill: transparent;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 3s ease-in-out forwards;
+        }
+        #loader-bar {
+            width: 150px;
+            height: 6px;
+            background-color: #30363d;
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        #loader-bar-fill {
+            width: 0;
+            height: 100%;
+            background-color: #238636;
+            border-radius: 3px;
+            animation: fill 3s ease-in-out forwards;
+        }
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        @keyframes fill {
+            to {
+                width: 100%;
+            }
+        }
+        
+        /* Ad container styling */
+        .ad-container {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 50px;
+        }
+        
+        /* Modal styling */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 500;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            max-width: 95%;
+            width: 500px;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+    </style>
 </head>
-<body>
-    <!-- Designed & Developed by Sagar Raj -->
+<body class="transition-colors duration-500">
 
-    <div class="animated-bg"></div>
+    <!-- ======== LOADER ======== -->
+    <div id="loader-wrapper">
+        <svg class="loader-svg" viewBox="0 0 100 100">
+            <!-- P -->
+            <path d="M20 80 L20 20 L50 20 C65 20 65 40 50 40 L20 40"/>
+            <!-- L -->
+            <path d="M50 80 L50 50 L80 50"/>
+        </svg>
+        <div id="loader-bar"><div id="loader-bar-fill"></div></div>
+    </div>
 
-    <!-- Main application shell -->
-    <div id="app-shell">
-        <!-- Universal Loader -->
-        <div id="loader-overlay">
-            <svg id="logo-loader" width="100" height="100" viewBox="0 0 100 100">
-                <path class="logo-path" d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="5"/>
-                <path class="logo-path" d="M 50 20 L 80 20 L 80 80" fill="none" stroke-width="5"/>
-            </svg>
-            <div id="loader-status">Initializing Aether Core...</div>
-        </div>
-
-        <!-- =============================================================================== -->
-        <!-- == MAIN HUB VIEW == -->
-        <!-- =============================================================================== -->
-        <div id="main-view" class="view hidden"> <!-- Starts hidden until script unhides it -->
-            <div class="main-view-container">
-                <header class="main-header">
-                    <div class="logo">
-                        <svg viewBox="0 0 100 100">
-                            <path d="M 20 20 L 20 80 L 50 80 L 50 50 L 40 50" fill="none" stroke-width="10"/>
-                            <path d="M 50 20 L 80 20 L 80 80" fill="none" stroke-width="10"/>
-                        </svg>
-                        <span>PadhaiLikhai</span>
-                    </div>
-                    <nav class="header-nav">
-                        <button class="header-button" data-action="launch" data-url="subscription.html" title="Upgrade Plan"><i class="fas fa-gem"></i></button>
-                        <button class="header-button" data-action="launch" data-url="nexus.html" title="Nexus Hub"><i class="fas fa-atom"></i></button>
-                        <button id="support-us-btn" class="header-button" title="Support Us"><i class="fas fa-hand-holding-heart"></i></button>
-                    </nav>
-                </header>
-                <main id="main-content-area">
-                    <div class="dashboard-header">
-                        <div class="search-bar-container">
-                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.031 16.617l4.25 4.25a.75.75 0 01-1.06 1.06l-4.25-4.25a8.5 8.5 0 111.06-1.06zM10.5 17a6.5 6.5 0 100-13 6.5 6.5 0 000 13z"></path></svg>
-                            <input type="text" id="search-bar" placeholder="Search courses, games, books...">
-                        </div>
-                        <div class="category-filter">
-                            <button class="category-btn active" data-category="all">All</button>
-                            <button class="category-btn" data-category="ai">AI Tools</button>
-                            <button class="category-btn" data-category="course">Courses</button>
-                            <button class="category-btn" data-category="game">Games</button>
-                            <button class="category-btn" data-category="book">Books</button>
-                        </div>
-                    </div>
-
-                    <div id="dashboard-grid">
-                        <!-- Card 1: Next Toppers Batch -->
-                        <div class="content-card" data-category="course" data-keywords="next toppers batch course study login learn online education">
-                            <div class="card-badge trending">Trending</div>
-                            <div class="live-user-count"><i class="fas fa-eye"></i> <span>--</span></div>
-                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/0D1117/388BFD?text=Toppers+Batch');"></div>
-                            <div class="card-content">
-                                <h3 class="card-title">Next Toppers Batch</h3>
-                                <p class="card-description">Your exclusive portal to premium courses and study materials. Login to continue your session.</p>
-                                <div id="login-button-area" class="button-group">
-                                    <!-- Login/Continue/Force Login buttons will be injected here by script.js -->
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Card 2: AI Doubt Solver -->
-                        <div class="content-card" data-category="ai" data-keywords="ai doubt solver artificial intelligence homework help math physics chemistry">
-                            <div class="card-badge new">New</div>
-                            <div class="live-user-count"><i class="fas fa-eye"></i> <span>--</span></div>
-                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/02040A/E6EDF3?text=AI+Solver');"></div>
-                            <div class="card-content">
-                                <h3 class="card-title">AI Doubt-Solver</h3>
-                                <p class="card-description">Scan any problem and get instant, step-by-step solutions from our advanced AI.</p>
-                                <div class="button-group">
-                                    <button class="styled-button" data-action="launch" data-url="doubtsolver.html">Solve Now</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 3: Neuro-Link Game -->
-                        <div class="content-card" data-category="game" data-keywords="neuro-link game memory focus play fun brain training">
-                            <div class="live-user-count"><i class="fas fa-eye"></i> <span>--</span></div>
-                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/0D1117/7D8590?text=Neuro-Link');"></div>
-                            <div class="card-content">
-                                <h3 class="card-title">Neuro-Link Game</h3>
-                                <p class="card-description">Sharpen your focus and test your memory with our engaging, futuristic brain-training game.</p>
-                                <div class="button-group">
-                                    <button class="styled-button" data-action="launch" data-url="game.html">Play Now</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 4: Books Library (Ad Link) -->
-                        <a href="https://medievalkin.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf" target="_blank" class="content-card" data-category="book" data-keywords="books library resources reading knowledge pdf download">
-                            <div class="card-image" style="background-image: url('https://placehold.co/600x400/02040A/238636?text=Library');"></div>
-                            <div class="card-content">
-                                <h3 class="card-title">Books Library</h3>
-                                <p class="card-description">Explore a vast, curated collection of educational resources, books, and research papers.</p>
-                            </div>
+    <!-- ======== MAIN CONTENT ======== -->
+    <div id="app-content" class="hidden">
+        <!-- ======== HEADER ======== -->
+        <header id="app-header" class="bg-header sticky top-0 z-40 w-full border-b border-card">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <a href="#" class="flex items-center space-x-2">
+                             <svg class="h-8 w-8 text-green-500" viewBox="0 0 100 100">
+                                <path d="M20 80 L20 20 L50 20 C65 20 65 40 50 40 L20 40" stroke="currentColor" stroke-width="10" fill="none"/>
+                                <path d="M50 80 L50 50 L80 50" stroke="currentColor" stroke-width="10" fill="none"/>
+                            </svg>
+                            <span class="font-extrabold text-2xl text-main">PadhaiLikhai</span>
                         </a>
                     </div>
-                </main>
+                    <div class="flex items-center space-x-4">
+                        <button id="support-us-btn" class="hidden md:inline-block text-sm font-semibold text-main hover:text-green-400 transition-colors">Support Us</button>
+                        <button id="theme-switcher" class="h-10 w-10 rounded-full flex items-center justify-center text-main hover:bg-card">
+                            <i class="fas fa-sun"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <!-- Support View for Ads -->
-        <div id="support-view" class="view hidden">
-             <div class="main-view-container" style="padding: 30px; text-align: center;">
-                <h1 style="font-size: 2rem; margin-bottom: 15px;">Support the Developer</h1>
-                <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px auto;">Your support helps keep this application running and free for everyone. Thank you!</p>
-                <div id="ad-grid"></div>
-                <button id="back-to-main-btn" class="styled-button" style="margin-top: 30px;">Back to Hub</button>
-            </div>
-        </div>
+        </header>
 
-        <!-- App View for iFrame and Widgets -->
-        <div id="app-view" class="view hidden">
-            <div id="iframe-container">
-                <div id="iframe-loader" class="fas fa-spinner"></div>
-                <iframe id="website-frame" src="" title="Embedded Website" allowfullscreen></iframe>
-            </div>
-            <!-- ** FIX **: Command Center Button with spans for the icon -->
-            <button id="command-center-btn">
-                <div class="icon-menu"><span></span><span></span><span></span></div>
-            </button>
-            <div id="side-panel">
-                <div class="side-panel-header"><span class="side-panel-title">Command Center</span></div>
-                <nav id="side-panel-nav">
-                    <button class="side-panel-button" id="side-panel-back-btn"><i class="fas fa-arrow-left fa-fw"></i> Back</button>
-                    <button class="side-panel-button" data-action="launch" data-url="game.html"><i class="fas fa-gamepad fa-fw"></i> Neuro-Link Game</button>
-                    <button class="side-panel-button" id="side-panel-exit-btn"><i class="fas fa-sign-out-alt fa-fw"></i> Exit Study</button>
-                </nav>
-            </div>
-            <div id="right-ad-bar">
-                <button id="ad-bar-toggle"><i class="fas fa-chevron-left"></i></button>
-                <div id="right-ad-content"></div>
-            </div>
-        </div>
+        <!-- ======== MAIN ======== -->
+        <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+            <!-- Search and Filter -->
+            <section id="search-section" class="mb-8">
+                <div class="relative search-bar rounded-full shadow-md transition-all duration-300">
+                    <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-secondary"></i>
+                    </div>
+                    <input type="search" id="search-input" placeholder="Search for courses, topics, and more..." class="w-full bg-transparent text-main placeholder-secondary py-4 pl-14 pr-6 rounded-full focus:outline-none">
+                </div>
+                <div id="filter-categories" class="mt-6 flex flex-wrap items-center justify-center gap-2">
+                    <button data-filter="all" class="filter-btn bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold">All</button>
+                    <button data-filter="course" class="filter-btn bg-card text-main px-4 py-2 rounded-full text-sm font-semibold">Courses</button>
+                    <button data-filter="trending" class="filter-btn bg-card text-main px-4 py-2 rounded-full text-sm font-semibold">Trending</button>
+                    <button data-filter="new" class="filter-btn bg-card text-main px-4 py-2 rounded-full text-sm font-semibold">New</button>
+                </div>
+            </section>
+
+            <!-- Ad: Big Bar -->
+            <div class="ad-container my-8" id="ad-big-bar-container"></div>
+
+            <!-- Cards Grid -->
+            <section id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card data will be dynamically inserted here -->
+            </section>
+            
+            <!-- Ad: Native Banner -->
+            <div class="ad-container my-8" id="ad-native-banner-container"></div>
+            
+        </main>
+
+        <!-- ======== FOOTER ======== -->
+        <footer class="mt-12 pb-24 md:pb-8 text-center text-secondary text-sm">
+            <p>&copy; 2024 PadhaiLikhai. All Rights Reserved.</p>
+            <p class="mt-1">Developed with <i class="fas fa-heart text-red-500"></i> by Sagar Raj</p>
+        </footer>
+        
+        <!-- Ad: Bottom Bar (Sticky) -->
+        <div id="ad-bottom-bar-container" class="fixed bottom-0 left-0 w-full z-50"></div>
     </div>
     
-    <!-- Modals -->
-    <div id="interstitial-ad-modal" class="modal-overlay">
-        <div class="modal-content">
-            <!-- ** FIX **: Close button is now inside the modal content div -->
-            <button id="close-ad-modal-btn" class="ad-close-btn"><i class="fas fa-times"></i></button>
-            <p class="subtitle">Please support us by watching this ad</p>
-            <div id="interstitial-ad-container"></div>
-            <div class="modal-ad-controls" style="margin-top: 20px;">
-                <button id="skip-ad-button" class="styled-button">Skip Ad in 4s</button>
-            </div>
-        </div>
-    </div>
-    <div id="telegram-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2 class="title">Join Our Community!</h2>
-            <p class="subtitle">Get the latest updates, notes, and exclusive content on our Telegram channel.</p>
-            <a href="https://t.me/PadhaiLikhai_official" target="_blank" class="styled-button" style="width: 100%; text-decoration: none;">Join Telegram</a>
-            <button id="close-telegram-modal" class="styled-button" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--border-color);">Continue to App</button>
-        </div>
-    </div>
-    <!-- ** NEW **: User Info Modal -->
-    <div id="user-info-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2 class="title">Welcome to PadhaiLikhai!</h2>
-            <p class="subtitle">Please tell us a bit about yourself to get started.</p>
+    <!-- ======== MODALS ======== -->
+    <!-- User Info Modal -->
+    <div id="user-info-modal" class="modal-backdrop hidden">
+        <div class="modal-content bg-card border border-card">
+            <h2 class="text-2xl font-bold text-main mb-4">Welcome to PadhaiLikhai!</h2>
+            <p class="text-secondary mb-6">Let's get you set up. Please provide some basic information.</p>
             <form id="user-info-form">
-                <div class="form-group">
-                    <label for="user-name">Name</label>
-                    <input type="text" id="user-name" required>
+                <div class="space-y-4">
+                    <input type="text" id="user-name" placeholder="Your Name" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    <input type="number" id="user-class" placeholder="Your Class (e.g., 12)" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    <input type="number" id="user-age" placeholder="Your Age" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    <input type="email" id="user-email" placeholder="Your Email" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
                 </div>
-                <div class="form-group">
-                    <label for="user-class">Class</label>
-                    <input type="number" id="user-class" required>
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-button text-white font-bold py-3 rounded-lg hover:bg-button-hover transition-colors">Save & Continue</button>
                 </div>
-                <div class="form-group">
-                    <label for="user-age">Age</label>
-                    <input type="number" id="user-age" required>
-                </div>
-                <button type="submit" class="styled-button" style="width: 100%;">Save & Continue</button>
             </form>
         </div>
     </div>
+
+    <!-- Telegram Modal -->
+    <div id="telegram-modal" class="modal-backdrop hidden">
+        <div class="modal-content bg-card border border-card text-center relative">
+            <button id="close-telegram-modal" class="absolute top-3 right-4 text-2xl text-secondary hover:text-main">&times;</button>
+            <i class="fab fa-telegram text-5xl text-blue-500 mb-4"></i>
+            <h2 class="text-2xl font-bold text-main mb-2">Join Our Community!</h2>
+            <p class="text-secondary mb-6">Get updates, notes, and connect with other students on our official Telegram channel.</p>
+            <a href="https://t.me/PadhaiLikhai_official" target="_blank" id="join-telegram-btn" class="block w-full bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition-colors">Join Now</a>
+        </div>
+    </div>
+
+    <!-- Support Us Modal -->
+    <div id="support-us-modal" class="modal-backdrop hidden">
+        <div class="modal-content bg-card border border-card relative">
+            <button id="close-support-modal" class="absolute top-3 right-4 text-2xl text-secondary hover:text-main">&times;</button>
+            <h2 class="text-2xl font-bold text-main mb-4">Support PadhaiLikhai</h2>
+            <p class="text-secondary mb-6">Your support helps us keep the platform free for everyone. Clicking on these ads helps us a lot. Thank you!</p>
+            <div id="support-ads-container" class="space-y-6 max-h-[60vh] overflow-y-auto p-4 rounded-lg bg-gray-800">
+                <!-- Ads will be injected here -->
+            </div>
+        </div>
+    </div>
     
-    <!-- Ad Containers -->
-    <div id="persistent-ad-banner" style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 1000;"></div>
-    <div id="popunder-container"></div>
-    <div id="notification-container"></div>
+    <!-- Force Login Iframe Modal -->
+    <div id="force-login-modal" class="modal-backdrop hidden">
+        <div class="modal-content bg-card border border-card w-full h-full md:w-[90%] md:h-[90%] p-2 md:p-4">
+             <button id="close-force-login-modal" class="absolute top-2 right-3 text-3xl text-secondary hover:text-main z-10">&times;</button>
+             <iframe id="force-login-iframe" class="w-full h-full border-0 rounded-lg"></iframe>
+        </div>
+    </div>
     
-    <!-- Scripts -->
-    <script src="firebase-init.js" type="module"></script>
-    <script src="script.js" type="module"></script>
-    <script type='text/javascript' src='//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js'></script>
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- FIREBASE CONFIG ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
+            authDomain: "padhailikhai-app.firebaseapp.com",
+            projectId: "padhailikhai-app",
+            storageBucket: "padhailikhai-app.appspot.com",
+            messagingSenderId: "205786528118",
+            appId: "1:205786528118:web:2f09f0a2073144f3846257",
+            measurementId: "G-4MGMPE2DYV"
+        };
+        
+        // --- APP INITIALIZATION ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let userId = null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'padhailikhai-app';
+
+        // --- CARD DATA ---
+        const cardData = [
+            {
+                id: 'nexttoppers-batch',
+                title: 'NextToppers Premium Batch',
+                description: 'Unlock your potential with our exclusive batch. Get access to premium lectures, notes, and test series for 36 hours.',
+                image: 'https://placehold.co/600x400/238636/ffffff?text=NextToppers',
+                tags: ['course', 'trending', 'premium'],
+                special: 'nexttoppers'
+            },
+            {
+                id: 'physics-notes',
+                title: 'Complete Physics Notes',
+                description: 'Comprehensive and easy-to-understand notes for Class 12 Physics. Covers all chapters.',
+                image: 'https://placehold.co/600x400/1877f2/ffffff?text=Physics',
+                tags: ['notes', 'new'],
+                special: false
+            },
+            {
+                id: 'chemistry-lectures',
+                title: 'Organic Chemistry Masterclass',
+                description: 'Video lectures covering all major reactions and mechanisms in organic chemistry.',
+                image: 'https://placehold.co/600x400/ff7e5f/ffffff?text=Chemistry',
+                tags: ['course', 'trending'],
+                special: false
+            },
+            {
+                id: 'digital-library',
+                title: 'Digital Library Access',
+                description: 'Gain access to a vast collection of e-books and research papers. Click anywhere on this card to explore.',
+                image: 'https://placehold.co/600x400/6e45e2/ffffff?text=Library',
+                tags: ['library', 'resource'],
+                special: 'library_ad'
+            },
+        ];
+        
+        // --- ADS CONFIG ---
+        const adConfig = {
+            directLink: "https://medievalkin.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf",
+            bottomBar: {
+                key: '7f09cc75a479e1c1557ae48261980b12',
+                format: 'iframe', height: 50, width: 320, params: {}
+            },
+            bigBar: {
+                key: 'de366f663355ebaa73712755e3876ab8',
+                format: 'iframe', height: 250, width: 300, params: {}
+            },
+            socialBar: '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js',
+            nativeBanner: {
+                src: '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js',
+                containerId: 'container-5a3a56f258731c59b0ae000546a15e25'
+            },
+            popunder: '//medievalkin.com/5d/2c/15/5d2c15bb87424bfe641144d764893adc.js'
+        };
+
+        // --- CORE APP LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up the listener that reacts to auth state changes
+            setupAuthListener();
+            // Perform the initial, one-time sign-in
+            performSignIn();
+
+            const loader = document.getElementById('loader-wrapper');
+            const appContent = document.getElementById('app-content');
+            
+            window.onload = () => {
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    appContent.classList.remove('hidden');
+                    
+                    // Show Telegram popup after a short delay
+                    setTimeout(() => showTelegramModal(), 1500);
+                    
+                    // Initialize Ads
+                    initAds();
+                }, 3000); // Simulate loading time
+            };
+            
+            handleTheme();
+            handleModals();
+            handlePermissions();
+            handleSearchAndFilter();
+        });
+
+        // --- AUTHENTICATION & USER DATA ---
+        
+        // This function sets up the listener that reacts to auth changes.
+        function setupAuthListener() {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    // This block runs whenever a user is signed in.
+                    userId = user.uid;
+                    console.log("Auth state changed: User is signed in with UID:", userId);
+                    await checkUserProfile();
+                    renderCards(); // Re-render cards with user-specific state
+                } else {
+                    // This block runs if the user signs out.
+                    userId = null;
+                    console.log("Auth state changed: User is signed out.");
+                    // Optionally, render cards in a "logged out" state
+                    renderCards(); 
+                }
+            });
+        }
+
+        // This function performs the initial sign-in attempt.
+        async function performSignIn() {
+            try {
+                // Only sign in if there's no current user.
+                if (!auth.currentUser) {
+                    // The __initial_auth_token is provided by the environment.
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        console.log("Attempting to sign in with custom token...");
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        console.log("No custom token found. Attempting to sign in anonymously...");
+                        await signInAnonymously(auth);
+                    }
+                }
+            } catch (error) {
+                console.error("Error during initial sign-in:", error);
+                // You could show an error message to the user here.
+            }
+        }
+
+        async function checkUserProfile() {
+            if (!userId) return;
+            const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/profile`, 'info');
+            try {
+                const docSnap = await getDoc(userDocRef);
+                if (!docSnap.exists()) {
+                    console.log("No user profile found, showing info modal.");
+                    document.getElementById('user-info-modal').classList.remove('hidden');
+                } else {
+                    console.log("User profile exists:", docSnap.data());
+                }
+            } catch (error) {
+                console.error("Error checking user profile:", error);
+            }
+        }
+
+        const userInfoForm = document.getElementById('user-info-form');
+        userInfoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('user-name').value;
+            const userClass = document.getElementById('user-class').value;
+            const age = document.getElementById('user-age').value;
+            const email = document.getElementById('user-email').value;
+
+            if (!userId) {
+                // Using a custom modal/alert is better, but for this fix, window.alert is clear.
+                console.error("Authentication error. Please refresh the page.");
+                return;
+            }
+
+            const userData = {
+                name,
+                class: parseInt(userClass),
+                age: parseInt(age),
+                email,
+                createdAt: new Date().toISOString(),
+                deviceInfo: {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                },
+                lastLogin: new Date().toISOString()
+            };
+            
+            // Attempt to get location
+            try {
+                 const position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
+                 userData.location = {
+                     latitude: position.coords.latitude,
+                     longitude: position.coords.longitude
+                 };
+            } catch (error) {
+                console.warn("Could not get location:", error.message);
+                userData.location = "Permission denied or unavailable";
+            }
+
+            const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/profile`, 'info');
+            try {
+                await setDoc(userDocRef, userData);
+                console.log("User profile saved successfully.");
+                document.getElementById('user-info-modal').classList.add('hidden');
+            } catch (error) {
+                console.error("Error saving user profile:", error);
+            }
+        });
+
+        // --- UI & EVENT HANDLERS ---
+        function handleTheme() {
+            const themeSwitcher = document.getElementById('theme-switcher');
+            const html = document.documentElement;
+            const icon = themeSwitcher.querySelector('i');
+
+            // Set initial theme based on localStorage or system preference
+            if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                html.classList.add('dark');
+                html.classList.remove('light');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            }
+
+            themeSwitcher.addEventListener('click', () => {
+                if (html.classList.contains('dark')) {
+                    html.classList.remove('dark');
+                    html.classList.add('light');
+                    localStorage.theme = 'light';
+                    icon.classList.replace('fa-sun', 'fa-moon');
+                } else {
+                    html.classList.add('dark');
+                    html.classList.remove('light');
+                    localStorage.theme = 'dark';
+                    icon.classList.replace('fa-moon', 'fa-sun');
+                }
+            });
+        }
+
+        function handleModals() {
+            // Telegram Modal
+            document.getElementById('close-telegram-modal').addEventListener('click', () => {
+                document.getElementById('telegram-modal').classList.add('hidden');
+            });
+            document.getElementById('join-telegram-btn').addEventListener('click', () => {
+                document.getElementById('telegram-modal').classList.add('hidden');
+            });
+
+            // Support Us Modal
+            document.getElementById('support-us-btn').addEventListener('click', () => {
+                document.getElementById('support-us-modal').classList.remove('hidden');
+                loadSupportAds();
+            });
+            document.getElementById('close-support-modal').addEventListener('click', () => {
+                document.getElementById('support-us-modal').classList.add('hidden');
+            });
+            
+            // Force Login Modal
+            document.getElementById('close-force-login-modal').addEventListener('click', () => {
+                document.getElementById('force-login-modal').classList.add('hidden');
+                document.getElementById('force-login-iframe').src = 'about:blank'; // Clear iframe
+            });
+        }
+        
+        function showTelegramModal() {
+            document.getElementById('telegram-modal').classList.remove('hidden');
+        }
+        
+        function handlePermissions() {
+            // This can be expanded with a settings UI
+            // Requesting camera permission
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    console.log("Camera access granted.");
+                    stream.getTracks().forEach(track => track.stop()); // Stop using camera immediately
+                })
+                .catch(err => console.warn("Camera access denied:", err.message));
+        }
+
+        function handleSearchAndFilter() {
+            const searchInput = document.getElementById('search-input');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                filterCards(searchTerm, document.querySelector('.filter-btn.bg-green-600').dataset.filter);
+            });
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => {
+                        b.classList.remove('bg-green-600', 'text-white');
+                        b.classList.add('bg-card', 'text-main');
+                    });
+                    btn.classList.add('bg-green-600', 'text-white');
+                    btn.classList.remove('bg-card', 'text-main');
+                    filterCards(searchInput.value.toLowerCase(), btn.dataset.filter);
+                });
+            });
+        }
+
+        function filterCards(searchTerm, category) {
+            const cards = document.querySelectorAll('.course-card');
+            cards.forEach(card => {
+                const title = card.dataset.title.toLowerCase();
+                const tags = card.dataset.tags;
+                
+                const matchesSearch = title.includes(searchTerm);
+                const matchesCategory = category === 'all' || tags.includes(category);
+
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // --- DYNAMIC CONTENT RENDERING ---
+        async function renderCards() {
+            const grid = document.getElementById('cards-grid');
+            grid.innerHTML = ''; // Clear existing cards
+            
+            let userState = {};
+            if (userId) {
+                try {
+                    const stateDocRef = doc(db, `artifacts/${appId}/users/${userId}/state`, 'nexttoppers');
+                    const stateSnap = await getDoc(stateDocRef);
+                    if (stateSnap.exists()) {
+                        userState = stateSnap.data();
+                    }
+                } catch (error) {
+                    console.error("Could not get user state:", error);
+                }
+            }
+
+            cardData.forEach(cardInfo => {
+                const card = document.createElement('div');
+                card.className = 'course-card bg-card border border-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col';
+                card.dataset.title = cardInfo.title;
+                card.dataset.tags = cardInfo.tags.join(',');
+                
+                let cardHTML = `
+                    <div class="relative">
+                        <img src="${cardInfo.image}" alt="${cardInfo.title}" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/30363d/c9d1d9?text=Image+Error';">
+                        ${getSpecialTag(cardInfo.tags)}
+                        <div class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span id="live-users-${cardInfo.id}">${getLiveUsers()}</span> users online
+                        </div>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 class="text-xl font-bold text-main mb-2">${cardInfo.title}</h3>
+                        <p class="text-secondary text-sm flex-grow">${cardInfo.description}</p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            ${cardInfo.tags.map(tag => `<span class="bg-gray-700 text-gray-300 text-xs font-semibold px-2.5 py-1 rounded-full">${tag.toUpperCase()}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0" id="card-action-${cardInfo.id}">
+                        <!-- Action buttons will be injected here -->
+                    </div>
+                `;
+
+                if (cardInfo.special === 'library_ad') {
+                    card.innerHTML = `<a href="${adConfig.directLink}" target="_blank" rel="noopener noreferrer">${cardHTML}</a>`;
+                } else {
+                    card.innerHTML = cardHTML;
+                }
+                
+                grid.appendChild(card);
+                
+                if (cardInfo.special === 'nexttoppers') {
+                    renderNextToppersButton(cardInfo.id, userState);
+                } else if (cardInfo.special !== 'library_ad') {
+                    const actionArea = document.getElementById(`card-action-${cardInfo.id}`);
+                    actionArea.innerHTML = `<button class="w-full bg-button text-white font-bold py-3 rounded-lg hover:bg-button-hover transition-colors">View Details</button>`;
+                }
+
+                // Update live users count periodically
+                setInterval(() => {
+                    const userCountEl = document.getElementById(`live-users-${cardInfo.id}`);
+                    if(userCountEl) userCountEl.textContent = getLiveUsers();
+                }, 5000 + Math.random() * 2000);
+            });
+        }
+        
+        function renderNextToppersButton(cardId, userState) {
+            const actionArea = document.getElementById(`card-action-${cardId}`);
+            if (!actionArea) return;
+            
+            const loginTime = userState.loginTimestamp || 0;
+            const now = new Date().getTime();
+            const hoursElapsed = (now - loginTime) / (1000 * 60 * 60);
+
+            if (loginTime && hoursElapsed < 36) {
+                // User has active session
+                actionArea.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button id="continue-study-btn" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors">Continue Study</button>
+                        <button id="force-login-btn" class="w-full bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition-colors">Force Login</button>
+                    </div>
+                `;
+                document.getElementById('continue-study-btn').addEventListener('click', () => {
+                    window.open('https://www.rolexcoderz.xyz/Course', '_blank');
+                });
+                document.getElementById('force-login-btn').addEventListener('click', () => {
+                    document.getElementById('force-login-iframe').src = 'https://rolexcoderz.live/36xsuccess/';
+                    document.getElementById('force-login-modal').classList.remove('hidden');
+                });
+            } else {
+                // Session expired or not started
+                actionArea.innerHTML = `<button id="login-36h-btn" class="w-full bg-premium text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity">Login for 36 Hours</button>`;
+                document.getElementById('login-36h-btn').addEventListener('click', async () => {
+                    if (!userId) {
+                        console.error("Please wait for authentication to complete and try again.");
+                        return;
+                    }
+                    const stateDocRef = doc(db, `artifacts/${appId}/users/${userId}/state`, 'nexttoppers');
+                    try {
+                        await setDoc(stateDocRef, { loginTimestamp: new Date().getTime() }, { merge: true });
+                        console.log("36-hour access timestamp saved.");
+                        window.open('https://rolexcoderz.live/36xsuccess/', '_blank');
+                        // Optimistically update UI
+                        renderNextToppersButton(cardId, { loginTimestamp: new Date().getTime() });
+                    } catch (error) {
+                        console.error("Error saving login timestamp:", error);
+                    }
+                });
+            }
+        }
+
+        function getSpecialTag(tags) {
+            let tagHTML = '';
+            if (tags.includes('trending')) {
+                tagHTML = `<div class="absolute top-4 -left-1 bg-red-500 text-white text-xs font-bold px-4 py-1 shadow-lg" style="transform: rotate(-45deg); transform-origin: top left;">TRENDING</div>`;
+            } else if (tags.includes('new')) {
+                tagHTML = `<div class="absolute top-2 right-2 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">NEW</div>`;
+            }
+            return tagHTML;
+        }
+
+        function getLiveUsers() {
+            const now = new Date();
+            const hour = now.getHours();
+            // More users during evening/night study hours
+            let baseUsers;
+            if (hour > 8 && hour < 17) { // Day time
+                baseUsers = 15;
+            } else { // Night time
+                baseUsers = 30;
+            }
+            const fluctuation = Math.floor(Math.random() * 10) - 5;
+            return Math.max(5, baseUsers + fluctuation);
+        }
+
+        // --- ADVERTISEMENT LOGIC ---
+        function initAds() {
+            // Popunder
+            const popunderScript = document.createElement('script');
+            popunderScript.type = 'text/javascript';
+            popunderScript.src = adConfig.popunder;
+            document.head.appendChild(popunderScript);
+            
+            // Social Bar
+            const socialBarScript = document.createElement('script');
+            socialBarScript.type = 'text/javascript';
+            socialBarScript.src = adConfig.socialBar;
+            document.head.appendChild(socialBarScript);
+
+            // Bottom Bar
+            const bottomBarContainer = document.getElementById('ad-bottom-bar-container');
+            if(bottomBarContainer) {
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.innerHTML = `atOptions = ${JSON.stringify(adConfig.bottomBar)};`;
+                const invokeScript = document.createElement('script');
+                invokeScript.type = 'text/javascript';
+                invokeScript.src = `//www.highperformanceformat.com/${adConfig.bottomBar.key}/invoke.js`;
+                bottomBarContainer.append(script, invokeScript);
+            }
+
+            // Big Bar
+            const bigBarContainer = document.getElementById('ad-big-bar-container');
+            if(bigBarContainer) {
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.innerHTML = `atOptions = ${JSON.stringify(adConfig.bigBar)};`;
+                const invokeScript = document.createElement('script');
+                invokeScript.type = 'text/javascript';
+                invokeScript.src = `//www.highperformanceformat.com/${adConfig.bigBar.key}/invoke.js`;
+                bigBarContainer.append(script, invokeScript);
+            }
+
+            // Native Banner
+            const nativeBannerContainer = document.getElementById('ad-native-banner-container');
+            if(nativeBannerContainer) {
+                nativeBannerContainer.id = adConfig.nativeBanner.containerId;
+                const script = document.createElement('script');
+                script.async = true;
+                script.dataset.cfasync = false;
+                script.src = adConfig.nativeBanner.src;
+                nativeBannerContainer.appendChild(script);
+            }
+        }
+        
+        function loadSupportAds() {
+            const container = document.getElementById('support-ads-container');
+            container.innerHTML = `
+                <div class="text-center p-4 border border-dashed border-gray-600 rounded-lg">
+                    <h4 class="font-bold mb-2">Big Banner Ad</h4>
+                    <div id="support-ad-big-bar"></div>
+                </div>
+                <div class="text-center p-4 border border-dashed border-gray-600 rounded-lg">
+                    <h4 class="font-bold mb-2">Native Banner Ad</h4>
+                    <div id="support-ad-native"></div>
+                </div>
+                 <div class="text-center p-4 border border-dashed border-gray-600 rounded-lg">
+                    <h4 class="font-bold mb-2">Direct Link Ad</h4>
+                    <a href="${adConfig.directLink}" target="_blank" class="text-blue-400 hover:underline">Click here to open a direct ad</a>
+                </div>
+            `;
+            
+            // Inject big bar ad
+            const bigBarDiv = document.getElementById('support-ad-big-bar');
+            const script1 = document.createElement('script');
+            script1.type = 'text/javascript';
+            script1.innerHTML = `atOptions = ${JSON.stringify(adConfig.bigBar)};`;
+            const invokeScript1 = document.createElement('script');
+            invokeScript1.type = 'text/javascript';
+            invokeScript1.src = `//www.highperformanceformat.com/${adConfig.bigBar.key}/invoke.js`;
+            bigBarDiv.append(script1, invokeScript1);
+
+            // Inject native ad
+            const nativeDiv = document.getElementById('support-ad-native');
+            const nativeContainerId = 'support-' + adConfig.nativeBanner.containerId;
+            nativeDiv.id = nativeContainerId;
+            const script2 = document.createElement('script');
+            script2.async = true;
+            script2.dataset.cfasync = false;
+            script2.src = adConfig.nativeBanner.src.replace(adConfig.nativeBanner.containerId, nativeContainerId);
+            nativeDiv.appendChild(script2);
+        }
+
+        // --- PWA Service Worker ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('ServiceWorker registration successful with scope: ', registration.scope))
+                    .catch(err => console.log('ServiceWorker registration failed: ', err));
+            });
+        }
+    </script>
 </body>
 </html>
