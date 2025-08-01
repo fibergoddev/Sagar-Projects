@@ -27,11 +27,8 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* --- High Contrast Dark Theme (Default) --- */
-        .dark body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-        }
+        /* --- Themes --- */
+        .dark body { background-color: #0d1117; color: #c9d1d9; }
         .dark .bg-card { background-color: #161b22; }
         .dark .border-card { border-color: #30363d; }
         .dark .bg-header { background-color: rgba(13, 17, 23, 0.8); backdrop-filter: blur(8px); }
@@ -39,17 +36,10 @@
         .dark .text-secondary { color: #8b949e; }
         .dark .bg-button { background-color: #238636; }
         .dark .hover\:bg-button-hover:hover { background-color: #2ea043; }
-        .dark .bg-premium {
-            background: linear-gradient(135deg, #6e45e2, #88d3ce);
-        }
+        .dark .bg-premium { background: linear-gradient(135deg, #6e45e2, #88d3ce); }
         .dark .search-bar { background-color: #010409; border-color: #30363d; }
         .dark .search-bar:focus-within { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.4); }
-
-        /* --- Premium Light Theme --- */
-        .light body {
-            background-color: #f0f2f5;
-            color: #1c1e21;
-        }
+        .light body { background-color: #f0f2f5; color: #1c1e21; }
         .light .bg-card { background-color: #ffffff; }
         .light .border-card { border-color: #dddfe2; }
         .light .bg-header { background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); }
@@ -57,93 +47,31 @@
         .light .text-secondary { color: #606770; }
         .light .bg-button { background-color: #1877f2; }
         .light .hover\:bg-button-hover:hover { background-color: #166fe5; }
-        .light .bg-premium {
-             background: linear-gradient(135deg, #ff7e5f, #feb47b);
-        }
+        .light .bg-premium { background: linear-gradient(135deg, #ff7e5f, #feb47b); }
         .light .search-bar { background-color: #ffffff; border-color: #ccd0d5; }
         .light .search-bar:focus-within { border-color: #1877f2; box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.2); }
 
         /* --- Custom Loader --- */
-        #loader-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #0d1117;
-            z-index: 999999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        .loader-svg {
-            width: 120px;
-            height: 120px;
-        }
-        .loader-svg path {
-            stroke: #238636;
-            stroke-width: 8;
-            fill: transparent;
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: draw 3s ease-in-out forwards;
-        }
-        #loader-bar {
-            width: 150px;
-            height: 6px;
-            background-color: #30363d;
-            border-radius: 3px;
-            margin-top: 20px;
-            overflow: hidden;
-        }
-        #loader-bar-fill {
-            width: 0;
-            height: 100%;
-            background-color: #238636;
-            border-radius: 3px;
-            animation: fill 3s ease-in-out forwards;
-        }
-        @keyframes draw {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-        @keyframes fill {
-            to {
-                width: 100%;
-            }
-        }
+        #loader-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0d1117; z-index: 999999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .loader-svg { width: 120px; height: 120px; }
+        .loader-svg path { stroke: #238636; stroke-width: 8; fill: transparent; stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: draw 3s ease-in-out forwards; }
+        #loader-bar { width: 150px; height: 6px; background-color: #30363d; border-radius: 3px; margin-top: 20px; overflow: hidden; }
+        #loader-bar-fill { width: 0; height: 100%; background-color: #238636; border-radius: 3px; animation: fill 3s ease-in-out forwards; }
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+        @keyframes fill { to { width: 100%; } }
         
-        /* Ad container styling */
-        .ad-container {
-            margin: 20px auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 50px;
-        }
-        
-        /* Modal styling */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            z-index: 500;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            max-width: 95%;
-            width: 500px;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
+        /* --- General Modal Styling --- */
+        .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 500; display: flex; justify-content: center; align-items: center; transition: opacity 0.3s ease; }
+        .modal-content { max-width: 95%; width: 500px; padding: 2rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease; }
+        .modal-backdrop:not(.hidden) .modal-content { transform: scale(1); }
+
+        /* --- Study Mode Side Panel --- */
+        #study-mode-panel { position: fixed; top: 50%; right: -200px; transform: translateY(-50%); z-index: 600; transition: right 0.4s ease-in-out; }
+        #study-mode-panel.visible { right: 10px; }
+
+        /* --- Custom Notification/Alert --- */
+        #notification-box { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); z-index: 1000; transition: bottom 0.5s ease-in-out; }
+        #notification-box.show { bottom: 20px; }
     </style>
 </head>
 <body class="transition-colors duration-500">
@@ -151,9 +79,7 @@
     <!-- ======== LOADER ======== -->
     <div id="loader-wrapper">
         <svg class="loader-svg" viewBox="0 0 100 100">
-            <!-- P -->
             <path d="M20 80 L20 20 L50 20 C65 20 65 40 50 40 L20 40"/>
-            <!-- L -->
             <path d="M50 80 L50 50 L80 50"/>
         </svg>
         <div id="loader-bar"><div id="loader-bar-fill"></div></div>
@@ -161,7 +87,7 @@
 
     <!-- ======== MAIN CONTENT ======== -->
     <div id="app-content" class="hidden">
-        <!-- ======== HEADER ======== -->
+        <!-- Header, Main, Footer... -->
         <header id="app-header" class="bg-header sticky top-0 z-40 w-full border-b border-card">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
@@ -184,10 +110,7 @@
             </div>
         </header>
 
-        <!-- ======== MAIN ======== -->
         <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-            <!-- Search and Filter -->
             <section id="search-section" class="mb-8">
                 <div class="relative search-bar rounded-full shadow-md transition-all duration-300">
                     <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
@@ -203,45 +126,33 @@
                 </div>
             </section>
 
-            <!-- Ad: Big Bar -->
-            <div class="ad-container my-8" id="ad-big-bar-container"></div>
+            <div class="flex justify-center my-8" id="ad-big-bar-container-main"></div>
 
-            <!-- Cards Grid -->
-            <section id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Card data will be dynamically inserted here -->
-            </section>
+            <section id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></section>
             
-            <!-- Ad: Native Banner -->
-            <div class="ad-container my-8" id="ad-native-banner-container"></div>
-            
+            <div class="flex justify-center my-8" id="ad-native-banner-container"></div>
         </main>
 
-        <!-- ======== FOOTER ======== -->
         <footer class="mt-12 pb-24 md:pb-8 text-center text-secondary text-sm">
             <p>&copy; 2024 PadhaiLikhai. All Rights Reserved.</p>
             <p class="mt-1">Developed with <i class="fas fa-heart text-red-500"></i> by Sagar Raj</p>
         </footer>
         
-        <!-- Ad: Bottom Bar (Sticky) -->
-        <div id="ad-bottom-bar-container" class="fixed bottom-0 left-0 w-full z-50"></div>
+        <div id="ad-bottom-bar-container" class="fixed bottom-0 left-0 w-full z-50 flex justify-center"></div>
     </div>
     
-    <!-- ======== MODALS ======== -->
+    <!-- ======== MODALS & OVERLAYS ======== -->
     <!-- User Info Modal -->
     <div id="user-info-modal" class="modal-backdrop hidden">
         <div class="modal-content bg-card border border-card">
             <h2 class="text-2xl font-bold text-main mb-4">Welcome to PadhaiLikhai!</h2>
             <p class="text-secondary mb-6">Let's get you set up. Please provide some basic information.</p>
-            <form id="user-info-form">
-                <div class="space-y-4">
-                    <input type="text" id="user-name" placeholder="Your Name" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
-                    <input type="number" id="user-class" placeholder="Your Class (e.g., 12)" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
-                    <input type="number" id="user-age" placeholder="Your Age" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
-                    <input type="email" id="user-email" placeholder="Your Email" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
-                </div>
-                <div class="mt-6">
-                    <button type="submit" class="w-full bg-button text-white font-bold py-3 rounded-lg hover:bg-button-hover transition-colors">Save & Continue</button>
-                </div>
+            <form id="user-info-form" class="space-y-4">
+                <input type="text" id="user-name" placeholder="Your Name" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                <input type="number" id="user-class" placeholder="Your Class (e.g., 12)" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                <input type="number" id="user-age" placeholder="Your Age" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                <input type="email" id="user-email" placeholder="Your Email" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                <button type="submit" class="w-full bg-button text-white font-bold py-3 rounded-lg hover:bg-button-hover transition-colors">Save & Continue</button>
             </form>
         </div>
     </div>
@@ -262,10 +173,8 @@
         <div class="modal-content bg-card border border-card relative">
             <button id="close-support-modal" class="absolute top-3 right-4 text-2xl text-secondary hover:text-main">&times;</button>
             <h2 class="text-2xl font-bold text-main mb-4">Support PadhaiLikhai</h2>
-            <p class="text-secondary mb-6">Your support helps us keep the platform free for everyone. Clicking on these ads helps us a lot. Thank you!</p>
-            <div id="support-ads-container" class="space-y-6 max-h-[60vh] overflow-y-auto p-4 rounded-lg bg-gray-800">
-                <!-- Ads will be injected here -->
-            </div>
+            <p class="text-secondary mb-6">Your support helps us keep the platform free. Clicking on these ads helps us a lot. Thank you!</p>
+            <div id="support-ads-container" class="space-y-6 max-h-[60vh] overflow-y-auto p-4 rounded-lg bg-gray-800"></div>
         </div>
     </div>
     
@@ -273,16 +182,42 @@
     <div id="force-login-modal" class="modal-backdrop hidden">
         <div class="modal-content bg-card border border-card w-full h-full md:w-[90%] md:h-[90%] p-2 md:p-4">
              <button id="close-force-login-modal" class="absolute top-2 right-3 text-3xl text-secondary hover:text-main z-10">&times;</button>
-             <iframe id="force-login-iframe" class="w-full h-full border-0 rounded-lg"></iframe>
+             <iframe id="force-login-iframe" class="w-full h-full border-0 rounded-lg bg-white"></iframe>
         </div>
+    </div>
+
+    <!-- Study Mode Side Panel -->
+    <div id="study-mode-panel" class="bg-card border border-card p-2 rounded-l-lg shadow-lg space-y-2">
+        <button id="study-reload-btn" class="w-12 h-12 flex items-center justify-center text-main bg-gray-700 hover:bg-gray-600 rounded-md transition-colors" title="Reload Content"><i class="fas fa-sync-alt"></i></button>
+        <button id="study-exit-btn" class="w-12 h-12 flex items-center justify-center text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors" title="Exit Study Mode"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Skippable Ad Modal -->
+    <div id="skippable-ad-modal" class="modal-backdrop hidden">
+        <div class="modal-content bg-card border border-card relative p-4">
+            <button id="close-skippable-ad-modal" class="absolute top-2 right-2 text-xl text-secondary hover:text-main z-10"><i class="fas fa-times"></i></button>
+            <div class="w-full h-full flex flex-col items-center justify-center">
+                <p class="text-secondary text-sm mb-2">Advertisement</p>
+                <div id="skippable-ad-container" class="w-[300px] h-[250px] bg-gray-800 flex items-center justify-center text-secondary">Loading Ad...</div>
+                <div class="mt-4">
+                    <button id="skip-ad-btn" class="bg-button text-white font-bold py-2 px-6 rounded-lg hover:bg-button-hover transition-colors" disabled>
+                        Skip <span id="skip-ad-timer">(4)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Notification Box -->
+    <div id="notification-box" class="p-4 rounded-lg shadow-lg text-white">
+        <p id="notification-message"></p>
     </div>
     
     <!-- Firebase SDK -->
     <script type="module">
-        // Firebase Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- FIREBASE CONFIG ---
         const firebaseConfig = {
@@ -313,20 +248,12 @@
                 special: 'nexttoppers'
             },
             {
-                id: 'physics-notes',
-                title: 'Complete Physics Notes',
-                description: 'Comprehensive and easy-to-understand notes for Class 12 Physics. Covers all chapters.',
-                image: 'https://placehold.co/600x400/1877f2/ffffff?text=Physics',
-                tags: ['notes', 'new'],
-                special: false
-            },
-            {
-                id: 'chemistry-lectures',
-                title: 'Organic Chemistry Masterclass',
-                description: 'Video lectures covering all major reactions and mechanisms in organic chemistry.',
-                image: 'https://placehold.co/600x400/ff7e5f/ffffff?text=Chemistry',
-                tags: ['course', 'trending'],
-                special: false
+                id: 'all-notes',
+                title: 'Centralized Notes Hub',
+                description: 'All your subject notes in one place. Access handwritten and digital notes from top educators.',
+                image: 'https://placehold.co/600x400/f59e0b/ffffff?text=Notes',
+                tags: ['notes', 'coming soon'],
+                special: 'direct_ad'
             },
             {
                 id: 'digital-library',
@@ -334,96 +261,68 @@
                 description: 'Gain access to a vast collection of e-books and research papers. Click anywhere on this card to explore.',
                 image: 'https://placehold.co/600x400/6e45e2/ffffff?text=Library',
                 tags: ['library', 'resource'],
-                special: 'library_ad'
+                special: 'direct_ad'
             },
         ];
         
         // --- ADS CONFIG ---
         const adConfig = {
             directLink: "https://medievalkin.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf",
-            bottomBar: {
-                key: '7f09cc75a479e1c1557ae48261980b12',
-                format: 'iframe', height: 50, width: 320, params: {}
-            },
-            bigBar: {
-                key: 'de366f663355ebaa73712755e3876ab8',
-                format: 'iframe', height: 250, width: 300, params: {}
-            },
+            bottomBar: { key: '7f09cc75a479e1c1557ae48261980b12', format: 'iframe', height: 50, width: 320, params: {} },
+            bigBar: { key: 'de366f663355ebaa73712755e3876ab8', format: 'iframe', height: 250, width: 300, params: {} },
             socialBar: '//pl27121918.profitableratecpm.com/f4/35/c9/f435c96959f348c08e52ceb50abf087e.js',
-            nativeBanner: {
-                src: '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js',
-                containerId: 'container-5a3a56f258731c59b0ae000546a15e25'
-            },
+            nativeBanner: { src: '//pl27121901.profitableratecpm.com/5a3a56f258731c59b0ae000546a15e25/invoke.js', containerId: 'container-5a3a56f258731c59b0ae000546a15e25' },
             popunder: '//medievalkin.com/5d/2c/15/5d2c15bb87424bfe641144d764893adc.js'
         };
 
         // --- CORE APP LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Set up the listener that reacts to auth state changes
             setupAuthListener();
-            // Perform the initial, one-time sign-in
             performSignIn();
 
-            const loader = document.getElementById('loader-wrapper');
-            const appContent = document.getElementById('app-content');
-            
             window.onload = () => {
                 setTimeout(() => {
-                    loader.style.display = 'none';
-                    appContent.classList.remove('hidden');
-                    
-                    // Show Telegram popup after a short delay
-                    setTimeout(() => showTelegramModal(), 1500);
-                    
-                    // Initialize Ads
+                    document.getElementById('loader-wrapper').style.display = 'none';
+                    document.getElementById('app-content').classList.remove('hidden');
+                    setTimeout(() => document.getElementById('telegram-modal').classList.remove('hidden'), 1500);
                     initAds();
-                }, 3000); // Simulate loading time
+                }, 3000);
             };
             
             handleTheme();
-            handleModals();
+            handleModalsAndPanels();
             handlePermissions();
             handleSearchAndFilter();
         });
 
         // --- AUTHENTICATION & USER DATA ---
-        
-        // This function sets up the listener that reacts to auth changes.
         function setupAuthListener() {
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    // This block runs whenever a user is signed in.
                     userId = user.uid;
-                    console.log("Auth state changed: User is signed in with UID:", userId);
+                    console.log("Auth state changed: User signed in with UID:", userId);
                     await checkUserProfile();
-                    renderCards(); // Re-render cards with user-specific state
+                    renderCards();
                 } else {
-                    // This block runs if the user signs out.
                     userId = null;
-                    console.log("Auth state changed: User is signed out.");
-                    // Optionally, render cards in a "logged out" state
-                    renderCards(); 
+                    console.log("Auth state changed: User signed out.");
+                    renderCards();
                 }
             });
         }
 
-        // This function performs the initial sign-in attempt.
         async function performSignIn() {
             try {
-                // Only sign in if there's no current user.
                 if (!auth.currentUser) {
-                    // The __initial_auth_token is provided by the environment.
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        console.log("Attempting to sign in with custom token...");
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
-                        console.log("No custom token found. Attempting to sign in anonymously...");
                         await signInAnonymously(auth);
                     }
                 }
             } catch (error) {
                 console.error("Error during initial sign-in:", error);
-                // You could show an error message to the user here.
+                showMessage("Authentication failed. Some features may not work.", true);
             }
         }
 
@@ -433,50 +332,31 @@
             try {
                 const docSnap = await getDoc(userDocRef);
                 if (!docSnap.exists()) {
-                    console.log("No user profile found, showing info modal.");
                     document.getElementById('user-info-modal').classList.remove('hidden');
-                } else {
-                    console.log("User profile exists:", docSnap.data());
                 }
             } catch (error) {
                 console.error("Error checking user profile:", error);
+                showMessage("Could not check your profile. Please refresh.", true);
             }
         }
 
-        const userInfoForm = document.getElementById('user-info-form');
-        userInfoForm.addEventListener('submit', async (e) => {
+        document.getElementById('user-info-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('user-name').value;
-            const userClass = document.getElementById('user-class').value;
-            const age = document.getElementById('user-age').value;
-            const email = document.getElementById('user-email').value;
-
-            if (!userId) {
-                // Using a custom modal/alert is better, but for this fix, window.alert is clear.
-                console.error("Authentication error. Please refresh the page.");
-                return;
-            }
+            if (!userId) return showMessage("Authentication error. Please refresh.", true);
 
             const userData = {
-                name,
-                class: parseInt(userClass),
-                age: parseInt(age),
-                email,
+                name: document.getElementById('user-name').value,
+                class: parseInt(document.getElementById('user-class').value),
+                age: parseInt(document.getElementById('user-age').value),
+                email: document.getElementById('user-email').value,
                 createdAt: new Date().toISOString(),
-                deviceInfo: {
-                    userAgent: navigator.userAgent,
-                    platform: navigator.platform,
-                },
+                deviceInfo: { userAgent: navigator.userAgent, platform: navigator.platform },
                 lastLogin: new Date().toISOString()
             };
             
-            // Attempt to get location
             try {
-                 const position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
-                 userData.location = {
-                     latitude: position.coords.latitude,
-                     longitude: position.coords.longitude
-                 };
+                 const position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 }));
+                 userData.location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
             } catch (error) {
                 console.warn("Could not get location:", error.message);
                 userData.location = "Permission denied or unavailable";
@@ -485,10 +365,11 @@
             const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/profile`, 'info');
             try {
                 await setDoc(userDocRef, userData);
-                console.log("User profile saved successfully.");
                 document.getElementById('user-info-modal').classList.add('hidden');
+                showMessage("Profile saved successfully!");
             } catch (error) {
                 console.error("Error saving user profile:", error);
+                showMessage("Failed to save profile. Please try again.", true);
             }
         });
 
@@ -497,69 +378,64 @@
             const themeSwitcher = document.getElementById('theme-switcher');
             const html = document.documentElement;
             const icon = themeSwitcher.querySelector('i');
+            const isLight = localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches);
 
-            // Set initial theme based on localStorage or system preference
-            if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-                html.classList.remove('dark');
-                html.classList.add('light');
-                icon.classList.replace('fa-sun', 'fa-moon');
-            } else {
-                html.classList.add('dark');
-                html.classList.remove('light');
-                icon.classList.replace('fa-moon', 'fa-sun');
-            }
+            html.classList.toggle('light', isLight);
+            html.classList.toggle('dark', !isLight);
+            icon.classList.toggle('fa-moon', isLight);
+            icon.classList.toggle('fa-sun', !isLight);
 
             themeSwitcher.addEventListener('click', () => {
-                if (html.classList.contains('dark')) {
-                    html.classList.remove('dark');
-                    html.classList.add('light');
-                    localStorage.theme = 'light';
-                    icon.classList.replace('fa-sun', 'fa-moon');
-                } else {
-                    html.classList.add('dark');
-                    html.classList.remove('light');
-                    localStorage.theme = 'dark';
-                    icon.classList.replace('fa-moon', 'fa-sun');
-                }
+                const currentlyLight = html.classList.toggle('light');
+                html.classList.toggle('dark', !currentlyLight);
+                icon.classList.toggle('fa-moon', currentlyLight);
+                icon.classList.toggle('fa-sun', !currentlyLight);
+                localStorage.theme = currentlyLight ? 'light' : 'dark';
             });
         }
 
-        function handleModals() {
-            // Telegram Modal
-            document.getElementById('close-telegram-modal').addEventListener('click', () => {
-                document.getElementById('telegram-modal').classList.add('hidden');
+        function handleModalsAndPanels() {
+            // Generic close logic
+            document.querySelectorAll('.modal-backdrop').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                        if (modal.id === 'force-login-modal') {
+                           document.getElementById('study-mode-panel').classList.remove('visible');
+                        }
+                    }
+                });
             });
-            document.getElementById('join-telegram-btn').addEventListener('click', () => {
-                document.getElementById('telegram-modal').classList.add('hidden');
-            });
-
-            // Support Us Modal
+            document.getElementById('close-telegram-modal').addEventListener('click', () => document.getElementById('telegram-modal').classList.add('hidden'));
             document.getElementById('support-us-btn').addEventListener('click', () => {
                 document.getElementById('support-us-modal').classList.remove('hidden');
                 loadSupportAds();
             });
-            document.getElementById('close-support-modal').addEventListener('click', () => {
-                document.getElementById('support-us-modal').classList.add('hidden');
-            });
-            
-            // Force Login Modal
+            document.getElementById('close-support-modal').addEventListener('click', () => document.getElementById('support-us-modal').classList.add('hidden'));
             document.getElementById('close-force-login-modal').addEventListener('click', () => {
                 document.getElementById('force-login-modal').classList.add('hidden');
-                document.getElementById('force-login-iframe').src = 'about:blank'; // Clear iframe
+                document.getElementById('study-mode-panel').classList.remove('visible');
             });
-        }
-        
-        function showTelegramModal() {
-            document.getElementById('telegram-modal').classList.remove('hidden');
+
+            // Study Panel Logic
+            document.getElementById('study-reload-btn').addEventListener('click', () => {
+                const iframe = document.getElementById('force-login-iframe');
+                iframe.src = iframe.src; // Simple way to reload an iframe
+            });
+            document.getElementById('study-exit-btn').addEventListener('click', () => {
+                document.getElementById('force-login-modal').classList.add('hidden');
+                document.getElementById('study-mode-panel').classList.remove('visible');
+            });
+            
+            // Skippable Ad Logic
+            document.getElementById('close-skippable-ad-modal').addEventListener('click', () => document.getElementById('skippable-ad-modal').classList.add('hidden'));
         }
         
         function handlePermissions() {
-            // This can be expanded with a settings UI
-            // Requesting camera permission
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(stream => {
                     console.log("Camera access granted.");
-                    stream.getTracks().forEach(track => track.stop()); // Stop using camera immediately
+                    stream.getTracks().forEach(track => track.stop());
                 })
                 .catch(err => console.warn("Camera access denied:", err.message));
         }
@@ -568,54 +444,37 @@
             const searchInput = document.getElementById('search-input');
             const filterBtns = document.querySelectorAll('.filter-btn');
 
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                filterCards(searchTerm, document.querySelector('.filter-btn.bg-green-600').dataset.filter);
-            });
+            const filter = () => {
+                const searchTerm = searchInput.value.toLowerCase();
+                const category = document.querySelector('.filter-btn.bg-green-600').dataset.filter;
+                document.querySelectorAll('.course-card').forEach(card => {
+                    const matchesSearch = card.dataset.title.toLowerCase().includes(searchTerm);
+                    const matchesCategory = category === 'all' || card.dataset.tags.includes(category);
+                    card.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
+                });
+            };
 
+            searchInput.addEventListener('input', filter);
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    filterBtns.forEach(b => {
-                        b.classList.remove('bg-green-600', 'text-white');
-                        b.classList.add('bg-card', 'text-main');
-                    });
-                    btn.classList.add('bg-green-600', 'text-white');
-                    btn.classList.remove('bg-card', 'text-main');
-                    filterCards(searchInput.value.toLowerCase(), btn.dataset.filter);
+                    filterBtns.forEach(b => b.classList.replace('bg-green-600', 'bg-card') || b.classList.replace('text-white', 'text-main'));
+                    btn.classList.replace('bg-card', 'bg-green-600');
+                    btn.classList.replace('text-main', 'text-white');
+                    filter();
                 });
             });
         }
 
-        function filterCards(searchTerm, category) {
-            const cards = document.querySelectorAll('.course-card');
-            cards.forEach(card => {
-                const title = card.dataset.title.toLowerCase();
-                const tags = card.dataset.tags;
-                
-                const matchesSearch = title.includes(searchTerm);
-                const matchesCategory = category === 'all' || tags.includes(category);
-
-                if (matchesSearch && matchesCategory) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        // --- DYNAMIC CONTENT RENDERING ---
+        // --- DYNAMIC CONTENT & ACTIONS ---
         async function renderCards() {
             const grid = document.getElementById('cards-grid');
-            grid.innerHTML = ''; // Clear existing cards
+            grid.innerHTML = '';
             
             let userState = {};
             if (userId) {
                 try {
-                    const stateDocRef = doc(db, `artifacts/${appId}/users/${userId}/state`, 'nexttoppers');
-                    const stateSnap = await getDoc(stateDocRef);
-                    if (stateSnap.exists()) {
-                        userState = stateSnap.data();
-                    }
+                    const stateSnap = await getDoc(doc(db, `artifacts/${appId}/users/${userId}/state`, 'nexttoppers'));
+                    if (stateSnap.exists()) userState = stateSnap.data();
                 } catch (error) {
                     console.error("Could not get user state:", error);
                 }
@@ -627,13 +486,16 @@
                 card.dataset.title = cardInfo.title;
                 card.dataset.tags = cardInfo.tags.join(',');
                 
-                let cardHTML = `
+                const liveUsersId = `live-users-${cardInfo.id}`;
+                const cardActionId = `card-action-${cardInfo.id}`;
+                
+                const cardContent = `
                     <div class="relative">
-                        <img src="${cardInfo.image}" alt="${cardInfo.title}" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/30363d/c9d1d9?text=Image+Error';">
+                        <img src="${cardInfo.image}" alt="${cardInfo.title}" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/30363d/c9d1d9?text=Error';">
                         ${getSpecialTag(cardInfo.tags)}
                         <div class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
                             <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span id="live-users-${cardInfo.id}">${getLiveUsers()}</span> users online
+                            <span id="${liveUsersId}">${getLiveUsers()}</span> users online
                         </div>
                     </div>
                     <div class="p-6 flex-grow flex flex-col">
@@ -643,142 +505,116 @@
                             ${cardInfo.tags.map(tag => `<span class="bg-gray-700 text-gray-300 text-xs font-semibold px-2.5 py-1 rounded-full">${tag.toUpperCase()}</span>`).join('')}
                         </div>
                     </div>
-                    <div class="p-6 pt-0" id="card-action-${cardInfo.id}">
-                        <!-- Action buttons will be injected here -->
-                    </div>
+                    <div class="p-6 pt-0" id="${cardActionId}"></div>
                 `;
 
-                if (cardInfo.special === 'library_ad') {
-                    card.innerHTML = `<a href="${adConfig.directLink}" target="_blank" rel="noopener noreferrer">${cardHTML}</a>`;
+                if (cardInfo.special === 'direct_ad') {
+                    const link = document.createElement('a');
+                    link.href = adConfig.directLink;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.innerHTML = cardContent;
+                    // For direct ad cards, remove the action area padding
+                    link.querySelector(`#${cardActionId}`).remove();
+                    card.appendChild(link);
                 } else {
-                    card.innerHTML = cardHTML;
+                    card.innerHTML = cardContent;
                 }
                 
                 grid.appendChild(card);
                 
                 if (cardInfo.special === 'nexttoppers') {
-                    renderNextToppersButton(cardInfo.id, userState);
-                } else if (cardInfo.special !== 'library_ad') {
-                    const actionArea = document.getElementById(`card-action-${cardInfo.id}`);
-                    actionArea.innerHTML = `<button class="w-full bg-button text-white font-bold py-3 rounded-lg hover:bg-button-hover transition-colors">View Details</button>`;
+                    renderNextToppersButton(cardActionId, userState);
                 }
-
-                // Update live users count periodically
+                
                 setInterval(() => {
-                    const userCountEl = document.getElementById(`live-users-${cardInfo.id}`);
+                    const userCountEl = document.getElementById(liveUsersId);
                     if(userCountEl) userCountEl.textContent = getLiveUsers();
                 }, 5000 + Math.random() * 2000);
             });
         }
         
-        function renderNextToppersButton(cardId, userState) {
-            const actionArea = document.getElementById(`card-action-${cardId}`);
+        function renderNextToppersButton(containerId, userState) {
+            const actionArea = document.getElementById(containerId);
             if (!actionArea) return;
             
             const loginTime = userState.loginTimestamp || 0;
-            const now = new Date().getTime();
-            const hoursElapsed = (now - loginTime) / (1000 * 60 * 60);
+            const hoursElapsed = (Date.now() - loginTime) / 3600000;
 
             if (loginTime && hoursElapsed < 36) {
-                // User has active session
                 actionArea.innerHTML = `
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <button id="continue-study-btn" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors">Continue Study</button>
                         <button id="force-login-btn" class="w-full bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition-colors">Force Login</button>
                     </div>
                 `;
-                document.getElementById('continue-study-btn').addEventListener('click', () => {
-                    window.open('https://www.rolexcoderz.xyz/Course', '_blank');
-                });
-                document.getElementById('force-login-btn').addEventListener('click', () => {
+                actionArea.querySelector('#continue-study-btn').addEventListener('click', () => window.open('https://www.rolexcoderz.xyz/Course', '_blank'));
+                actionArea.querySelector('#force-login-btn').addEventListener('click', () => {
                     document.getElementById('force-login-iframe').src = 'https://rolexcoderz.live/36xsuccess/';
                     document.getElementById('force-login-modal').classList.remove('hidden');
+                    document.getElementById('study-mode-panel').classList.add('visible');
                 });
             } else {
-                // Session expired or not started
                 actionArea.innerHTML = `<button id="login-36h-btn" class="w-full bg-premium text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity">Login for 36 Hours</button>`;
-                document.getElementById('login-36h-btn').addEventListener('click', async () => {
-                    if (!userId) {
-                        console.error("Please wait for authentication to complete and try again.");
-                        return;
-                    }
-                    const stateDocRef = doc(db, `artifacts/${appId}/users/${userId}/state`, 'nexttoppers');
-                    try {
-                        await setDoc(stateDocRef, { loginTimestamp: new Date().getTime() }, { merge: true });
-                        console.log("36-hour access timestamp saved.");
-                        window.open('https://rolexcoderz.live/36xsuccess/', '_blank');
-                        // Optimistically update UI
-                        renderNextToppersButton(cardId, { loginTimestamp: new Date().getTime() });
-                    } catch (error) {
-                        console.error("Error saving login timestamp:", error);
-                    }
+                actionArea.querySelector('#login-36h-btn').addEventListener('click', () => {
+                    const loginAction = async () => {
+                        if (!userId) return showMessage("Please wait... your session is being prepared.", true);
+                        
+                        try {
+                            await setDoc(doc(db, `artifacts/${appId}/users/${userId}/state`, 'nexttoppers'), { loginTimestamp: Date.now() }, { merge: true });
+                            showMessage("36-hour access granted!");
+                            window.open('https://rolexcoderz.live/36xsuccess/', '_blank');
+                            renderCards(); // Re-render to show new button state
+                        } catch (error) {
+                            console.error("Error saving login timestamp:", error);
+                            showMessage("Could not start your session. Please try again.", true);
+                        }
+                    };
+                    showSkippableAd(loginAction);
                 });
             }
         }
 
         function getSpecialTag(tags) {
-            let tagHTML = '';
-            if (tags.includes('trending')) {
-                tagHTML = `<div class="absolute top-4 -left-1 bg-red-500 text-white text-xs font-bold px-4 py-1 shadow-lg" style="transform: rotate(-45deg); transform-origin: top left;">TRENDING</div>`;
-            } else if (tags.includes('new')) {
-                tagHTML = `<div class="absolute top-2 right-2 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">NEW</div>`;
-            }
-            return tagHTML;
+            if (tags.includes('trending')) return `<div class="absolute top-4 -left-1 bg-red-500 text-white text-xs font-bold px-4 py-1 shadow-lg" style="transform: rotate(-45deg); transform-origin: top left;">TRENDING</div>`;
+            if (tags.includes('new') || tags.includes('coming soon')) return `<div class="absolute top-2 right-2 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">${tags.includes('new') ? 'NEW' : 'SOON'}</div>`;
+            return '';
         }
 
         function getLiveUsers() {
-            const now = new Date();
-            const hour = now.getHours();
-            // More users during evening/night study hours
-            let baseUsers;
-            if (hour > 8 && hour < 17) { // Day time
-                baseUsers = 15;
-            } else { // Night time
-                baseUsers = 30;
-            }
-            const fluctuation = Math.floor(Math.random() * 10) - 5;
-            return Math.max(5, baseUsers + fluctuation);
+            const hour = new Date().getHours();
+            const baseUsers = (hour > 8 && hour < 17) ? 15 : 30;
+            return Math.max(5, baseUsers + Math.floor(Math.random() * 10) - 5);
         }
 
-        // --- ADVERTISEMENT LOGIC ---
-        function initAds() {
-            // Popunder
-            const popunderScript = document.createElement('script');
-            popunderScript.type = 'text/javascript';
-            popunderScript.src = adConfig.popunder;
-            document.head.appendChild(popunderScript);
+        // --- ADVERTISEMENT & NOTIFICATION LOGIC ---
+        function injectScript(src, container) {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = src;
+            script.async = true;
+            container.appendChild(script);
+        }
+        
+        function injectAd(container, adDetails) {
+            container.innerHTML = '';
+            const optionsScript = document.createElement('script');
+            optionsScript.type = 'text/javascript';
+            optionsScript.innerHTML = `atOptions = ${JSON.stringify(adDetails)};`;
             
-            // Social Bar
-            const socialBarScript = document.createElement('script');
-            socialBarScript.type = 'text/javascript';
-            socialBarScript.src = adConfig.socialBar;
-            document.head.appendChild(socialBarScript);
+            const invokeScript = document.createElement('script');
+            invokeScript.type = 'text/javascript';
+            invokeScript.src = `//www.highperformanceformat.com/${adDetails.key}/invoke.js`;
+            
+            container.append(optionsScript, invokeScript);
+        }
 
-            // Bottom Bar
-            const bottomBarContainer = document.getElementById('ad-bottom-bar-container');
-            if(bottomBarContainer) {
-                const script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.innerHTML = `atOptions = ${JSON.stringify(adConfig.bottomBar)};`;
-                const invokeScript = document.createElement('script');
-                invokeScript.type = 'text/javascript';
-                invokeScript.src = `//www.highperformanceformat.com/${adConfig.bottomBar.key}/invoke.js`;
-                bottomBarContainer.append(script, invokeScript);
-            }
+        function initAds() {
+            injectScript(adConfig.popunder, document.head);
+            injectScript(adConfig.socialBar, document.head);
+            injectAd(document.getElementById('ad-bottom-bar-container'), adConfig.bottomBar);
+            injectAd(document.getElementById('ad-big-bar-container-main'), adConfig.bigBar);
 
-            // Big Bar
-            const bigBarContainer = document.getElementById('ad-big-bar-container');
-            if(bigBarContainer) {
-                const script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.innerHTML = `atOptions = ${JSON.stringify(adConfig.bigBar)};`;
-                const invokeScript = document.createElement('script');
-                invokeScript.type = 'text/javascript';
-                invokeScript.src = `//www.highperformanceformat.com/${adConfig.bigBar.key}/invoke.js`;
-                bigBarContainer.append(script, invokeScript);
-            }
-
-            // Native Banner
             const nativeBannerContainer = document.getElementById('ad-native-banner-container');
             if(nativeBannerContainer) {
                 nativeBannerContainer.id = adConfig.nativeBanner.containerId;
@@ -794,45 +630,64 @@
             const container = document.getElementById('support-ads-container');
             container.innerHTML = `
                 <div class="text-center p-4 border border-dashed border-gray-600 rounded-lg">
-                    <h4 class="font-bold mb-2">Big Banner Ad</h4>
-                    <div id="support-ad-big-bar"></div>
+                    <h4 class="font-bold mb-2 text-main">Big Banner Ad</h4>
+                    <div id="support-ad-big-bar" class="flex justify-center"></div>
                 </div>
                 <div class="text-center p-4 border border-dashed border-gray-600 rounded-lg">
-                    <h4 class="font-bold mb-2">Native Banner Ad</h4>
-                    <div id="support-ad-native"></div>
-                </div>
-                 <div class="text-center p-4 border border-dashed border-gray-600 rounded-lg">
-                    <h4 class="font-bold mb-2">Direct Link Ad</h4>
-                    <a href="${adConfig.directLink}" target="_blank" class="text-blue-400 hover:underline">Click here to open a direct ad</a>
-                </div>
-            `;
-            
-            // Inject big bar ad
-            const bigBarDiv = document.getElementById('support-ad-big-bar');
-            const script1 = document.createElement('script');
-            script1.type = 'text/javascript';
-            script1.innerHTML = `atOptions = ${JSON.stringify(adConfig.bigBar)};`;
-            const invokeScript1 = document.createElement('script');
-            invokeScript1.type = 'text/javascript';
-            invokeScript1.src = `//www.highperformanceformat.com/${adConfig.bigBar.key}/invoke.js`;
-            bigBarDiv.append(script1, invokeScript1);
+                    <h4 class="font-bold mb-2 text-main">Direct Link Ad</h4>
+                    <a href="${adConfig.directLink}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Click here to open a direct ad</a>
+                </div>`;
+            injectAd(document.getElementById('support-ad-big-bar'), adConfig.bigBar);
+        }
 
-            // Inject native ad
-            const nativeDiv = document.getElementById('support-ad-native');
-            const nativeContainerId = 'support-' + adConfig.nativeBanner.containerId;
-            nativeDiv.id = nativeContainerId;
-            const script2 = document.createElement('script');
-            script2.async = true;
-            script2.dataset.cfasync = false;
-            script2.src = adConfig.nativeBanner.src.replace(adConfig.nativeBanner.containerId, nativeContainerId);
-            nativeDiv.appendChild(script2);
+        let skipAdCallback = null;
+        function showSkippableAd(onSkip) {
+            skipAdCallback = onSkip;
+            const modal = document.getElementById('skippable-ad-modal');
+            const timerEl = document.getElementById('skip-ad-timer');
+            const skipBtn = document.getElementById('skip-ad-btn');
+            
+            modal.classList.remove('hidden');
+            injectAd(document.getElementById('skippable-ad-container'), adConfig.bigBar);
+
+            let timeLeft = 4;
+            skipBtn.disabled = true;
+            timerEl.textContent = `(${timeLeft})`;
+
+            const interval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = `(${timeLeft})`;
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    timerEl.textContent = '';
+                    skipBtn.disabled = false;
+                }
+            }, 1000);
+
+            const skipHandler = () => {
+                modal.classList.add('hidden');
+                if (typeof skipAdCallback === 'function') {
+                    skipAdCallback();
+                }
+                skipBtn.removeEventListener('click', skipHandler);
+            };
+            skipBtn.addEventListener('click', skipHandler);
+        }
+
+        function showMessage(message, isError = false) {
+            const box = document.getElementById('notification-box');
+            const msgEl = document.getElementById('notification-message');
+            msgEl.textContent = message;
+            box.className = `p-4 rounded-lg shadow-lg text-white ${isError ? 'bg-red-600' : 'bg-green-600'}`;
+            box.classList.add('show');
+            setTimeout(() => box.classList.remove('show'), 3000);
         }
 
         // --- PWA Service Worker ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
-                    .then(registration => console.log('ServiceWorker registration successful with scope: ', registration.scope))
+                    .then(reg => console.log('ServiceWorker registration successful'))
                     .catch(err => console.log('ServiceWorker registration failed: ', err));
             });
         }
