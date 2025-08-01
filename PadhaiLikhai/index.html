@@ -72,6 +72,12 @@
         /* --- Custom Notification/Alert --- */
         #notification-box { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); z-index: 1000; transition: bottom 0.5s ease-in-out; }
         #notification-box.show { bottom: 20px; }
+        
+        /* --- Ad container fallback --- */
+        .ad-placeholder {
+            font-size: 0.8rem;
+            color: #8b949e;
+        }
     </style>
 </head>
 <body class="transition-colors duration-500">
@@ -87,7 +93,6 @@
 
     <!-- ======== MAIN CONTENT ======== -->
     <div id="app-content" class="hidden">
-        <!-- Header, Main, Footer... -->
         <header id="app-header" class="bg-header sticky top-0 z-40 w-full border-b border-card">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
@@ -142,7 +147,6 @@
     </div>
     
     <!-- ======== MODALS & OVERLAYS ======== -->
-    <!-- User Info Modal -->
     <div id="user-info-modal" class="modal-backdrop hidden">
         <div class="modal-content bg-card border border-card">
             <h2 class="text-2xl font-bold text-main mb-4">Welcome to PadhaiLikhai!</h2>
@@ -157,7 +161,6 @@
         </div>
     </div>
 
-    <!-- Telegram Modal -->
     <div id="telegram-modal" class="modal-backdrop hidden">
         <div class="modal-content bg-card border border-card text-center relative">
             <button id="close-telegram-modal" class="absolute top-3 right-4 text-2xl text-secondary hover:text-main">&times;</button>
@@ -168,7 +171,6 @@
         </div>
     </div>
 
-    <!-- Support Us Modal -->
     <div id="support-us-modal" class="modal-backdrop hidden">
         <div class="modal-content bg-card border border-card relative">
             <button id="close-support-modal" class="absolute top-3 right-4 text-2xl text-secondary hover:text-main">&times;</button>
@@ -178,7 +180,6 @@
         </div>
     </div>
     
-    <!-- Force Login Iframe Modal -->
     <div id="force-login-modal" class="modal-backdrop hidden">
         <div class="modal-content bg-card border border-card w-full h-full md:w-[90%] md:h-[90%] p-2 md:p-4">
              <button id="close-force-login-modal" class="absolute top-2 right-3 text-3xl text-secondary hover:text-main z-10">&times;</button>
@@ -186,19 +187,17 @@
         </div>
     </div>
 
-    <!-- Study Mode Side Panel -->
     <div id="study-mode-panel" class="bg-card border border-card p-2 rounded-l-lg shadow-lg space-y-2">
         <button id="study-reload-btn" class="w-12 h-12 flex items-center justify-center text-main bg-gray-700 hover:bg-gray-600 rounded-md transition-colors" title="Reload Content"><i class="fas fa-sync-alt"></i></button>
         <button id="study-exit-btn" class="w-12 h-12 flex items-center justify-center text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors" title="Exit Study Mode"><i class="fas fa-times"></i></button>
     </div>
 
-    <!-- Skippable Ad Modal -->
     <div id="skippable-ad-modal" class="modal-backdrop hidden">
         <div class="modal-content bg-card border border-card relative p-4">
             <button id="close-skippable-ad-modal" class="absolute top-2 right-2 text-xl text-secondary hover:text-main z-10"><i class="fas fa-times"></i></button>
             <div class="w-full h-full flex flex-col items-center justify-center">
                 <p class="text-secondary text-sm mb-2">Advertisement</p>
-                <div id="skippable-ad-container" class="w-[300px] h-[250px] bg-gray-800 flex items-center justify-center text-secondary">Loading Ad...</div>
+                <div id="skippable-ad-container" class="w-[300px] h-[250px] bg-gray-800 flex items-center justify-center text-secondary"></div>
                 <div class="mt-4">
                     <button id="skip-ad-btn" class="bg-button text-white font-bold py-2 px-6 rounded-lg hover:bg-button-hover transition-colors" disabled>
                         Skip <span id="skip-ad-timer">(4)</span>
@@ -208,7 +207,6 @@
         </div>
     </div>
 
-    <!-- Custom Notification Box -->
     <div id="notification-box" class="p-4 rounded-lg shadow-lg text-white">
         <p id="notification-message"></p>
     </div>
@@ -219,7 +217,6 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyC8kXafslLM647EOpzZZ3F7oVoaa0u8ieo",
             authDomain: "padhailikhai-app.firebaseapp.com",
@@ -230,42 +227,19 @@
             measurementId: "G-4MGMPE2DYV"
         };
         
-        // --- APP INITIALIZATION ---
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         let userId = null;
+        let isAuthReady = false; // Auth state tracking
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'padhailikhai-app';
 
-        // --- CARD DATA ---
         const cardData = [
-            {
-                id: 'nexttoppers-batch',
-                title: 'NextToppers Premium Batch',
-                description: 'Unlock your potential with our exclusive batch. Get access to premium lectures, notes, and test series for 36 hours.',
-                image: 'https://placehold.co/600x400/238636/ffffff?text=NextToppers',
-                tags: ['course', 'trending', 'premium'],
-                special: 'nexttoppers'
-            },
-            {
-                id: 'all-notes',
-                title: 'Centralized Notes Hub',
-                description: 'All your subject notes in one place. Access handwritten and digital notes from top educators.',
-                image: 'https://placehold.co/600x400/f59e0b/ffffff?text=Notes',
-                tags: ['notes', 'coming soon'],
-                special: 'direct_ad'
-            },
-            {
-                id: 'digital-library',
-                title: 'Digital Library Access',
-                description: 'Gain access to a vast collection of e-books and research papers. Click anywhere on this card to explore.',
-                image: 'https://placehold.co/600x400/6e45e2/ffffff?text=Library',
-                tags: ['library', 'resource'],
-                special: 'direct_ad'
-            },
+            { id: 'nexttoppers-batch', title: 'NextToppers Premium Batch', description: 'Unlock your potential with our exclusive batch. Get access to premium lectures, notes, and test series for 36 hours.', image: 'https://placehold.co/600x400/238636/ffffff?text=NextToppers', tags: ['course', 'trending', 'premium'], special: 'nexttoppers' },
+            { id: 'all-notes', title: 'Centralized Notes Hub', description: 'All your subject notes in one place. Access handwritten and digital notes from top educators.', image: 'https://placehold.co/600x400/f59e0b/ffffff?text=Notes', tags: ['notes', 'coming soon'], special: 'direct_ad' },
+            { id: 'digital-library', title: 'Digital Library Access', description: 'Gain access to a vast collection of e-books and research papers. Click anywhere on this card to explore.', image: 'https://placehold.co/600x400/6e45e2/ffffff?text=Library', tags: ['library', 'resource'], special: 'direct_ad' },
         ];
         
-        // --- ADS CONFIG ---
         const adConfig = {
             directLink: "https://medievalkin.com/z3cci824?key=3ad08b148f03cc313b5357f5e120feaf",
             bottomBar: { key: '7f09cc75a479e1c1557ae48261980b12', format: 'iframe', height: 50, width: 320, params: {} },
@@ -301,13 +275,13 @@
                 if (user) {
                     userId = user.uid;
                     console.log("Auth state changed: User signed in with UID:", userId);
-                    await checkUserProfile();
-                    renderCards();
                 } else {
                     userId = null;
                     console.log("Auth state changed: User signed out.");
-                    renderCards();
                 }
+                isAuthReady = true; // Mark auth as ready regardless of outcome
+                await checkUserProfile();
+                renderCards();
             });
         }
 
@@ -323,11 +297,12 @@
             } catch (error) {
                 console.error("Error during initial sign-in:", error);
                 showMessage("Authentication failed. Some features may not work.", true);
+                isAuthReady = true; // Still mark as ready to unblock UI
             }
         }
 
         async function checkUserProfile() {
-            if (!userId) return;
+            if (!isAuthReady || !userId) return; // Guard against running before auth is ready
             const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/profile`, 'info');
             try {
                 const docSnap = await getDoc(userDocRef);
@@ -342,7 +317,7 @@
 
         document.getElementById('user-info-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!userId) return showMessage("Authentication error. Please refresh.", true);
+            if (!isAuthReady || !userId) return showMessage("Authentication error. Please refresh.", true);
 
             const userData = {
                 name: document.getElementById('user-name').value,
@@ -362,9 +337,8 @@
                 userData.location = "Permission denied or unavailable";
             }
 
-            const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/profile`, 'info');
             try {
-                await setDoc(userDocRef, userData);
+                await setDoc(doc(db, `artifacts/${appId}/users/${userId}/profile`, 'info'), userData);
                 document.getElementById('user-info-modal').classList.add('hidden');
                 showMessage("Profile saved successfully!");
             } catch (error) {
@@ -395,7 +369,6 @@
         }
 
         function handleModalsAndPanels() {
-            // Generic close logic
             document.querySelectorAll('.modal-backdrop').forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
@@ -417,17 +390,15 @@
                 document.getElementById('study-mode-panel').classList.remove('visible');
             });
 
-            // Study Panel Logic
             document.getElementById('study-reload-btn').addEventListener('click', () => {
                 const iframe = document.getElementById('force-login-iframe');
-                iframe.src = iframe.src; // Simple way to reload an iframe
+                iframe.src = iframe.src;
             });
             document.getElementById('study-exit-btn').addEventListener('click', () => {
                 document.getElementById('force-login-modal').classList.add('hidden');
                 document.getElementById('study-mode-panel').classList.remove('visible');
             });
             
-            // Skippable Ad Logic
             document.getElementById('close-skippable-ad-modal').addEventListener('click', () => document.getElementById('skippable-ad-modal').classList.add('hidden'));
         }
         
@@ -467,6 +438,7 @@
 
         // --- DYNAMIC CONTENT & ACTIONS ---
         async function renderCards() {
+            if (!isAuthReady) return; // Guard: Wait for auth
             const grid = document.getElementById('cards-grid');
             grid.innerHTML = '';
             
@@ -486,16 +458,13 @@
                 card.dataset.title = cardInfo.title;
                 card.dataset.tags = cardInfo.tags.join(',');
                 
-                const liveUsersId = `live-users-${cardInfo.id}`;
-                const cardActionId = `card-action-${cardInfo.id}`;
-                
                 const cardContent = `
                     <div class="relative">
                         <img src="${cardInfo.image}" alt="${cardInfo.title}" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/30363d/c9d1d9?text=Error';">
                         ${getSpecialTag(cardInfo.tags)}
                         <div class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
                             <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span id="${liveUsersId}">${getLiveUsers()}</span> users online
+                            <span id="live-users-${cardInfo.id}">${getLiveUsers()}</span> users online
                         </div>
                     </div>
                     <div class="p-6 flex-grow flex flex-col">
@@ -505,18 +474,11 @@
                             ${cardInfo.tags.map(tag => `<span class="bg-gray-700 text-gray-300 text-xs font-semibold px-2.5 py-1 rounded-full">${tag.toUpperCase()}</span>`).join('')}
                         </div>
                     </div>
-                    <div class="p-6 pt-0" id="${cardActionId}"></div>
+                    <div class="p-6 pt-0" id="card-action-${cardInfo.id}"></div>
                 `;
 
                 if (cardInfo.special === 'direct_ad') {
-                    const link = document.createElement('a');
-                    link.href = adConfig.directLink;
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    link.innerHTML = cardContent;
-                    // For direct ad cards, remove the action area padding
-                    link.querySelector(`#${cardActionId}`).remove();
-                    card.appendChild(link);
+                    card.innerHTML = `<a href="${adConfig.directLink}" target="_blank" rel="noopener noreferrer">${cardContent.replace(/<div class="p-6 pt-0".*?<\/div>/, '')}</a>`;
                 } else {
                     card.innerHTML = cardContent;
                 }
@@ -524,11 +486,11 @@
                 grid.appendChild(card);
                 
                 if (cardInfo.special === 'nexttoppers') {
-                    renderNextToppersButton(cardActionId, userState);
+                    renderNextToppersButton(`card-action-${cardInfo.id}`, userState);
                 }
                 
                 setInterval(() => {
-                    const userCountEl = document.getElementById(liveUsersId);
+                    const userCountEl = document.getElementById(`live-users-${cardInfo.id}`);
                     if(userCountEl) userCountEl.textContent = getLiveUsers();
                 }, 5000 + Math.random() * 2000);
             });
@@ -538,33 +500,31 @@
             const actionArea = document.getElementById(containerId);
             if (!actionArea) return;
             
-            const loginTime = userState.loginTimestamp || 0;
-            const hoursElapsed = (Date.now() - loginTime) / 3600000;
+            const hoursElapsed = (Date.now() - (userState.loginTimestamp || 0)) / 3600000;
 
-            if (loginTime && hoursElapsed < 36) {
+            if (userState.loginTimestamp && hoursElapsed < 36) {
                 actionArea.innerHTML = `
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button id="continue-study-btn" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors">Continue Study</button>
-                        <button id="force-login-btn" class="w-full bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition-colors">Force Login</button>
+                        <button class="continue-study-btn w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors">Continue Study</button>
+                        <button class="force-login-btn w-full bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition-colors">Force Login</button>
                     </div>
                 `;
-                actionArea.querySelector('#continue-study-btn').addEventListener('click', () => window.open('https://www.rolexcoderz.xyz/Course', '_blank'));
-                actionArea.querySelector('#force-login-btn').addEventListener('click', () => {
+                actionArea.querySelector('.continue-study-btn').addEventListener('click', () => window.open('https://www.rolexcoderz.xyz/Course', '_blank'));
+                actionArea.querySelector('.force-login-btn').addEventListener('click', () => {
                     document.getElementById('force-login-iframe').src = 'https://rolexcoderz.live/36xsuccess/';
                     document.getElementById('force-login-modal').classList.remove('hidden');
                     document.getElementById('study-mode-panel').classList.add('visible');
                 });
             } else {
-                actionArea.innerHTML = `<button id="login-36h-btn" class="w-full bg-premium text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity">Login for 36 Hours</button>`;
-                actionArea.querySelector('#login-36h-btn').addEventListener('click', () => {
+                actionArea.innerHTML = `<button class="login-36h-btn w-full bg-premium text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity">Login for 36 Hours</button>`;
+                actionArea.querySelector('.login-36h-btn').addEventListener('click', () => {
                     const loginAction = async () => {
-                        if (!userId) return showMessage("Please wait... your session is being prepared.", true);
-                        
+                        if (!isAuthReady || !userId) return showMessage("Authentication isn't ready. Please wait a moment.", true);
                         try {
                             await setDoc(doc(db, `artifacts/${appId}/users/${userId}/state`, 'nexttoppers'), { loginTimestamp: Date.now() }, { merge: true });
                             showMessage("36-hour access granted!");
                             window.open('https://rolexcoderz.live/36xsuccess/', '_blank');
-                            renderCards(); // Re-render to show new button state
+                            renderCards();
                         } catch (error) {
                             console.error("Error saving login timestamp:", error);
                             showMessage("Could not start your session. Please try again.", true);
@@ -588,16 +548,8 @@
         }
 
         // --- ADVERTISEMENT & NOTIFICATION LOGIC ---
-        function injectScript(src, container) {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = src;
-            script.async = true;
-            container.appendChild(script);
-        }
-        
         function injectAd(container, adDetails) {
-            container.innerHTML = '';
+            container.innerHTML = '<p class="ad-placeholder">Loading ad... If it doesn\'t appear, please disable your ad-blocker.</p>';
             const optionsScript = document.createElement('script');
             optionsScript.type = 'text/javascript';
             optionsScript.innerHTML = `atOptions = ${JSON.stringify(adDetails)};`;
@@ -610,8 +562,12 @@
         }
 
         function initAds() {
-            injectScript(adConfig.popunder, document.head);
-            injectScript(adConfig.socialBar, document.head);
+            const injectScript = (src) => {
+                const s = document.createElement('script');
+                s.type = 'text/javascript'; s.src = src; document.head.appendChild(s);
+            };
+            injectScript(adConfig.popunder);
+            injectScript(adConfig.socialBar);
             injectAd(document.getElementById('ad-bottom-bar-container'), adConfig.bottomBar);
             injectAd(document.getElementById('ad-big-bar-container-main'), adConfig.bigBar);
 
@@ -622,6 +578,7 @@
                 script.async = true;
                 script.dataset.cfasync = false;
                 script.src = adConfig.nativeBanner.src;
+                nativeBannerContainer.innerHTML = ''; // Clear placeholder
                 nativeBannerContainer.appendChild(script);
             }
         }
@@ -641,6 +598,7 @@
         }
 
         let skipAdCallback = null;
+        let skipInterval;
         function showSkippableAd(onSkip) {
             skipAdCallback = onSkip;
             const modal = document.getElementById('skippable-ad-modal');
@@ -654,11 +612,12 @@
             skipBtn.disabled = true;
             timerEl.textContent = `(${timeLeft})`;
 
-            const interval = setInterval(() => {
+            clearInterval(skipInterval); // Clear any previous timers
+            skipInterval = setInterval(() => {
                 timeLeft--;
                 timerEl.textContent = `(${timeLeft})`;
                 if (timeLeft <= 0) {
-                    clearInterval(interval);
+                    clearInterval(skipInterval);
                     timerEl.textContent = '';
                     skipBtn.disabled = false;
                 }
@@ -666,24 +625,23 @@
 
             const skipHandler = () => {
                 modal.classList.add('hidden');
+                clearInterval(skipInterval);
                 if (typeof skipAdCallback === 'function') {
                     skipAdCallback();
                 }
                 skipBtn.removeEventListener('click', skipHandler);
             };
-            skipBtn.addEventListener('click', skipHandler);
+            skipBtn.addEventListener('click', skipHandler, { once: true });
         }
 
         function showMessage(message, isError = false) {
             const box = document.getElementById('notification-box');
-            const msgEl = document.getElementById('notification-message');
-            msgEl.textContent = message;
+            box.querySelector('#notification-message').textContent = message;
             box.className = `p-4 rounded-lg shadow-lg text-white ${isError ? 'bg-red-600' : 'bg-green-600'}`;
             box.classList.add('show');
             setTimeout(() => box.classList.remove('show'), 3000);
         }
 
-        // --- PWA Service Worker ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
