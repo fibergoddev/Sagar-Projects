@@ -1,5 +1,5 @@
 /* * Designed & Developed by Sagar Raj
- * Version 53: Definitive Professional Upgrade & Final Fixes
+ * Version 54: Definitive Final Build - Professional & Bug-Free
  */
 
 /* --- Font Imports --- */
@@ -57,6 +57,10 @@ html, body { height: 100%; width: 100%; overflow: hidden; font-family: 'Inter', 
 .category-btn { padding: 8px 20px; background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
 .category-btn.active, .category-btn:hover { color: var(--bg-primary); background: var(--accent-blue); border-color: var(--accent-blue); }
 
+/* --- Featured Content Section for Native Ad --- */
+.featured-content-section { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 30px; }
+.featured-content-section h2 { font-size: 1.8rem; margin-bottom: 20px; text-align: center; color: var(--accent-blue); }
+
 /* --- Content Cards --- */
 #dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
 .content-card { position: relative; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; text-decoration: none; color: var(--text-primary); display: flex; flex-direction: column; transition: border-color 0.3s ease; }
@@ -70,12 +74,21 @@ a.content-card:hover { border-color: var(--accent-blue); transform: translateY(-
 .styled-button:hover { transform: translateY(-3px); box-shadow: 0 6px 20px var(--glow-blue); }
 .support-button { background: transparent; border: 1px solid var(--border-color); }
 
+/* --- Card Badges & Live Count --- */
+.card-badge { position: absolute; top: 15px; right: 15px; padding: 5px 12px; font-size: 0.8rem; font-weight: 700; border-radius: 50px; text-transform: uppercase; z-index: 2; }
+.card-badge.new { background: var(--accent-blue); color: var(--bg-primary); }
+.card-badge.trending { background: var(--warning-color); color: var(--bg-primary); }
+.live-user-count { position: absolute; bottom: 15px; left: 15px; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); color: var(--text-primary); padding: 5px 12px; border-radius: 50px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; z-index: 2; }
+.live-user-count i { color: var(--success-color); animation: pulseLive 1.5s infinite; }
+@keyframes pulseLive { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
 /* --- App View (iFrame) & Command Center --- */
 #app-view { background: #000; }
 #iframe-container { width: 100%; height: 100%; position: relative; }
 #iframe-loader { position: absolute; top: 50%; left: 50%; font-size: 3rem; transform: translate(-50%, -50%); color: var(--accent-blue); animation: spin 1.5s linear infinite; }
 @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
 #website-frame { width: 100%; height: 100%; border: none; }
+
 /* ** FIX **: Command Center Icon Styles */
 #command-center-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--accent-blue); border-radius: 50%; border: none; cursor: pointer; z-index: 1001; box-shadow: 0 5px 20px var(--glow-blue); display: none; align-items: center; justify-content: center; }
 #command-center-btn.visible { display: flex; }
@@ -87,12 +100,13 @@ a.content-card:hover { border-color: var(--accent-blue); transform: translateY(-
 #command-center-btn.open .icon-menu span:nth-child(1) { transform: rotate(45deg); top: 8px; }
 #command-center-btn.open .icon-menu span:nth-child(2) { opacity: 0; }
 #command-center-btn.open .icon-menu span:nth-child(3) { transform: rotate(-45deg); top: 8px; }
+
 #side-panel { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--bg-secondary); border-left: 1px solid var(--border-color); z-index: 1000; transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); padding: 20px; }
 #side-panel.visible { right: 0; }
 .side-panel-button { background: transparent; border: none; color: var(--text-secondary); font-size: 1.1rem; text-align: left; padding: 15px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 15px; text-decoration: none; }
 .side-panel-button:hover { background: var(--accent-blue); color: #fff; }
 
-/* --- ** FIX **: Right Side Ad Bar --- */
+/* ** FIX **: Right Side Ad Bar */
 #right-ad-bar { position: fixed; top: 0; width: 320px; height: 100%; background: var(--bg-secondary); z-index: 999; border-left: 1px solid var(--border-color); padding-top: 80px; transform: translateX(100%); right: 0; transition: transform 0.4s ease; display: none; }
 #right-ad-bar.visible-view { display: block; }
 #right-ad-bar.expanded { transform: translateX(0); }
