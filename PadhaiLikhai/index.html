@@ -25,6 +25,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            padding-bottom: 50px; /* Default padding for the ad bar */
         }
 
         /* --- Themes --- */
@@ -71,7 +72,7 @@
 
         /* --- Custom Notification/Alert --- */
         #notification-box { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); z-index: 1000; transition: bottom 0.5s ease-in-out; }
-        #notification-box.show { bottom: 20px; }
+        #notification-box.show { bottom: 70px; } /* Raised to be above ad bar */
         
         /* --- Ad container fallback --- */
         .ad-placeholder {
@@ -106,8 +107,11 @@
                             <span class="font-extrabold text-2xl text-main">PadhaiLikhai</span>
                         </a>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <button id="support-us-btn" class="hidden md:inline-block text-sm font-semibold text-main hover:text-green-400 transition-colors">Support Us</button>
+                    <div class="flex items-center space-x-2">
+                        <button id="support-us-btn" class="hidden md:inline-block text-sm font-semibold text-main hover:text-green-400 transition-colors px-2">Support Us</button>
+                        <button id="settings-btn" class="h-10 w-10 rounded-full flex items-center justify-center text-main hover:bg-card">
+                            <i class="fas fa-cog"></i>
+                        </button>
                         <button id="theme-switcher" class="h-10 w-10 rounded-full flex items-center justify-center text-main hover:bg-card">
                             <i class="fas fa-sun"></i>
                         </button>
@@ -132,19 +136,15 @@
                 </div>
             </section>
 
-            <div class="flex justify-center my-8" id="ad-big-bar-container-main"></div>
-
             <section id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></section>
-            
-            <div class="flex justify-center my-8" id="ad-native-banner-container"></div>
         </main>
 
-        <footer class="mt-12 pb-24 md:pb-8 text-center text-secondary text-sm">
+        <footer class="mt-12 pb-8 text-center text-secondary text-sm">
             <p>&copy; 2024 PadhaiLikhai. All Rights Reserved.</p>
             <p class="mt-1">Developed with <i class="fas fa-heart text-red-500"></i> by Sagar Raj</p>
         </footer>
         
-        <div id="ad-bottom-bar-container" class="fixed bottom-0 left-0 w-full z-50 flex justify-center"></div>
+        <div id="ad-bottom-bar-container" class="fixed bottom-0 left-0 w-full h-[50px] z-50 flex justify-center items-center bg-card border-t border-card"></div>
     </div>
     
     <!-- ======== MODALS & OVERLAYS ======== -->
@@ -184,7 +184,25 @@
     <div id="force-login-modal" class="modal-backdrop hidden">
         <div class="modal-content bg-card border border-card w-full h-full md:w-[90%] md:h-[90%] p-2 md:p-4">
              <button id="close-force-login-modal" class="absolute top-2 right-3 text-3xl text-secondary hover:text-main z-10">&times;</button>
-             <iframe id="force-login-iframe" class="w-full h-full border-0 rounded-lg bg-white"></iframe>
+             <iframe id="force-login-iframe" class="w-full h-full border-0 rounded-lg bg-white" allow="fullscreen"></iframe>
+        </div>
+    </div>
+    
+    <div id="settings-modal" class="modal-backdrop hidden">
+        <div class="modal-content bg-card border border-card">
+            <button id="close-settings-modal" class="absolute top-3 right-4 text-2xl text-secondary hover:text-main">&times;</button>
+            <h2 class="text-2xl font-bold text-main mb-4">Settings & Permissions</h2>
+            <p class="text-secondary mb-6">Manually grant permissions for a better experience. We only ask when needed.</p>
+            <div class="space-y-4">
+                <button id="grant-location-btn" class="w-full flex items-center justify-between p-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+                    <span class="font-semibold text-main">Location Access</span>
+                    <i class="fas fa-map-marker-alt text-secondary"></i>
+                </button>
+                <button id="grant-camera-btn" class="w-full flex items-center justify-between p-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+                    <span class="font-semibold text-main">Camera Access</span>
+                    <i class="fas fa-camera text-secondary"></i>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -261,7 +279,6 @@
             // Setup non-async listeners immediately
             handleTheme();
             handleModalsAndPanels();
-            handlePermissions();
             handleSearchAndFilter();
             
             // Start the auth process and wait for it to complete
@@ -315,9 +332,8 @@
                         await signInAnonymously(auth);
                     }
                 } else {
-                   // If user is already there, the onAuthStateChanged will still fire
-                   // and resolve the promise.
                    console.log("User already signed in.");
+                   authReadyPromiseResolver(); // Resolve if already signed in
                 }
             } catch (error) {
                 console.error("Error during initial sign-in:", error);
@@ -361,14 +377,6 @@
             };
             
             try {
-                 const position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 }));
-                 userData.location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
-            } catch (error) {
-                console.warn("Could not get location:", error.message);
-                userData.location = "Permission denied or unavailable";
-            }
-
-            try {
                 await setDoc(doc(db, `artifacts/${appId}/users/${userId}/profile`, 'info'), userData);
                 document.getElementById('user-info-modal').classList.add('hidden');
                 showMessage("Profile saved successfully!");
@@ -400,6 +408,7 @@
         }
 
         function handleModalsAndPanels() {
+            // Generic modal close on backdrop click
             document.querySelectorAll('.modal-backdrop').forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
@@ -410,17 +419,27 @@
                     }
                 });
             });
+
+            // Specific close buttons
             document.getElementById('close-telegram-modal').addEventListener('click', () => document.getElementById('telegram-modal').classList.add('hidden'));
-            document.getElementById('support-us-btn').addEventListener('click', () => {
-                document.getElementById('support-us-modal').classList.remove('hidden');
-                loadSupportAds();
-            });
             document.getElementById('close-support-modal').addEventListener('click', () => document.getElementById('support-us-modal').classList.add('hidden'));
+            document.getElementById('close-settings-modal').addEventListener('click', () => document.getElementById('settings-modal').classList.add('hidden'));
             document.getElementById('close-force-login-modal').addEventListener('click', () => {
                 document.getElementById('force-login-modal').classList.add('hidden');
                 document.getElementById('study-mode-panel').classList.remove('visible');
             });
+            document.getElementById('close-skippable-ad-modal').addEventListener('click', () => document.getElementById('skippable-ad-modal').classList.add('hidden'));
 
+            // Open buttons
+            document.getElementById('support-us-btn').addEventListener('click', () => {
+                document.getElementById('support-us-modal').classList.remove('hidden');
+                loadSupportAds();
+            });
+            document.getElementById('settings-btn').addEventListener('click', () => {
+                document.getElementById('settings-modal').classList.remove('hidden');
+            });
+
+            // Study Panel
             document.getElementById('study-reload-btn').addEventListener('click', () => {
                 const iframe = document.getElementById('force-login-iframe');
                 iframe.src = iframe.src;
@@ -430,18 +449,23 @@
                 document.getElementById('study-mode-panel').classList.remove('visible');
             });
             
-            document.getElementById('close-skippable-ad-modal').addEventListener('click', () => document.getElementById('skippable-ad-modal').classList.add('hidden'));
+            // Manual Permission Triggers
+            document.getElementById('grant-location-btn').addEventListener('click', () => {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => showMessage(`Location access granted. Lat: ${pos.coords.latitude.toFixed(2)}`),
+                    (err) => showMessage(`Location access denied: ${err.message}`, true)
+                );
+            });
+            document.getElementById('grant-camera-btn').addEventListener('click', () => {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        showMessage("Camera access granted.");
+                        stream.getTracks().forEach(track => track.stop());
+                    })
+                    .catch(err => showMessage(`Camera access denied: ${err.message}`, true));
+            });
         }
         
-        function handlePermissions() {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    console.log("Camera access granted.");
-                    stream.getTracks().forEach(track => track.stop());
-                })
-                .catch(err => console.warn("Camera access denied:", err.message));
-        }
-
         function handleSearchAndFilter() {
             const searchInput = document.getElementById('search-input');
             const filterBtns = document.querySelectorAll('.filter-btn');
@@ -587,6 +611,20 @@
             placeholder.textContent = 'Loading ad... If it doesn\'t appear, please disable your ad-blocker.';
             container.appendChild(placeholder);
 
+            const observer = new MutationObserver((mutations) => {
+                for (let mutation of mutations) {
+                    if (mutation.addedNodes.length) {
+                        const adIframe = container.querySelector('iframe');
+                        if (adIframe) {
+                            placeholder.style.display = 'none';
+                            observer.disconnect(); // Stop observing once the ad is loaded
+                            return;
+                        }
+                    }
+                }
+            });
+            observer.observe(container, { childList: true, subtree: true });
+
             const optionsScript = document.createElement('script');
             optionsScript.type = 'text/javascript';
             optionsScript.innerHTML = `atOptions = ${JSON.stringify(adDetails)};`;
@@ -606,18 +644,6 @@
             injectScript(adConfig.popunder);
             injectScript(adConfig.socialBar);
             injectAd(document.getElementById('ad-bottom-bar-container'), adConfig.bottomBar);
-            injectAd(document.getElementById('ad-big-bar-container-main'), adConfig.bigBar);
-
-            const nativeBannerContainer = document.getElementById('ad-native-banner-container');
-            if(nativeBannerContainer) {
-                nativeBannerContainer.id = adConfig.nativeBanner.containerId;
-                nativeBannerContainer.innerHTML = ''; // Clear placeholder
-                const script = document.createElement('script');
-                script.async = true;
-                script.dataset.cfasync = false;
-                script.src = adConfig.nativeBanner.src;
-                nativeBannerContainer.appendChild(script);
-            }
         }
         
         function loadSupportAds() {
@@ -627,11 +653,23 @@
                     <h4 class="font-bold mb-2 text-main">Big Banner Ad</h4>
                     <div id="support-ad-big-bar" class="flex justify-center min-h-[250px] items-center"></div>
                 </div>
+                 <div class="text-center p-4 border border-dashed border-gray-600 rounded-lg">
+                    <h4 class="font-bold mb-2 text-main">Native Banner Ad</h4>
+                    <div id="support-ad-native" class="flex justify-center"></div>
+                </div>
                 <div class="text-center p-4 border border-dashed border-gray-600 rounded-lg">
                     <h4 class="font-bold mb-2 text-main">Direct Link Ad</h4>
                     <a href="${adConfig.directLink}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Click here to open a direct ad</a>
                 </div>`;
             injectAd(document.getElementById('support-ad-big-bar'), adConfig.bigBar);
+            
+            const nativeAdContainer = document.getElementById('support-ad-native');
+            nativeAdContainer.id = 'support-native-container-' + Date.now(); // Unique ID
+            const nativeScript = document.createElement('script');
+            nativeScript.async = true;
+            nativeScript.dataset.cfasync = false;
+            nativeScript.src = adConfig.nativeBanner.src;
+            nativeAdContainer.appendChild(nativeScript);
         }
 
         let skipAdCallback = null;
