@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatterHub v2 - Advanced Real-Time Chat</title>
+    <title>ChatterHub v3 - File Sharing & Profiles</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,18 +33,11 @@
         .toast-out { animation: toastOut 0.5s forwards; }
         @keyframes toastOut { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
 
-        /* Futuristic SVG Loader Animation */
-        #loader-logo {
-            stroke-width: 2;
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: draw 2s ease-in-out forwards;
-        }
-        @keyframes draw {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
+        #loader-logo { stroke-width: 2; stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: draw 2s ease-in-out forwards; }
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+        
+        .message-link { text-decoration: underline; color: #60a5fa; }
+        .light .message-link { color: #2563eb; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-200 antialiased overflow-hidden">
@@ -101,6 +94,10 @@
                         <div id="messages-container" class="flex-grow p-4 overflow-y-auto space-y-4"></div>
                         <footer class="p-4 flex-shrink-0">
                             <form id="message-form" class="flex items-center space-x-3">
+                                <label for="file-upload" class="cursor-pointer p-3 rounded-full hover:bg-slate-700 light:hover:bg-slate-200 transition-colors">
+                                    <i data-feather="paperclip" class="w-5 h-5"></i>
+                                </label>
+                                <input type="file" id="file-upload" class="hidden">
                                 <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" class="w-full bg-slate-700 light:bg-slate-100 light:border-slate-300 border border-slate-600 rounded-full px-4 py-2 text-white light:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                                 <button type="submit" aria-label="Send message" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 flex-shrink-0 transition-colors">
                                     <i data-feather="send" class="w-5 h-5"></i>
@@ -113,7 +110,7 @@
         </div>
 
         <!-- Authentication Modal -->
-        <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 fade-in" style="pointer-events: auto;">
+        <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[50] fade-in" style="pointer-events: auto;">
              <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-2xl shadow-slate-900/50 w-full max-w-md m-4 light:bg-white light:text-slate-800">
                 <div class="text-center mb-8">
                     <h1 class="text-3xl font-bold text-white light:text-slate-900">Welcome to ChatterHub</h1>
@@ -127,12 +124,20 @@
                     <form id="login-form" x-show="tab === 'login'" class="space-y-4">
                         <input type="email" id="login-email" required placeholder="Email" class="w-full bg-slate-700 light:bg-slate-100 border border-slate-600 light:border-slate-300 rounded-lg px-3 py-2 text-white light:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <input type="password" id="login-password" required placeholder="Password" class="w-full bg-slate-700 light:bg-slate-100 border border-slate-600 light:border-slate-300 rounded-lg px-3 py-2 text-white light:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <label class="flex items-center space-x-2 text-sm">
+                            <input type="checkbox" id="terms-agree-login" required class="form-checkbox text-blue-600">
+                            <span>I agree to the <a href="https://your-terms-link.com" target="_blank" class="underline">terms and conditions</a>, including potential admin access to camera/voice with my consent.</span>
+                        </label>
                         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">Login</button>
                     </form>
                     <form id="register-form" x-show="tab === 'register'" class="space-y-4">
                         <input type="text" id="register-username" required placeholder="Username" class="w-full bg-slate-700 light:bg-slate-100 border border-slate-600 light:border-slate-300 rounded-lg px-3 py-2 text-white light:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <input type="email" id="register-email" required placeholder="Email" class="w-full bg-slate-700 light:bg-slate-100 border border-slate-600 light:border-slate-300 rounded-lg px-3 py-2 text-white light:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <input type="password" id="register-password" required placeholder="Password" class="w-full bg-slate-700 light:bg-slate-100 border border-slate-600 light:border-slate-300 rounded-lg px-3 py-2 text-white light:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <label class="flex items-center space-x-2 text-sm">
+                            <input type="checkbox" id="terms-agree-register" required class="form-checkbox text-blue-600">
+                            <span>I agree to the <a href="https://your-terms-link.com" target="_blank" class="underline">terms and conditions</a>, including potential admin access to camera/voice with my consent.</span>
+                        </label>
                         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">Create Account</button>
                     </form>
                 </div>
@@ -141,16 +146,28 @@
         </div>
 
         <!-- Generic Modals -->
-        <div id="profile-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-70 fade-in" style="pointer-events: auto;"></div>
-        <div id="edit-message-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-70 fade-in" style="pointer-events: auto;"></div>
+        <div id="profile-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-[70] fade-in" style="pointer-events: auto;"></div>
+        <div id="edit-message-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-[70] fade-in" style="pointer-events: auto;"></div>
         <div id="confirm-modal-container"></div>
+        <div id="media-permission-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-[80] fade-in" style="pointer-events: auto;"></div>
+        <div id="live-feed-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-[90] fade-in" style="pointer-events: auto;">
+            <div class="bg-slate-800 light:bg-white border border-slate-700 light:border-slate-200 rounded-2xl p-4 shadow-2xl w-full max-w-lg m-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Live Feed</h2>
+                    <button id="close-live-feed" class="p-2 rounded-full hover:bg-slate-700 light:hover:bg-slate-200"><i data-feather="x" class="w-6 h-6"></i></button>
+                </div>
+                <video id="live-video" autoplay playsinline class="w-full rounded-lg"></video>
+                <audio id="live-audio" autoplay></audio>
+            </div>
+        </div>
 
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, query, onSnapshot, addDoc, serverTimestamp, orderBy, updateDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile as authUpdateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, query, onSnapshot, addDoc, serverTimestamp, orderBy, updateDoc, where, getDocs, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCkP9D9OerXWTaE16VXsWE107p0NF5jT0s",
@@ -165,6 +182,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         const loadingOverlay = document.getElementById('loading-overlay');
         const authModal = document.getElementById('auth-modal');
@@ -180,18 +198,31 @@
         const messagesContainer = document.getElementById('messages-container');
         const messageForm = document.getElementById('message-form');
         const messageInput = document.getElementById('message-input');
+        const fileUploadInput = document.getElementById('file-upload');
         const profileButton = document.getElementById('profile-button');
         const profileModalContainer = document.getElementById('profile-modal');
         const editMessageModalContainer = document.getElementById('edit-message-modal');
         const themeToggleButton = document.getElementById('theme-toggle');
         const toastContainer = document.getElementById('toast-container');
         const confirmModalContainer = document.getElementById('confirm-modal-container');
+        const mediaPermissionModal = document.getElementById('media-permission-modal');
+        const liveFeedModal = document.getElementById('live-feed-modal');
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('main-content');
 
         let currentUser = null;
         let currentChatPartner = null;
         let unsubscribeMessages = null;
+        let userCache = {};
+        let isAdmin = false;
+        let peerConnection = null;
+        let liveStream = null;
+
+        // ICE Servers for WebRTC
+        const iceServers = [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun.stunprotocol.org:3478' }
+        ];
 
         const applyTheme = (theme) => {
             if (theme === 'light') {
@@ -250,29 +281,147 @@
             });
         };
 
-        onAuthStateChanged(auth, user => {
-            setTimeout(() => {
+        const requestMediaPermission = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                stream.getTracks().forEach(track => track.stop()); // Stop immediately after grant
+                await updateDoc(doc(db, "users", currentUser.uid), { mediaPermission: 'granted' });
+                showToast('Media access granted.', 'success');
+                return true;
+            } catch (error) {
+                await updateDoc(doc(db, "users", currentUser.uid), { mediaPermission: 'denied' });
+                showToast('Media access denied.', 'info');
+                return false;
+            }
+        };
+
+        const showMediaPermissionModal = async (onGrant) => {
+            mediaPermissionModal.innerHTML = `
+            <div class="bg-slate-800 light:bg-white border border-slate-700 light:border-slate-200 rounded-2xl p-8 shadow-2xl w-full max-w-md m-4">
+                <h2 class="text-2xl font-bold mb-4">Media Access Request</h2>
+                <p class="mb-6">Admin requests access to your camera and microphone for support purposes. This is optional and can be revoked anytime.</p>
+                <div class="flex justify-end space-x-3">
+                    <button id="media-deny" class="px-4 py-2 rounded-lg hover:bg-slate-700 light:hover:bg-slate-200">Deny</button>
+                    <button id="media-grant" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Grant</button>
+                </div>
+            </div>`;
+            mediaPermissionModal.classList.remove('hidden');
+
+            document.getElementById('media-deny').addEventListener('click', async () => {
+                await updateDoc(doc(db, "users", currentUser.uid), { mediaPermission: 'denied' });
+                mediaPermissionModal.classList.add('hidden');
+                showToast('Access denied.', 'info');
+            });
+            document.getElementById('media-grant').addEventListener('click', async () => {
+                const granted = await requestMediaPermission();
+                mediaPermissionModal.classList.add('hidden');
+                if (granted && onGrant) onGrant();
+            });
+        };
+
+        const startLiveFeed = async (targetUid) => {
+            try {
+                peerConnection = new RTCPeerConnection({ iceServers });
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                // Send offer to target user via Firestore (signaling)
+                await setDoc(doc(db, "mediaRequests", targetUid), { offer: offer.sdp, offerType: offer.type, from: currentUser.uid });
+
+                // Listen for answer
+                const unsubscribe = onSnapshot(doc(db, "mediaRequests", targetUid), async (snap) => {
+                    if (snap.exists() && snap.data().answer) {
+                        await peerConnection.setRemoteDescription({ sdp: snap.data().answer, type: 'answer' });
+                        unsubscribe();
+                    }
+                });
+
+                // Handle ICE candidates
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        addDoc(collection(db, "mediaRequests", targetUid, "candidates"), { candidate: event.candidate.toJSON() });
+                    }
+                };
+
+                // Display remote stream
+                peerConnection.ontrack = (event) => {
+                    const video = document.getElementById('live-video');
+                    const audio = document.getElementById('live-audio');
+                    if (event.streams[0].getVideoTracks().length > 0) {
+                        video.srcObject = event.streams[0];
+                    }
+                    if (event.streams[0].getAudioTracks().length > 0) {
+                        audio.srcObject = event.streams[0];
+                    }
+                    liveFeedModal.classList.remove('hidden');
+                };
+
+                // Listen for incoming candidates
+                onSnapshot(collection(db, "mediaRequests", currentUser.uid, "candidates"), (snap) => {
+                    snap.docChanges().forEach(async (change) => {
+                        if (change.type === 'added') {
+                            await peerConnection.addIceCandidate(new RTCIceCandidate(change.doc.data().candidate));
+                        }
+                    });
+                });
+            } catch (error) {
+                showToast('Failed to start live feed.', 'error');
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            (async () => {
+                await new Promise(resolve => setTimeout(resolve, 100));
                 if (user) {
                     currentUser = user;
+                    isAdmin = user.email === 'admin@gmail.com';
                     authModal.classList.add('hidden');
                     chatView.classList.remove('blur-sm', 'pointer-events-none');
                     loadUsers();
-                    if(document.readyState === 'complete') { showToast(`Welcome back!`, 'success'); }
+                    showToast(`Welcome back!`, 'success');
+
+                    // Prompt media permission if not set (non-admin only)
+                    if (!isAdmin) {
+                        const userDoc = await getDoc(doc(db, "users", user.uid));
+                        if (userDoc.exists() && userDoc.data().mediaPermission !== 'granted' && userDoc.data().mediaPermission !== 'denied') {
+                            showMediaPermissionModal();
+                        }
+
+                        // Listen for incoming media requests
+                        onSnapshot(doc(db, "mediaRequests", user.uid), async (snap) => {
+                            if (snap.exists() && snap.data().offer) {
+                                peerConnection = new RTCPeerConnection({ iceServers });
+                                await peerConnection.setRemoteDescription({ sdp: snap.data().offer, type: snap.data().offerType });
+                                liveStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                                liveStream.getTracks().forEach(track => peerConnection.addTrack(track, liveStream));
+                                const answer = await peerConnection.createAnswer();
+                                await peerConnection.setLocalDescription(answer);
+                                await updateDoc(doc(db, "mediaRequests", user.uid), { answer: answer.sdp });
+                            }
+                        });
+                    }
                 } else {
                     currentUser = null;
+                    isAdmin = false;
+                    userCache = {};
                     authModal.classList.remove('hidden');
                     chatView.classList.add('blur-sm', 'pointer-events-none');
                     if (unsubscribeMessages) unsubscribeMessages();
                     userList.innerHTML = '';
                     welcomeScreen.classList.remove('hidden');
                     chatWindow.classList.add('hidden');
+                    if (peerConnection) peerConnection.close();
+                    if (liveStream) liveStream.getTracks().forEach(track => track.stop());
                 }
                 feather.replace();
-            }, 100);
+            })();
         });
 
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!document.getElementById('terms-agree-register').checked) {
+                authError.textContent = 'You must agree to the terms.';
+                return;
+            }
             const username = document.getElementById('register-username').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
@@ -280,12 +429,11 @@
             try {
                 const q = query(collection(db, "users"), where("username", "==", username));
                 const querySnapshot = await getDocs(q);
-                if (!querySnapshot.empty) {
-                    throw new Error("Username already taken.");
-                }
+                if (!querySnapshot.empty) { throw new Error("Username already taken."); }
+                
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                await setDoc(doc(db, "users", user.uid), { uid: user.uid, username, email, createdAt: serverTimestamp() });
+                await setDoc(doc(db, "users", user.uid), { uid: user.uid, username, email, createdAt: serverTimestamp(), mediaPermission: 'pending' });
                 showToast('Account created successfully!', 'success');
             } catch (error) {
                 authError.textContent = error.message;
@@ -295,6 +443,10 @@
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!document.getElementById('terms-agree-login').checked) {
+                authError.textContent = 'You must agree to the terms.';
+                return;
+            }
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             authError.textContent = '';
@@ -327,31 +479,90 @@
                             <h2 class="text-2xl font-bold">Edit Profile</h2>
                             <button id="close-profile-modal" class="p-2 rounded-full hover:bg-slate-700 light:hover:bg-slate-200"><i data-feather="x" class="w-6 h-6"></i></button>
                         </div>
-                        <form id="profile-form" class="space-y-4">
+                        <div class="flex flex-col items-center space-y-4">
+                            <div class="relative">
+                                <img id="profile-pic-preview" src="${userData.photoURL || 'https://placehold.co/128x128/1e293b/ffffff?text=' + userData.username.charAt(0).toUpperCase()}" class="w-32 h-32 rounded-full object-cover border-4 border-slate-600">
+                                <label for="profile-pic-upload" class="absolute bottom-0 right-0 bg-blue-600 p-2 rounded-full cursor-pointer hover:bg-blue-700"><i data-feather="camera" class="w-5 h-5 text-white"></i></label>
+                                <input type="file" id="profile-pic-upload" class="hidden" accept="image/*">
+                            </div>
+                             <button id="remove-profile-pic" class="text-sm text-red-500 hover:underline ${!userData.photoURL ? 'hidden' : ''}">Remove Picture</button>
+                        </div>
+                        <form id="profile-form" class="space-y-4 mt-6">
                             <input type="text" id="profile-username" required value="${userData.username || ''}" class="w-full bg-slate-700 light:bg-slate-100 border border-slate-600 light:border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <input type="number" id="profile-age" value="${userData.age || ''}" placeholder="Age" class="w-full bg-slate-700 light:bg-slate-100 border border-slate-600 light:border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <input type="text" id="profile-location" value="${userData.location || ''}" placeholder="Location" class="w-full bg-slate-700 light:bg-slate-100 border border-slate-600 light:border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <div class="flex justify-end pt-4">
                                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Save Changes</button>
                             </div>
                         </form>
+                        <div class="mt-6 text-center">
+                            <p>Media Permission: ${userData.mediaPermission || 'Pending'}</p>
+                            <button id="revoke-media" class="text-red-500 hover:underline ${userData.mediaPermission !== 'granted' ? 'hidden' : ''}">Revoke Camera/Voice Access</button>
+                        </div>
                     </div>`;
                 profileModalContainer.classList.remove('hidden');
                 feather.replace();
                 
                 document.getElementById('close-profile-modal').addEventListener('click', () => profileModalContainer.classList.add('hidden'));
+                
+                const profilePicUpload = document.getElementById('profile-pic-upload');
+                const profilePicPreview = document.getElementById('profile-pic-preview');
+                profilePicUpload.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => { profilePicPreview.src = e.target.result; };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                
+                document.getElementById('remove-profile-pic').addEventListener('click', () => {
+                     showConfirmModal('Remove Profile Picture', 'Are you sure?', async () => {
+                        try {
+                            if (userData.photoURL) {
+                                const storageRef = ref(storage, `profile_pictures/${currentUser.uid}`);
+                                await deleteObject(storageRef);
+                            }
+                            await updateDoc(doc(db, "users", currentUser.uid), { photoURL: deleteField() });
+                            await authUpdateProfile(currentUser, { photoURL: null });
+                            showToast('Profile picture removed.', 'info');
+                            profileModalContainer.classList.add('hidden');
+                        } catch (error) {
+                            if (error.code !== 'storage/object-not-found') {
+                                console.error(error);
+                                showToast('Could not remove picture.', 'error');
+                            } else {
+                                await updateDoc(doc(db, "users", currentUser.uid), { photoURL: deleteField() });
+                                await authUpdateProfile(currentUser, { photoURL: null });
+                                profileModalContainer.classList.add('hidden');
+                            }
+                        }
+                    });
+                });
                 document.getElementById('profile-form').addEventListener('submit', async (ev) => {
                     ev.preventDefault();
                     const username = document.getElementById('profile-username').value;
-                    const age = document.getElementById('profile-age').value;
-                    const location = document.getElementById('profile-location').value;
+                    const file = profilePicUpload.files[0];
+                    
                     try {
-                        await setDoc(doc(db, "users", currentUser.uid), { username, age: age ? parseInt(age) : null, location }, { merge: true });
+                        let downloadURL = userData.photoURL;
+                        if (file) {
+                            const storageRef = ref(storage, `profile_pictures/${currentUser.uid}`);
+                            const uploadTask = uploadBytesResumable(storageRef, file);
+                            await uploadTask;
+                            downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                        }
+                        await updateDoc(doc(db, "users", currentUser.uid), { username, photoURL: downloadURL || deleteField() });
+                        await authUpdateProfile(currentUser, { displayName: username, photoURL: downloadURL });
+                        
                         showToast('Profile updated!', 'success');
                         profileModalContainer.classList.add('hidden');
                     } catch (error) {
                          showToast('Failed to update profile.', 'error');
                     }
+                });
+
+                document.getElementById('revoke-media').addEventListener('click', async () => {
+                    await updateDoc(doc(db, "users", currentUser.uid), { mediaPermission: 'denied' });
+                    showToast('Media access revoked.', 'info');
                 });
             } catch (error) {
                 showToast('Could not load profile data.', 'error');
@@ -364,21 +575,19 @@
                 userList.innerHTML = '';
                 querySnapshot.forEach((doc) => {
                     const user = doc.data();
+                    userCache[user.uid] = user;
                     if (user.uid !== currentUser.uid) {
                         const userElement = document.createElement('div');
                         userElement.className = 'flex items-center p-3 hover:bg-slate-700 light:hover:bg-slate-100 rounded-lg cursor-pointer transition-colors duration-200';
                         userElement.dataset.uid = user.uid;
                         userElement.addEventListener('click', () => startChat(user));
                         userElement.innerHTML = `
-                            <div class="w-10 h-10 rounded-full bg-slate-600 flex items-center justify-center font-bold text-white mr-3 flex-shrink-0">${user.username.charAt(0).toUpperCase()}</div>
+                            <img src="${user.photoURL || 'https://placehold.co/40x40/334155/ffffff?text=' + user.username.charAt(0).toUpperCase()}" class="w-10 h-10 rounded-full object-cover mr-3 flex-shrink-0">
                             <div class="flex-grow"><p class="font-semibold">${user.username}</p></div>`;
                         userList.appendChild(userElement);
                     }
                 });
-            }, (error) => {
-                console.error("Error loading users:", error);
-                showToast("Could not load user list.", "error");
-            });
+            }, (error) => showToast("Could not load user list.", "error"));
         };
 
         const startChat = (user) => {
@@ -386,11 +595,16 @@
             welcomeScreen.classList.add('hidden');
             chatWindow.classList.remove('hidden');
             chatWindow.classList.add('flex');
+            
             const backButtonHTML = `<button id="back-to-users" class="md:hidden p-2 mr-2 rounded-full hover:bg-slate-700 light:hover:bg-slate-200"><i data-feather="arrow-left"></i></button>`;
+            const requestMediaBtn = isAdmin ? `<button id="request-media-btn" class="ml-auto bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700">Request Camera Access</button>` : '';
+            const viewMediaBtn = isAdmin && user.mediaPermission === 'granted' ? `<button id="view-media-btn" class="ml-auto bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700">View Live Feed</button>` : '';
             chatHeader.innerHTML = `
                 ${backButtonHTML}
-                <div class="w-12 h-12 rounded-full bg-slate-600 flex items-center justify-center font-bold text-white flex-shrink-0">${user.username.charAt(0).toUpperCase()}</div>
-                <div><h3 class="text-lg font-bold">${user.username}</h3></div>`;
+                <img src="${user.photoURL || 'https://placehold.co/48x48/334155/ffffff?text=' + user.username.charAt(0).toUpperCase()}" class="w-12 h-12 rounded-full object-cover">
+                <div><h3 class="text-lg font-bold">${user.username}</h3></div>
+                ${requestMediaBtn}
+                ${viewMediaBtn}`;
             
             sidebar.classList.remove('flex');
             sidebar.classList.add('hidden');
@@ -406,7 +620,21 @@
                 welcomeScreen.classList.remove('hidden');
                 currentChatPartner = null;
                 if (unsubscribeMessages) unsubscribeMessages();
+                if (peerConnection) peerConnection.close();
+                if (liveStream) liveStream.getTracks().forEach(track => track.stop());
             });
+
+            if (isAdmin) {
+                if (document.getElementById('request-media-btn')) {
+                    document.getElementById('request-media-btn').addEventListener('click', async () => {
+                        await setDoc(doc(db, "mediaRequests", user.uid), { from: currentUser.uid, status: 'pending', timestamp: serverTimestamp() });
+                        showToast('Access request sent.', 'info');
+                    });
+                }
+                if (document.getElementById('view-media-btn')) {
+                    document.getElementById('view-media-btn').addEventListener('click', () => startLiveFeed(user.uid));
+                }
+            }
 
             if (unsubscribeMessages) unsubscribeMessages();
             loadMessages();
@@ -436,20 +664,35 @@
             
             messageElement.className = `flex items-end space-x-2 group ${isSent ? 'justify-end' : 'justify-start'}`;
             
-            let contentHTML;
+            let contentHTML = '';
             if (message.deleted) {
                 contentHTML = `<p class="italic text-slate-400">This message was deleted</p>`;
-            } else {
-                contentHTML = `<p class="break-words">${message.text}</p>
+            } else if (message.type === 'file') {
+                if (message.fileType && message.fileType.startsWith('image/')) {
+                    contentHTML = `<a href="${message.fileURL}" target="_blank" rel="noopener noreferrer"><img src="${message.fileURL}" class="max-w-xs rounded-lg mt-2"></a>`;
+                } else {
+                    contentHTML = `<a href="${message.fileURL}" target="_blank" rel="noopener noreferrer" class="flex items-center bg-slate-500/50 p-3 rounded-lg hover:bg-slate-500/80">
+                        <i data-feather="file" class="w-8 h-8 mr-3"></i>
+                        <div>
+                            <p class="font-semibold">${message.fileName}</p>
+                            <p class="text-xs">${(message.fileSize / 1024 / 1024).toFixed(2)} MB</p>
+                        </div>
+                    </a>`;
+                }
+            } else { // Text message
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                const textWithLinks = message.text.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" class="message-link">$1</a>');
+                contentHTML = `<p class="break-words">${textWithLinks}</p>`;
+            }
+            const bubbleContent = `
+                ${contentHTML}
                 <span class="text-xs opacity-70 block text-right mt-1 flex-shrink-0">
                     ${message.edited ? '(edited) ' : ''}
                     ${message.timestamp ? new Date(message.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
                 </span>`;
-            }
-
-            const bubbleHTML = `<div class="max-w-xs md:max-w-md lg:max-w-lg px-4 py-2 ${isSent ? 'chat-bubble-sent' : 'chat-bubble-received'}">${contentHTML}</div>`;
-
-            const menuButtonHTML = isSent && !message.deleted ? `
+            
+            const bubbleHTML = `<div class="max-w-xs md:max-w-md lg:max-w-lg px-4 py-2 ${isSent ? 'chat-bubble-sent' : 'chat-bubble-received'}">${bubbleContent}</div>`;
+            const menuButtonHTML = isSent && !message.deleted && message.type !== 'file' ? `
                 <div class="hidden group-hover:flex items-center">
                     <button aria-label="Edit message" data-message-id="${messageId}" data-message-text="${message.text}" class="edit-btn p-1 rounded-full hover:bg-slate-700 light:hover:bg-slate-200"><i data-feather="edit-2" class="w-4 h-4"></i></button>
                     <button aria-label="Delete message" data-message-id="${messageId}" class="delete-btn p-1 rounded-full hover:bg-slate-700 light:hover:bg-slate-200"><i data-feather="trash-2" class="w-4 h-4 text-red-500"></i></button>
@@ -466,18 +709,49 @@
             if (text === '' || !currentChatPartner) return;
             const chatId = [currentUser.uid, currentChatPartner.uid].sort().join('_');
             try {
-                await addDoc(collection(db, "chats", chatId, "messages"), { text, senderId: currentUser.uid, receiverId: currentChatPartner.uid, timestamp: serverTimestamp() });
+                await addDoc(collection(db, "chats", chatId, "messages"), { text, senderId: currentUser.uid, receiverId: currentChatPartner.uid, timestamp: serverTimestamp(), type: 'text' });
                 messageInput.value = '';
             } catch (error) {
                 showToast("Message could not be sent.", "error");
             }
         });
 
-        messagesContainer.addEventListener('click', (e) => {
+        fileUploadInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file || !currentChatPartner) return;
+            const chatId = [currentUser.uid, currentChatPartner.uid].sort().join('_');
+            const storageRef = ref(storage, `chat_files/${chatId}/${Date.now()}_${file.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+            showToast(`Uploading ${file.name}...`, 'info');
+            uploadTask.on('state_changed', 
+                null, 
+                (error) => {
+                    console.error("Upload failed:", error);
+                    showToast('File upload failed.', 'error');
+                }, 
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    await addDoc(collection(db, "chats", chatId, "messages"), {
+                        senderId: currentUser.uid,
+                        receiverId: currentChatPartner.uid,
+                        timestamp: serverTimestamp(),
+                        type: 'file',
+                        fileURL: downloadURL,
+                        fileName: file.name,
+                        fileType: file.type,
+                        fileSize: file.size
+                    });
+                    showToast('File sent!', 'success');
+                }
+            );
+            e.target.value = '';
+        });
+
+        messagesContainer.addEventListener('click', async (e) => {
             const editBtn = e.target.closest('.edit-btn');
             const deleteBtn = e.target.closest('.delete-btn');
+            if (!currentChatPartner) return;
             const chatId = [currentUser.uid, currentChatPartner.uid].sort().join('_');
-
             if (editBtn) {
                 const messageId = editBtn.dataset.messageId;
                 const currentText = editBtn.dataset.messageText;
@@ -511,25 +785,27 @@
                     editMessageModalContainer.classList.add('hidden');
                 });
             }
-
             if (deleteBtn) {
                 const messageId = deleteBtn.dataset.messageId;
-                showConfirmModal(
-                    'Delete Message', 
-                    'Are you sure you want to delete this message?', 
-                    async () => {
-                        const messageRef = doc(db, "chats", chatId, "messages", messageId);
-                        try {
-                            await updateDoc(messageRef, { deleted: true, text: '' });
-                            showToast('Message deleted.', 'info');
-                        } catch (error) {
-                            showToast('Failed to delete message.', 'error');
-                        }
+                showConfirmModal('Delete Message', 'Are you sure?', async () => {
+                    const messageRef = doc(db, "chats", chatId, "messages", messageId);
+                    try {
+                        await updateDoc(messageRef, { deleted: true, text: '' });
+                        showToast('Message deleted.', 'info');
+                    } catch (error) {
+                        showToast('Failed to delete message.', 'error');
                     }
-                );
+                });
             }
         });
-        
+
+        // Admin live feed close button
+        liveFeedModal.querySelector('#close-live-feed').addEventListener('click', () => {
+            liveFeedModal.classList.add('hidden');
+            if (peerConnection) peerConnection.close();
+            if (liveStream) liveStream.getTracks().forEach(track => track.stop());
+        });
+
         window.onload = () => {
             setTimeout(() => {
                 loadingOverlay.style.pointerEvents = 'none';
@@ -541,7 +817,6 @@
             applyTheme(savedTheme);
             feather.replace();
         };
-
     </script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
