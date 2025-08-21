@@ -38,6 +38,67 @@
         
         .message-link { text-decoration: underline; color: #60a5fa; }
         .light .message-link { color: #2563eb; }
+
+        /* Responsive sidebar */
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                z-index: 1000;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 75vw;
+                background-color: #1e293b;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            #sidebar.open {
+                transform: translateX(0);
+            }
+            #main-content {
+                margin-left: 0 !important;
+            }
+        }
+
+        /* Burger menu button */
+        #burger {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1100;
+            background-color: #2563eb;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            color: white;
+            cursor: pointer;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            #burger {
+                display: block;
+            }
+        }
+
+        /* Responsive video in live feed modal */
+        #live-video {
+            width: 100%;
+            max-height: 60vh;
+            border-radius: 0.375rem;
+            background-color: black;
+        }
+
+        @media (max-width: 768px) {
+            #live-video {
+                max-height: 40vh;
+            }
+        }
+
+        #live-feed-modal > div {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-200 antialiased overflow-hidden">
@@ -163,9 +224,19 @@
 
     </div>
 
+    <script>
+        // Theme init to prevent FOUC
+        (function() {
+            try {
+                var theme = localStorage.getItem('theme') || 'dark';
+                document.documentElement.classList.toggle('light', theme === 'light');
+                document.documentElement.classList.toggle('dark', theme !== 'light');
+            } catch (e) {}
+        })();
+    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile as authUpdateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile as authUpdateProfile, getIdTokenResult } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, query, onSnapshot, addDoc, serverTimestamp, orderBy, updateDoc, where, getDocs, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
@@ -639,6 +710,7 @@
             if (unsubscribeMessages) unsubscribeMessages();
             loadMessages();
             feather.replace();
+            adjustSidebarOnChat();
         };
 
         const loadMessages = () => {
@@ -805,6 +877,35 @@
             if (peerConnection) peerConnection.close();
             if (liveStream) liveStream.getTracks().forEach(track => track.stop());
         });
+
+        // Responsive sidebar toggle
+        const burgerBtn = document.createElement('button');
+        burgerBtn.id = 'burger';
+        burgerBtn.textContent = '☰';
+        burgerBtn.className = 'md:hidden p-3 fixed top-4 left-4 bg-blue-600 text-white rounded z-50';
+        document.body.appendChild(burgerBtn);
+
+        burgerBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('open');
+                sidebar.classList.add('flex');
+            } else {
+                sidebar.classList.remove('flex');
+            }
+        });
+
+        function adjustSidebarOnChat() {
+            if (window.innerWidth < 768) {
+                sidebar.classList.remove('flex');
+                sidebar.classList.remove('open');
+            } else {
+                sidebar.classList.add('flex');
+            }
+        }
 
         window.onload = () => {
             setTimeout(() => {
